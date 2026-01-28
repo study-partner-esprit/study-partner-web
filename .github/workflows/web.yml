@@ -1,0 +1,416 @@
+# =============================================================================
+# Web Frontend CI/CD Pipeline (React/Next.js)
+# =============================================================================
+# Triggers: push to main/develop, pull requests
+# Stages: Lint → Test → Build → Containerize → Deploy → Smoke Test
+# =============================================================================
+
+name: Web Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main      # Production deployments
+      - develop   # Staging deployments
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Prevent concurrent deployments to same environment
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-web
+
+jobs:
+  # ===========================================================================
+  # STAGE 1: Code Quality - Linting & Formatting
+  # ===========================================================================
+  lint:
+    name: 🔍 Lint & Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      # ESLint - Static code analysis for JavaScript/TypeScript
+      - name: 🔍 Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      # Prettier - Code formatting check
+      - name: 🎨 Check Prettier formatting
+        run: npm run format:check
+
+      # TypeScript type checking (if applicable)
+      - name: 📝 TypeScript type check
+        run: npm run type-check
+        continue-on-error: true
+
+  # ===========================================================================
+  # STAGE 2: Unit Tests
+  # ===========================================================================
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      # Jest + React Testing Library unit tests
+      - name: 🧪 Run unit tests with coverage
+        run: npm run test:unit -- --coverage --watchAll=false
+        env:
+          CI: true
+
+      # Upload coverage reports
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          flags: unit-tests
+          fail_ci_if_error: false
+
+  # ===========================================================================
+  # STAGE 3: Integration Tests
+  # ===========================================================================
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      # Integration tests with API mocking (MSW or similar)
+      - name: 🔗 Run integration tests
+        run: npm run test:integration
+        env:
+          CI: true
+          # Mock API endpoints for testing
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          NEXT_PUBLIC_AI_SERVICE_URL: http://localhost:8000
+
+  # ===========================================================================
+  # STAGE 4: Security & Privacy Checks (Optional)
+  # ===========================================================================
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      # npm audit for dependency vulnerabilities
+      - name: 🔍 Run npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      # Trivy vulnerability scanner
+      - name: 🛡️ Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+  # ===========================================================================
+  # STAGE 5: Build Application
+  # ===========================================================================
+  build:
+    name: 🏗️ Build Application
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    
+    outputs:
+      build-artifact: ${{ steps.upload.outputs.artifact-id }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      # Next.js production build
+      - name: 🏗️ Build Next.js application
+        run: npm run build
+        env:
+          # Production environment variables
+          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
+          NEXT_PUBLIC_AI_SERVICE_URL: ${{ secrets.AI_SERVICE_URL }}
+          NEXT_PUBLIC_ANALYTICS_ID: ${{ secrets.ANALYTICS_ID }}
+
+      # Upload build artifacts for deployment
+      - name: 📤 Upload build artifacts
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build-${{ github.sha }}
+          path: |
+            .next/
+            public/
+            package.json
+            next.config.js
+          retention-days: 7
+
+  # ===========================================================================
+  # STAGE 6: Docker Containerization
+  # ===========================================================================
+  containerize:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      packages: write
+    
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build-push.outputs.digest }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Download build artifacts
+      - name: 📥 Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build-${{ github.sha }}
+
+      # Set up Docker Buildx for multi-platform builds
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Login to GitHub Container Registry
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Generate image metadata (tags, labels)
+      - name: 📋 Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
+
+      # Build and push Docker image
+      - name: 🐳 Build and push Docker image
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            NEXT_PUBLIC_API_URL=${{ secrets.API_URL }}
+
+  # ===========================================================================
+  # STAGE 7: Deploy to Staging
+  # ===========================================================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: containerize
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Option A: Deploy to Vercel
+      - name: 🚀 Deploy to Vercel (Staging)
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          alias-domains: staging.study-partner.app
+
+      # Alternative: Deploy to Kubernetes
+      # - name: 🚀 Deploy to Kubernetes (Staging)
+      #   uses: azure/k8s-deploy@v4
+      #   with:
+      #     namespace: staging
+      #     manifests: |
+      #       k8s/staging/deployment.yml
+      #       k8s/staging/service.yml
+      #     images: ${{ needs.containerize.outputs.image-tag }}
+
+  # ===========================================================================
+  # STAGE 8: Deploy to Production
+  # ===========================================================================
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: containerize
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Deploy to Vercel Production
+      - name: 🚀 Deploy to Vercel (Production)
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          alias-domains: study-partner.app
+
+  # ===========================================================================
+  # STAGE 9: Post-Deploy Smoke Tests
+  # ===========================================================================
+  smoke-tests:
+    name: 💨 Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      # Determine which environment to test
+      - name: 🔍 Set test URL
+        id: set-url
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "url=https://study-partner.app" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.study-partner.app" >> $GITHUB_OUTPUT
+          fi
+
+      # Run UI smoke tests with Playwright
+      - name: 💨 Run smoke tests
+        run: npm run test:smoke
+        env:
+          BASE_URL: ${{ steps.set-url.outputs.url }}
+          CI: true
+
+      # Health check - verify app is responding
+      - name: ❤️ Health check
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.set-url.outputs.url }}/api/health)
+          if [ $response -eq 200 ]; then
+            echo "✅ Health check passed"
+          else
+            echo "❌ Health check failed with status: $response"
+            exit 1
+          fi
+
+      # Notify on failure
+      - name: 📢 Notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Smoke tests failed for ${{ github.repository }} on ${{ github.ref }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Deployment smoke tests failed. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
