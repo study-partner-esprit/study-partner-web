@@ -4,6 +4,7 @@ import { ChevronRight, Sparkles, Trophy, Star, Zap, Target, Users, TrendingUp } 
 import { Link } from 'react-router-dom';
 import TiltCard from '@/components/ui/TiltCard';
 import DecryptedText from '@/components/ui/DecryptedText';
+// import LightRays from '@/components/ui/LightRays'; // Moved to App.jsx global
 
 const HeroSection = () => {
   const stats = [
@@ -14,7 +15,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+    <section className="relative min-h-screen w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden">
       {/* Background Typography "GAMEDAY" style */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
         <span className="text-[20vw] leading-none font-bold font-valorant text-outline-lg opacity-20 dark:opacity-10 scale-150 tracking-tighter transform rotate-[-5deg]">
@@ -22,9 +23,9 @@ const HeroSection = () => {
         </span>
       </div>
 
-      <div className="max-w-6xl w-full mx-auto relative z-10">
-        <TiltCard className="max-w-4xl w-full mx-auto p-1">
-          <div className="relative z-10 text-center p-8 md:p-16">
+        <div className="relative w-full z-10">
+          <TiltCard className="rect-card w-full h-screen p-0">
+          <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full">
 
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
@@ -38,19 +39,19 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.h1
-              className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-primary to-gray-900 dark:from-white dark:via-primary dark:to-white font-display"
+              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-primary to-gray-900 dark:from-white dark:via-primary dark:to-white font-display"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               Level Up Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-red-500 to-orange-500 animate-pulse">
-                Study Game
+                Study Game 
               </span>
             </motion.h1>
 
             <motion.p
-              className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg md:text-2xl text-muted mb-10 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -68,7 +69,7 @@ const HeroSection = () => {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+              className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -94,7 +95,7 @@ const HeroSection = () => {
 
             {/* Stats Grid */}
             <motion.div
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mt-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -110,7 +111,7 @@ const HeroSection = () => {
                   >
                     <Icon className={`w-8 h-8 mx-auto mb-2 ${stat.color}`} />
                     <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-valorant">{stat.value}</div>
-                    <div className="text-xs uppercase tracking-wider font-bold text-gray-600 dark:text-gray-400">{stat.label}</div>
+                    <div className="text-xs uppercase tracking-wider font-bold text-muted">{stat.label}</div>
                   </motion.div>
                 );
               })}

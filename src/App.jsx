@@ -14,16 +14,19 @@ function App() {
 
   return (
     <>
-      <div className="bg-noise" />
-      <Navbar minimal={isLandingPage} />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/sessions" element={<Sessions />} />
-        <Route path="/tasks" element={<Tasks />} />
-      </Routes>
+      {/* LightRays removed — no animated backgrounds */}
+
+      <div className="relative z-10 w-full min-h-screen">
+        <Navbar minimal={isLandingPage} />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sessions" element={<Sessions />} />
+          <Route path="/tasks" element={<Tasks />} />
+        </Routes>
+      </div>
     </>
   );
 }

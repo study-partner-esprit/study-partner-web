@@ -13,54 +13,26 @@ const CTASection = () => {
   ];
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
-      {/* Enhanced Background Effects */}
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-primary/20 to-red-900/20 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-red-900/20 to-primary/20 rounded-full blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.4, 0.7, 0.4],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-        />
-      </div>
+    <section className="relative min-h-screen w-full px-0 overflow-hidden flex items-center overflow-x-hidden">
+      {/* Light rays removed */}
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="relative w-full z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <TiltCard className="relative overflow-hidden group p-12 md:p-16 text-center">
+            <TiltCard className="relative overflow-hidden group p-0 md:p-0 text-center w-full rect-card h-screen flex items-center">
             
-            {/* Glossy sheen overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 pointer-events-none" />
+            {/* Glossy sheen overlay (CTA) */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-40 pointer-events-none cta-inner-sheen" />
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
+                initial={{ scale: 0.98, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full flex flex-col justify-center items-center h-full"
               >
                 {/* Enhanced Badge */}
                 <motion.div
@@ -85,7 +57,7 @@ const CTASection = () => {
 
                 {/* Enhanced Title */}
                 <motion.h2
-                  className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 dark:text-white font-display tracking-tight"
+                  className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 dark:text-white font-display tracking-tight cta-title"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -96,7 +68,6 @@ const CTASection = () => {
                     Revolution
                   </span>
                 </motion.h2>
-
                 {/* Enhanced Description */}
                 <motion.p
                   className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
@@ -121,19 +92,18 @@ const CTASection = () => {
                     const Icon = reward.icon;
                     return (
                       <motion.div
-                        key={index}
-                        className="flex flex-col items-center p-6 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-300 group/reward"
-                        whileHover={{
-                          scale: 1.05,
-                          y: -5,
-                          boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                      >
+                          key={index}
+                          className="flex flex-col items-center p-6 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-300 group/reward"
+                          whileHover={{
+                            scale: 1.05,
+                            y: -5,
+                            boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
+                          }}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20, delay: index * 0.1 }}
+                        >
                         <motion.div
                           className={`p-3 rounded-xl bg-gradient-to-br from-white/20 to-white/10 mb-4 ${reward.glow}`}
                           whileHover={{ rotate: [0, -10, 10, 0] }}

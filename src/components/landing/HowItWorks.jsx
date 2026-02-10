@@ -58,20 +58,20 @@ const HowItWorks = () => {
                  <div className="w-1.5 h-1.5 bg-primary" />
               </div>
               
-              <TiltCard className="w-full">
+              <TiltCard className="w-full card-valorant">
                <div className="ml-16 md:ml-20 p-6 md:p-8 relative w-full">
                   {/* Glossy sheen overlay */}
-                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 pointer-events-none rounded-none" />
+                 <div className="card-inner-sheen" />
                  
                 <div className="flex items-center gap-4 mb-4 relative z-10 border-b border-primary/10 pb-4">
                   <div className="p-3 bg-primary/5 border border-primary/20 relative" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 20% 100%, 0 80%)' }}>
                     <step.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-valorant uppercase tracking-wide">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-valorant uppercase tracking-wide howitworks-title">
                     // {step.title}
                   </h3>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg relative z-10 font-medium">
+                <p className="text-muted leading-relaxed text-lg relative z-10 font-medium">
                   {step.description}
                 </p>
               </div>

@@ -15,10 +15,10 @@
     --popover-foreground: 240 10% 3.9%;
     --primary: 355 100% 64%; /* Valorant Red */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --secondary: 220 6% 96%; /* subtle cool white */
+    --secondary-foreground: 220 6% 18%;
+    --muted: 220 8% 96%;
+    --muted-foreground: 210 8% 36%; /* stronger, darker gray for better contrast */
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
@@ -43,10 +43,10 @@
     --popover-foreground: 0 0% 98%;
     --primary: 355 100% 64%; /* Valorant Red */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --secondary: 345 6% 8%; /* near-black with faint warm tint */
+    --secondary-foreground: 0 0% 96%;
+    --muted: 345 6% 8%;
+    --muted-foreground: 350 6% 58%; /* cooler mid-gray for body copy */
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
@@ -71,6 +71,55 @@
   }
 }
 
+/* New utility tokens for improved gray and card styles */
+.text-muted {
+  color: hsl(var(--muted-foreground));
+}
+.card-valorant {
+  background: hsl(var(--card) / 1);
+  border: 1px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 6px 18px rgba(11,13,17,0.06);
+}
+.card-valorant .card-inner-sheen {
+  position: absolute;
+  inset: 0;
+  /* Subtle sheen on light theme only; in dark mode the sheen causes an unwanted glare */
+  background: linear-gradient(120deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Remove the inner sheen in dark mode to avoid strong glare/halo */
+.dark .card-valorant .card-inner-sheen {
+  display: none;
+}
+
+/* Add a subtle white highlight/shadow for headings in How It Works dark mode */
+.howitworks-title {
+  transition: text-shadow 160ms ease;
+}
+.dark .howitworks-title {
+  text-shadow: 0 6px 18px rgba(255,255,255,0.06);
+}
+
+/* CTA sheen handling: keep subtle in light, remove in dark to avoid glare */
+.cta-inner-sheen {
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+  transition: opacity 160ms ease;
+}
+.dark .cta-inner-sheen {
+  display: none;
+}
+
+/* CTA title white highlight in dark mode (subtle) */
+.cta-title {
+  transition: text-shadow 160ms ease;
+}
+.dark .cta-title {
+  text-shadow: 0 8px 22px rgba(255,255,255,0.06);
+}
+
 /* Textured Background noise */
 .bg-noise {
   position: fixed;
@@ -79,9 +128,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 5;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  display: none; /* noise removed per user request */
 }
 
 /* Valorant Style Utilities */
@@ -90,50 +137,94 @@
   
   /* Outline Text Effect */
   .text-outline {
-    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+    -webkit-text-stroke: 1px hsl(var(--primary) / 1);
     color: transparent;
   }
   .dark .text-outline {
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    -webkit-text-stroke: 1px hsl(var(--primary) / 1);
     color: transparent;
   }
   
   /* Big background typography */
   .text-outline-lg {
-    -webkit-text-stroke: 2px rgba(82, 39, 255, 0.15); /* Using that purple accent color */
+    -webkit-text-stroke: 2px hsl(var(--primary) / 1);
     color: transparent;
     font-weight: 800;
   }
   
   .valo-card {
-    @apply relative bg-white/90 dark:bg-black/80 border border-black/10 dark:border-white/10 shadow-lg transition-all duration-300;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+    background: hsl(var(--card) / 1);
+    box-shadow: 0 8px 30px rgba(11,13,17,0.06);
     /* More aggressive polygonal clip */
     clip-path: polygon(
-      0 0, 
-      100% 0, 
-      100% calc(100% - 20px), 
-      calc(100% - 20px) 100%, 
-      20px 100%, 
+      0 0,
+      100% 0,
+      100% calc(100% - 20px),
+      calc(100% - 20px) 100%,
+      20px 100%,
       0 calc(100% - 20px)
     );
   }
+  .dark .valo-card {
+    border: 1px solid rgba(255,255,255,0.03);
+    background: hsl(var(--card) / 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
   
   .valo-card-sm {
-    @apply relative bg-white/90 dark:bg-black/80 border border-black/10 dark:border-white/10 shadow-md transition-all duration-300;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.06);
+    background: hsl(var(--card) / 1);
+    box-shadow: 0 6px 18px rgba(11,13,17,0.05);
+    transition: all 0.2s ease;
     clip-path: polygon(
-      10px 0, 100% 0, 
-      100% calc(100% - 10px), calc(100% - 10px) 100%, 
+      10px 0, 100% 0,
+      100% calc(100% - 10px), calc(100% - 10px) 100%,
       0 100%, 0 10px
     );
   }
+  .dark .valo-card-sm {
+    border: 1px solid rgba(255,255,255,0.03);
+    background: hsl(var(--card) / 1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  }
+
+  /* Rectangular card variant: sharp corners, no polygon clip */
+  .rect-card {
+    clip-path: none !important;
+    border-radius: 0 !important;
+    background: hsl(var(--card) / 1);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 10px 30px rgba(11,13,17,0.06);
+  }
+
+  .rect-card-sm {
+    clip-path: none !important;
+    border-radius: 0 !important;
+    background: hsl(var(--card) / 1);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 6px 18px rgba(11,13,17,0.05);
+  }
 
   .valo-btn {
-    @apply relative font-bold uppercase tracking-wider transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg active:scale-95;
+    position: relative;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transform: translateZ(0);
     clip-path: polygon(
-      10px 0, 100% 0, 
-      100% calc(100% - 10px), calc(100% - 10px) 100%, 
+      10px 0, 100% 0,
+      100% calc(100% - 10px), calc(100% - 10px) 100%,
       0 100%, 0 10px
     );
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.06);
+    color: inherit;
+    box-shadow: none;
   }
 
   /* Glitch effect on hover */
@@ -227,10 +318,11 @@ code {
 
 /* Cards */
 .card {
-  background: white;
-  border-radius: 10px;
+  background: hsl(var(--card) / 1);
+  color: hsl(var(--card-foreground) / 1);
+  border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 18px rgba(11,13,17,0.06);
   margin-bottom: 20px;
 }
 
