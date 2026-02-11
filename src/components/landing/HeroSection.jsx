@@ -80,7 +80,7 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.95 }}
                   className="valo-btn inline-flex items-center bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25"
                 >
-                  Start Your Journey <ChevronRight className="ml-2 w-5 h-5" />
+                  Start Your Journey <ChevronRight className="ml-3 w-6 h-10" />
                 </motion.button>
               </Link>
               <motion.button
@@ -88,7 +88,7 @@ const HeroSection = () => {
                 whileTap={{ scale: 0.95 }}
                 className="valo-btn inline-flex items-center border-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-white/10 bg-transparent text-gray-900 dark:text-white"
               >
-                <Target className="mr-2 w-5 h-5" />
+                <Target className="mr-2 w-6 h-10" />
                 View Demo
               </motion.button>
             </motion.div>

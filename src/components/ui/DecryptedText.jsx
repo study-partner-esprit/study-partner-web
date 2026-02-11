@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 
 export default function DecryptedText({
   text,
-  speed = 50,
-  maxIterations = 10,
+  speed = 60,
+  maxIterations = 8,
   sequential = false,
   revealDirection = 'start',
   useOriginalCharsOnly = false,
-  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+',
+  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZyz!@#$%^&*()_+',
   className = '',
   parentClassName = '',
   encryptedClassName = '',
@@ -180,8 +180,20 @@ export default function DecryptedText({
         {displayText.split('').map((char, index) => {
           const isRevealedOrDone = revealedIndices.has(index) || !isScrambling || !isHovering;
 
+          // Prevent layout jitter by keeping encrypted chars fixed-width and inline-block
+          const encryptedStyle = {
+            display: 'inline-block',
+            minWidth: '0.6ch',
+            textAlign: 'center',
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace'
+          };
+
           return (
-            <span key={index} className={isRevealedOrDone ? className : encryptedClassName}>
+            <span
+              key={index}
+              className={isRevealedOrDone ? className : encryptedClassName}
+              style={isRevealedOrDone ? undefined : encryptedStyle}
+            >
               {char}
             </span>
           );

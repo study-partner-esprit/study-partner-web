@@ -1,12 +1,23 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket } from 'lucide-react';
+import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuthStore } from '@/store/authStore';
+import { profileAPI } from '@/services/api';
+import { useState, useEffect } from 'react';
 
 const Navbar = ({ minimal = false }) => {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuthStore();
   const location = useLocation();
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      profileAPI.get().then(res => setProfile(res.data.profile)).catch(console.error);
+    }
+  }, [user]);
 
   const navItems = minimal ? [] : [
     { path: '/', label: 'Home', icon: Home },
@@ -20,38 +31,13 @@ const Navbar = ({ minimal = false }) => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="fixed top-6 left-6 right-6 z-50 bg-transparent"
+      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-20"
     >
-      {/* Glossy Overlay - Removed for transparent effect 
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-      */}
-      
-      {/* Floating Particles - Removed for transparent effect 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={`nav-particle-${i}`}
-            className="absolute w-1 h-1 bg-white/30 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-      */}
+      {/* Glossy Overlay - Removed for clean top bar look */}
+      {/* Floating Particles - Removed for clean top bar look */}
 
-      <div className="relative max-w-7xl mx-auto px-6">
-        <div className="flex justify-between items-center h-20">
+      <div className="relative max-w-7xl mx-auto px-6 h-full">
+        <div className="flex justify-between items-center h-full">
           {/* Left Corner: Logo */}
           <Link to="/" className="relative z-10 flex items-center space-x-4 group">
             <motion.div
@@ -118,24 +104,58 @@ const Navbar = ({ minimal = false }) => {
               )}
             </motion.button>
             
-            {!minimal && (
-              <div className="hidden lg:flex items-center px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm gap-4">
+            {!minimal && user && (
+              <div className="hidden lg:flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm gap-4">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm font-bold opacity-80">2,450 XP</span>
+                  <Trophy className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold opacity-80 text-foreground">
+                    LEVEL {profile?.level?.current || 1}
+                  </span>
                 </div>
               </div>
             )}
 
-            <Link to="/login">
-              <motion.button
-                className="valo-btn px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black font-semibold text-sm shadow-lg hover:bg-primary hover:text-white transition-colors duration-200"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                SIGN IN
-              </motion.button>
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <Link to="/profile" className="flex items-center gap-3 group">
+                   <div className="text-right hidden sm:block">
+                      <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors uppercase tracking-widest">
+                        {profile?.nickname || user.name}
+                      </div>
+                      <div className="flex items-center justify-end gap-1 text-xs text-[#ff4655] font-black tracking-widest">
+                         <span>LVL</span>
+                         <span className="text-sm">{profile?.level?.current || 1}</span>
+                      </div>
+                   </div>
+                   <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-border group-hover:border-[#ff4655] transition-colors relative">
+                      <img 
+                        src={profile?.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover"
+                      />
+                   </div>
+                </Link>
+                
+                <motion.button
+                  onClick={logout}
+                  className="w-8 h-8 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center hover:bg-destructive/20"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <LogOut className="w-4 h-4 text-destructive" />
+                </motion.button>
+              </div>
+            ) : (
+              <Link to="/login">
+                <motion.button
+                  className="valo-btn px-6 py-2.5 bg-foreground text-background font-semibold text-sm shadow-lg hover:bg-primary hover:text-white transition-colors duration-200"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  SIGN IN
+                </motion.button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
