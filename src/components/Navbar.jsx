@@ -19,11 +19,19 @@ const Navbar = ({ minimal = false }) => {
     }
   }, [user]);
 
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line no-console
+      console.log('Navbar debug:', { path: location.pathname, minimal, userPresent: !!user, navCount: navItems.length });
+    } catch (e) {}
+  }, [location.pathname, minimal, user]);
+
   const navItems = minimal ? [] : [
     { path: '/', label: 'Home', icon: Home },
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { path: '/tasks', label: 'Tasks', icon: Target },
-    { path: '/sessions', label: 'Sessions', icon: BookOpen },
+    { path: '/subjects', label: 'Subjects', icon: BookOpen },
+    { path: '/planner', label: 'Planner', icon: Target },
+    { path: '/study-session', label: 'Session', icon: Zap },
   ];
 
   return (
@@ -31,7 +39,7 @@ const Navbar = ({ minimal = false }) => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-20"
+      className="fixed top-0 left-0 right-0 z-[100] bg-background/95 backdrop-blur-xl border-b border-border h-20 shadow-sm box-glow"
     >
       {/* Glossy Overlay - Removed for clean top bar look */}
       {/* Floating Particles - Removed for clean top bar look */}
@@ -59,12 +67,11 @@ const Navbar = ({ minimal = false }) => {
             </div>
           </Link>
 
-          {/* Center: Navigation Links (Absolute Centered) */}
+          {/* Centered nav will be used for the Epic-style header. */}
           {!minimal && (
-            <div className="hidden md:flex items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="flex items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
               <div className="flex items-center space-x-1">
                 {navItems.map((item) => {
-                  const Icon = item.icon;
                   const isActive = location.pathname === item.path;
                   return (
                     <Link
@@ -75,8 +82,8 @@ const Navbar = ({ minimal = false }) => {
                       <motion.div
                         className={`relative px-5 py-2 flex items-center gap-2 font-valorant text-sm ${
                           isActive
-                            ? 'text-primary border-b-2 border-primary'
-                            : 'text-muted-foreground hover:text-foreground opacity-70 hover:opacity-100'
+                            ? 'text-primary border-b-2 border-primary text-glow'
+                            : 'text-foreground opacity-80 hover:text-primary hover:text-glow transition-all'
                         }`}
                         whileHover={{ y: -2 }}
                       >
@@ -90,7 +97,7 @@ const Navbar = ({ minimal = false }) => {
           )}
 
           {/* Right Corner: Actions */}
-          <div className="relative z-10 flex items-center gap-3">
+          <div className="relative z-10 flex items-center gap-3 ml-auto">
              <motion.button
               onClick={toggleTheme}
               className="w-10 h-10 rounded-full bg-white/10 dark:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20"

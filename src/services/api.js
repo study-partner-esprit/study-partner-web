@@ -48,6 +48,39 @@ export const authAPI = {
 export const profileAPI = {
   get: () => api.get('/api/v1/users/profile'),
   update: (data) => api.put('/api/v1/users/profile', data),
+};
+
+// AI Services API (connects to Python FastAPI service)
+const AI_API_BASE = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000';
+
+export const aiAPI = {
+  // Subject & Course Management
+  listSubjects: (userId) => axios.get(`${AI_API_BASE}/api/ai/subjects`, { params: { user_id: userId } }),
+  listCourses: (userId, subjectId = null) => axios.get(`${AI_API_BASE}/api/ai/courses`, { params: { user_id: userId, subject_id: subjectId } }),
+  
+  // Course Ingestion
+  ingestCourse: (formData) => {
+    return axios.post(`${AI_API_BASE}/api/ai/courses/ingest`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  getCourse: (courseId) => axios.get(`${AI_API_BASE}/api/ai/courses/${courseId}`),
+  
+  // Study Planning
+  createStudyPlan: (data) => axios.post(`${AI_API_BASE}/api/ai/planner/create-plan`, data),
+  getUserPlans: (userId) => axios.get(`${AI_API_BASE}/api/ai/planner/plans/${userId}`),
+  
+  // Coaching
+  getCoachDecision: (data) => axios.post(`${AI_API_BASE}/api/ai/coach/decision`, data),
+  getCoachHistory: (userId, limit = 20) => axios.get(`${AI_API_BASE}/api/ai/coach/history/${userId}`, { params: { limit } }),
+  
+  // Signal Processing
+  getCurrentSignals: (userId) => axios.get(`${AI_API_BASE}/api/ai/signals/current/${userId}`),
+  getSignalHistory: (userId, limit = 50) => axios.get(`${AI_API_BASE}/api/ai/signals/history/${userId}`, { params: { limit } }),
+  processSignals: (userId) => axios.post(`${AI_API_BASE }/api/ai/signals/process`, { user_id: userId }),
+  
+  // Health check
+  healthCheck: () => axios.get(`${AI_API_BASE}/health`),
   getStats: () => api.get('/api/v1/users/profile/stats'),
   updateStats: (data) => api.patch('/api/v1/users/profile/stats', data),
   getGoals: () => api.get('/api/v1/users/profile/goals'),
@@ -82,15 +115,6 @@ export const sessionsAPI = {
   update: (sessionId, data) => api.put(`/api/v1/study/sessions/${sessionId}`, data),
   endSession: (sessionId) => api.put(`/api/v1/study/sessions/${sessionId}`, { status: 'completed' }),
   getStats: (params) => api.get('/api/v1/study/sessions/stats/summary', { params }),
-};
-
-// AI API
-export const aiAPI = {
-  ingestCourse: (data) => api.post('/api/v1/ai/ingest', data),
-  generatePlan: (data) => api.post('/api/v1/ai/plan', data),
-  scheduleTasks: (data) => api.post('/api/v1/ai/schedule', data),
-  getCoachAdvice: (data) => api.post('/api/v1/ai/coach', data),
-  getStatus: () => api.get('/api/v1/ai/status'),
 };
 
 // Focus Tracking API
