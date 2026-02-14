@@ -136,9 +136,17 @@ const Navbar = ({ minimal = false }) => {
                       </div>
                    </div>
                    <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-border group-hover:border-[#ff4655] transition-colors relative">
-                      <img 
-                        src={profile?.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} 
-                        alt="Avatar" 
+                      <img
+                        src={
+                          profile?.avatar
+                            ? profile.avatar.startsWith('data:')
+                              ? profile.avatar
+                              : profile.avatar.startsWith('http')
+                                ? profile.avatar
+                                : `http://localhost:3000${profile.avatar}`
+                            : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
+                        }
+                        alt="Avatar"
                         className="w-full h-full object-cover"
                       />
                    </div>

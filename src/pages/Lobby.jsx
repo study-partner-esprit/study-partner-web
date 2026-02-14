@@ -105,9 +105,9 @@ const Lobby = () => {
                 className="z-20 w-80 md:w-96 aspect-[3/5] bg-[#1a2633] border-4 border-[#ff4655] rounded-xl relative overflow-hidden shadow-2xl group"
              >
                  {/* Card Background Image/Avatar */}
-                 <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-                      style={{ backgroundImage: `url(${profile?.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`) : (user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (user?.name || 'Agent'))})` }} 
-                 />
+                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                      style={{ backgroundImage: `url(${profile?.avatar ? (profile.avatar.startsWith('data:') ? profile.avatar : (profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`)) : (user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (user?.name || 'Agent'))})` }}
+                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
                  
                  {/* Content */}

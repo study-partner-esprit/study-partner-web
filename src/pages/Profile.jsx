@@ -7,10 +7,11 @@ import { Camera, Edit2, Zap, Trophy, Share2, Award } from 'lucide-react';
 // Helper to determine avatar src
 const getAvatarSrc = (avatarPath, userName) => {
     if (!avatarPath) return `https://api.dicebear.com/7.x/avataaars/svg?seed=${userName}`;
-    if (avatarPath.startsWith('http')) return avatarPath;
-    // If it's a relative path from our uploads, prepend API base if needed
-    // Assuming API is proxied on same origin in dev, or use env var
-    return `http://localhost:3000${avatarPath}`; 
+  if (avatarPath.startsWith('data:')) return avatarPath;
+  if (avatarPath.startsWith('http')) return avatarPath;
+  // If it's a relative path from our uploads, prepend API base if needed
+  // Assuming API is proxied on same origin in dev, or use env var
+  return `http://localhost:3000${avatarPath}`; 
 };
 
 const Profile = () => {
