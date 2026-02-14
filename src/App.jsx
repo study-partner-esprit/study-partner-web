@@ -29,8 +29,8 @@ function App() {
 
   return (
     <>
+      <Navbar minimal={minimalNav} />
       <div className="relative z-10 w-full min-h-screen pt-20">
-        <Navbar minimal={minimalNav} />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

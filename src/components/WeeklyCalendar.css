@@ -1,9 +1,10 @@
 .weekly-calendar {
   width: 100%;
   padding: 20px;
-  background: white;
+  background: var(--card);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: var(--foreground);
 }
 
 .calendar-header {
@@ -13,13 +14,13 @@
 .calendar-instructions h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--foreground);
   margin-bottom: 8px;
 }
 
 .calendar-instructions p {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--muted-foreground);
   line-height: 1.6;
 }
 
@@ -27,15 +28,16 @@
   display: flex;
   gap: 2px;
   overflow-x: auto;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   border-radius: 8px;
+  background: var(--border);
 }
 
 .time-column {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: #f8fafc;
+  background: var(--muted);
   min-width: 80px;
 }
 
@@ -45,9 +47,9 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #475569;
-  background: #e2e8f0;
-  border-bottom: 2px solid #cbd5e1;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border-bottom: 2px solid var(--border);
 }
 
 .time-cell {
@@ -56,10 +58,10 @@
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-weight: 500;
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
 }
 
 .day-column {
@@ -90,8 +92,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -102,8 +104,8 @@
 }
 
 .time-slot:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--muted);
+  border-color: var(--primary);
   transform: scale(1.02);
   z-index: 1;
 }
@@ -143,13 +145,14 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--card);
   padding: 32px;
   border-radius: 16px;
   max-width: 450px;
   width: 90%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
+  color: var(--foreground);
 }
 
 @keyframes slideUp {
@@ -166,13 +169,13 @@
 .modal-content h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--foreground);
   margin-bottom: 16px;
 }
 
 .modal-content p {
   font-size: 1rem;
-  color: #64748b;
+  color: var(--muted-foreground);
   margin-bottom: 24px;
   line-height: 1.6;
 }
@@ -185,7 +188,7 @@
   display: block;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--foreground);
   margin-bottom: 8px;
 }
 
@@ -193,15 +196,17 @@
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
-  border: 2px solid #e2e8f0;
+  background: var(--background);
+  color: var(--foreground);
+  border: 2px solid var(--border);
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .form-group input[type="text"]:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
 .form-group input[type="checkbox"] {
@@ -231,12 +236,12 @@
 }
 
 .btn-cancel {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .btn-cancel:hover {
-  background: #e2e8f0;
+  background: var(--border);
 }
 
 .btn-save {

@@ -40,6 +40,27 @@ const Subjects = () => {
     subject.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const resolveImageUrl = (url) => {
+    if (!url) return null;
+    // If the URL is an embedded data URL, return it directly
+    if (url.startsWith('data:')) return url;
+    if (url.startsWith('http')) return url;
+    // If the backend returned a plain /uploads/... path (study service stores uploads locally),
+    // request it directly from the study service host because the API gateway proxies /uploads
+    // to the user-profile service by default.
+    if (url.startsWith('/uploads')) {
+      const studyBase = import.meta.env.VITE_STUDY_SERVICE_URL || 'http://localhost:3003';
+      return `${studyBase.replace(/\/$/, '')}${url}`;
+    }
+
+    const base = import.meta.env.VITE_API_URL || '';
+    // If VITE_API_URL is set, prefix with it; otherwise return a relative path so Vite proxy handles it
+    if (!base) {
+      return url.startsWith('/') ? url : `/${url}`;
+    }
+    return `${base.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
+  };
+
   return (
     <div className="subjects-container">
       <div className="subjects-header">
@@ -88,8 +109,17 @@ const Subjects = () => {
               onClick={() => handleSubjectClick(subject.id)}
             >
               <div className="card-image-wrapper">
-                {subject.image ? (
-                  <img src={subject.image} alt={subject.name} className="subject-cover-image" />
+                  {subject.image ? (
+                  <img
+                    src={resolveImageUrl(subject.image)}
+                    alt={subject.name}
+                    className="subject-cover-image"
+                    loading="lazy"
+                    onError={(e) => {
+                      console.error('Subject image load failed:', e.target.src);
+                      e.target.style.opacity = '0';
+                    }}
+                  />
                 ) : (
                   <div className="subject-placeholder-gradient">
                     <BookOpen size={48} />
