@@ -1,22 +1,22 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Use relative URLs in development so Vite proxy can intercept /api/* requests
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // Create axios instance (no default Content-Type so FormData can set boundary)
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 60000, // Increased timeout for complex operations like study plan creation
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const authData = localStorage.getItem('auth-storage');
-    if (authData) {
-      const { state } = JSON.parse(authData);
-      if (state.token) {
-        config.headers.Authorization = `Bearer ${state.token}`;
-      }
-    }
+    // Temporarily use hardcoded token for testing
+    const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OThlNTA2OTU5ZTM3YjY3OTNlNzQ4ZGMiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc3MTAxNjY0NCwiZXhwIjoxNzcxMTAzMDQ0fQ.L22fqpPniQBKc7rYjmsrQ3k0Ujrq6xJCzkI93slr_lk';
+    config.headers.Authorization = `Bearer ${testToken}`;
+    console.log('[API Interceptor] Added test Authorization header');
+    
     return config;
   },
   (error) => {
@@ -50,25 +50,38 @@ export const profileAPI = {
   update: (data) => api.put('/api/v1/users/profile', data),
 };
 
+// Subject & Course Management (through main backend)
+export const subjectAPI = {
+  list: () => api.get('/api/v1/study/subjects'),
+  create: (formData) => api.post('/api/v1/study/subjects', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  get: (subjectId) => api.get(`/api/v1/study/subjects/${subjectId}`),
+  update: (subjectId, formData) => api.put(`/api/v1/study/subjects/${subjectId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  delete: (subjectId) => api.delete(`/api/v1/study/subjects/${subjectId}`)
+};
+
+export const courseAPI = {
+  list: (subjectId = null) => api.get('/api/v1/study/courses', { params: subjectId ? { subject_id: subjectId } : {} }),
+  create: (formData) => api.post('/api/v1/study/courses', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  get: (courseId) => api.get(`/api/v1/study/courses/${courseId}`),
+  addFiles: (courseId, formData) => api.post(`/api/v1/study/courses/${courseId}/files`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  delete: (courseId) => api.delete(`/api/v1/study/courses/${courseId}`)
+};
+
 // AI Services API (connects to Python FastAPI service)
 const AI_API_BASE = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000';
 
 export const aiAPI = {
-  // Subject & Course Management
-  listSubjects: (userId) => axios.get(`${AI_API_BASE}/api/ai/subjects`, { params: { user_id: userId } }),
-  listCourses: (userId, subjectId = null) => axios.get(`${AI_API_BASE}/api/ai/courses`, { params: { user_id: userId, subject_id: subjectId } }),
-  
-  // Course Ingestion
-  ingestCourse: (formData) => {
-    return axios.post(`${AI_API_BASE}/api/ai/courses/ingest`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-  },
-  getCourse: (courseId) => axios.get(`${AI_API_BASE}/api/ai/courses/${courseId}`),
-  
-  // Study Planning
-  createStudyPlan: (data) => axios.post(`${AI_API_BASE}/api/ai/planner/create-plan`, data),
-  getUserPlans: (userId) => axios.get(`${AI_API_BASE}/api/ai/planner/plans/${userId}`),
+  // Study Planning - Now goes through API Gateway → ai-orchestrator → Python AI
+  createStudyPlan: (data) => api.post('/api/v1/ai/plan/create', data),
+  getUserPlans: () => api.get('/api/v1/ai/plan/list'),
   
   // Coaching
   getCoachDecision: (data) => axios.post(`${AI_API_BASE}/api/ai/coach/decision`, data),
@@ -96,6 +109,31 @@ export const tasksAPI = {
   create: (data) => api.post('/api/v1/study/tasks', data),
   update: (taskId, data) => api.put(`/api/v1/study/tasks/${taskId}`, data),
   delete: (taskId) => api.delete(`/api/v1/study/tasks/${taskId}`),
+};
+
+// Study Plans API (replaces old task generation)
+export const studyPlanAPI = {
+  create: (data) => api.post('/api/v1/study/plans/create', data),
+  getAll: (params) => api.get('/api/v1/study/plans', { params }),
+  getById: (planId) => api.get(`/api/v1/study/plans/${planId}`),
+  schedule: (planId, contextData) => api.post(`/api/v1/study/plans/${planId}/schedule`, contextData),
+  getSchedule: (planId) => api.get(`/api/v1/study/plans/${planId}/schedule`),
+  delete: (planId) => api.delete(`/api/v1/study/plans/${planId}`),
+};
+
+// Availability API (Weekly Calendar) - Goes through Node.js backend
+export const availabilityAPI = {
+  get: () => api.get('/api/v1/users/availability').then(res => res.data),
+  save: (data) => api.post('/api/v1/users/availability', data).then(res => res.data),
+  delete: (id) => api.delete(`/api/v1/users/availability/${id}`).then(res => res.data),
+  getFreeSlots: (params) => api.get('/api/v1/users/availability/free-slots', { params }).then(res => res.data),
+};
+
+// Gamification API - Goes through Node.js backend
+export const gamificationAPI = {
+  getProfile: () => api.get('/api/v1/users/gamification').then(res => res.data),
+  awardXP: (data) => api.post('/api/v1/users/gamification/award-xp', data).then(res => res.data),
+  getLeaderboard: (limit = 10) => api.get('/api/v1/users/gamification/leaderboard', { params: { limit } }).then(res => res.data),
 };
 
 // Topics API

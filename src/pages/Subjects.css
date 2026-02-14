@@ -34,8 +34,8 @@
 }
 
 .count-badge {
-  background: var(--muted);
-  color: var(--muted-foreground);
+  background: hsl(var(--primary) / 0.1);
+  color: var(--primary);
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -79,7 +79,7 @@
   height: 48px;
   border-radius: 50%;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border: none;
   display: flex;
   align-items: center;
@@ -129,13 +129,14 @@
   overflow: hidden;
   position: relative;
   background: var(--card);
-  background-color: var(--muted); /* Fallback */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px hsl(var(--foreground) / 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .subject-card:hover .card-image-wrapper {
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px hsl(var(--primary) / 0.1);
+  box-shadow: 0 12px 30px hsl(var(--primary) / 0.15), 0 0 20px hsl(var(--primary) / 0.1);
+  border-color: var(--primary);
 }
 
 .subject-cover-image {
@@ -254,7 +255,7 @@
   margin-top: 16px;
   padding: 12px 24px;
   background: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -266,7 +267,8 @@
 }
 
 .cta-btn:hover {
-  background: var(--primary-hover, #e11d48);
+  background: hsl(var(--primary) / 0.9);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
 }
 
 /* Responsive */

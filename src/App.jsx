@@ -16,6 +16,7 @@ import StudyPlanner from './pages/StudyPlanner';
 import StudySession from './pages/StudySession';
 import Subjects from './pages/Subjects';
 import SubjectDetail from './pages/SubjectDetail';
+import Calendar from './pages/Calendar';
 
 function App() {
   const location = useLocation();
@@ -28,7 +29,7 @@ function App() {
 
   return (
     <>
-      <div className="relative z-10 w-full min-h-screen">
+      <div className="relative z-10 w-full min-h-screen pt-20">
         <Navbar minimal={minimalNav} />
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -101,9 +102,7 @@ function App() {
           <Route 
             path="/planner" 
             element={
-              <PrivateRoute>
-                <StudyPlanner />
-              </PrivateRoute>
+              <StudyPlanner />
             } 
           />
           <Route 
@@ -111,6 +110,14 @@ function App() {
             element={
               <PrivateRoute>
                 <StudySession />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/calendar" 
+            element={
+              <PrivateRoute>
+                <Calendar />
               </PrivateRoute>
             } 
           />

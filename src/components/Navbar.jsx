@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut } from 'lucide-react';
+import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut, CheckSquare } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuthStore } from '@/store/authStore';
 import { profileAPI } from '@/services/api';
@@ -30,7 +30,8 @@ const Navbar = ({ minimal = false }) => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
     { path: '/subjects', label: 'Subjects', icon: BookOpen },
-    { path: '/planner', label: 'Planner', icon: Target },
+    { path: '/tasks', label: 'Tasks', icon: CheckSquare },
+    { path: '/planner', label: 'Study Plans', icon: Target },
     { path: '/study-session', label: 'Session', icon: Zap },
   ];
 
@@ -100,7 +101,7 @@ const Navbar = ({ minimal = false }) => {
           <div className="relative z-10 flex items-center gap-3 ml-auto">
              <motion.button
               onClick={toggleTheme}
-              className="w-10 h-10 rounded-full bg-white/10 dark:bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20"
+              className="w-10 h-10 rounded-full bg-muted/50 hover:bg-muted border border-border flex items-center justify-center transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

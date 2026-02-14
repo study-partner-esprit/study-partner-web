@@ -50,6 +50,39 @@
 }
 
 .session-btn.session-active:hover {
+  background: #da190b;
+}
+
+/* Webcam Section */
+.webcam-section {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.webcam-section h3 {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.webcam-section .webcam-capture {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.webcam-note {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+.session-btn.session-active:hover {
   background: #d32f2f;
 }
 

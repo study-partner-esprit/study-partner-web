@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { aiAPI } from '../services/api';
+import { subjectAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { BookOpen, Plus, ChevronRight, Search } from 'lucide-react';
-import UploadModal from '../components/UploadModal';
+import CreateSubjectModal from '../components/CreateSubjectModal';
 import './Subjects.css';
 
 const Subjects = () => {
@@ -23,7 +23,7 @@ const Subjects = () => {
   const loadSubjects = async () => {
     if (!user?._id) return;
     try {
-      const response = await aiAPI.listSubjects(user._id);
+      const response = await subjectAPI.list();
       setSubjects(response.data.subjects || []);
     } catch (error) {
       console.error('Failed to load subjects:', error);
@@ -59,7 +59,7 @@ const Subjects = () => {
           </div>
         </div>
         
-        <button className="add-fab" onClick={() => setIsModalOpen(true)} title="Add Course">
+        <button className="add-fab" onClick={() => setIsModalOpen(true)} title="Add Subject">
           <Plus size={24} />
         </button>
       </div>
@@ -73,10 +73,10 @@ const Subjects = () => {
         <div className="empty-state">
           <BookOpen size={64} />
           <h2>Your Library is Empty</h2>
-          <p>Add your first course to get started with personalized study plans.</p>
+          <p>Create your first subject to organize your courses and study materials.</p>
           <button className="cta-btn" onClick={() => setIsModalOpen(true)}>
             <Plus size={20} />
-            Add First Course
+            Create First Subject
           </button>
         </div>
       ) : (
@@ -117,16 +117,16 @@ const Subjects = () => {
              </div>
              <div className="card-content">
                 <span className="subject-type">ACTION</span>
-                <h3 className="subject-title">Add Course</h3>
+                <h3 className="subject-title">Add Subject</h3>
              </div>
           </div>
         </div>
       )}
 
-      <UploadModal 
+      <CreateSubjectModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        onUploadComplete={loadSubjects}
+        onSubjectCreated={loadSubjects}
       />
     </div>
   );

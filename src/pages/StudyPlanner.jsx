@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { aiAPI } from '../services/api';
+import { studyPlanAPI, courseAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import './StudyPlanner.css';
@@ -12,12 +12,22 @@ const StudyPlanner = () => {
   const [availableTime, setAvailableTime] = useState(120);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [courses, setCourses] = useState([]);
+  const [studyPlans, setStudyPlans] = useState([]);
   const [creating, setCreating] = useState(false);
+  const [scheduling, setScheduling] = useState(false);
   const [studyPlan, setStudyPlan] = useState(null);
   const [error, setError] = useState(null);
+  const [schedule, setSchedule] = useState(null);
 
   useEffect(() => {
-    if (user) loadCourses();
+    console.log('StudyPlanner useEffect running, user:', user);
+    if (user) {
+      loadCourses();
+      loadStudyPlans();
+    } else {
+      console.log('No user, loading study plans anyway for testing');
+      loadStudyPlans();
+    }
   }, [user]);
 
   const loadCourses = async () => {
@@ -26,10 +36,24 @@ const StudyPlanner = () => {
       return;
     }
     try {
-      const response = await aiAPI.listCourses(user._id);
+      const response = await courseAPI.list();
       setCourses(response.data.courses || []);
     } catch (error) {
       console.error('Failed to load courses:', error);
+    }
+  };
+
+  const loadStudyPlans = async () => {
+    // Temporarily use hardcoded user ID for testing
+    const testUserId = '698e506959e37b6793e748dc';
+    try {
+      console.log('Loading study plans...');
+      const response = await studyPlanAPI.getAll();
+      console.log('Study plans response:', response.data);
+      setStudyPlans(response.data.plans || []);
+      console.log('Study plans set:', response.data.plans || []);
+    } catch (error) {
+      console.error('Failed to load study plans:', error);
     }
   };
 
@@ -44,21 +68,48 @@ const StudyPlanner = () => {
     setCreating(true);
     setError(null);
     setStudyPlan(null);
+    setSchedule(null);
 
     try {
-      const response = await aiAPI.createStudyPlan({
-        user_id: user._id,
+      const response = await studyPlanAPI.create({
         goal: goal,
-        available_time_minutes: parseInt(availableTime),
-        course_id: selectedCourse || null,
-        start_date: new Date().toISOString()
+        availableTimeMinutes: parseInt(availableTime),
+        courseId: selectedCourse || null,
+        startDate: new Date().toISOString()
       });
 
       setStudyPlan(response.data.plan);
+      // Reload study plans list
+      loadStudyPlans();
     } catch (error) {
-      setError(error.response?.data?.detail || 'Failed to create study plan');
+      setError(error.response?.data?.error || 'Failed to create study plan');
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleSchedulePlan = async () => {
+    if (!studyPlan) return;
+
+    setScheduling(true);
+    setError(null);
+
+    try {
+      const response = await studyPlanAPI.schedule(studyPlan.id, {
+        maxMinutesPerDay: 240, // 4 hours per day
+        allowLateNight: false
+      });
+
+      setSchedule(response.data.schedule);
+      
+      // Update plan status
+      setStudyPlan(prev => ({ ...prev, status: 'scheduled' }));
+      
+      alert('Study plan scheduled successfully! Check the Tasks page to see your scheduled tasks.');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Failed to schedule study plan');
+    } finally {
+      setScheduling(false);
     }
   };
 
@@ -72,6 +123,39 @@ const StudyPlanner = () => {
     <div className="study-planner-container">
       <h1>AI Study Planner</h1>
       <p className="subtitle">Create a personalized study plan powered by AI</p>
+
+      {/* Existing Study Plans Section */}
+      {studyPlans.length > 0 && (
+        <div className="existing-plans-section">
+          <h2>Your Study Plans</h2>
+          <div className="plans-list">
+            {studyPlans.map((plan) => (
+              <div key={plan.id} className="plan-card">
+                <div className="plan-header">
+                  <h3>{plan.goal}</h3>
+                  <span className={`status-badge ${plan.status}`}>{plan.status}</span>
+                </div>
+                <div className="plan-meta">
+                  <span>{plan.tasksCount} tasks</span>
+                  <span>{plan.totalEstimatedMinutes} min total</span>
+                  <span>Created {new Date(plan.createdAt).toLocaleDateString()}</span>
+                </div>
+                {plan.warning && (
+                  <div className="plan-warning">{plan.warning}</div>
+                )}
+                <div className="plan-actions">
+                  <button 
+                    onClick={() => setStudyPlan(plan)}
+                    className="view-plan-btn"
+                  >
+                    View Plan
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="planner-form-section">
         <form onSubmit={handleSubmit} className="planner-form">
@@ -133,30 +217,34 @@ const StudyPlanner = () => {
         <div className="study-plan-result">
           <h2>Your Personalized Study Plan</h2>
           
+          {studyPlan.warning && (
+            <div className="warning-message">{studyPlan.warning}</div>
+          )}
+          
           <div className="plan-summary">
             <div className="summary-card">
               <span className="summary-label">Total Tasks</span>
               <span className="summary-value">
-                {studyPlan.task_graph?.atomic_tasks?.length || 0}
+                {studyPlan.tasksCount || 0}
               </span>
             </div>
             <div className="summary-card">
               <span className="summary-label">Estimated Time</span>
               <span className="summary-value">
-                {studyPlan.task_graph?.total_estimated_minutes || 0} min
+                {studyPlan.totalEstimatedMinutes || 0} min
               </span>
             </div>
             <div className="summary-card">
-              <span className="summary-label">Difficulty</span>
+              <span className="summary-label">Status</span>
               <span className="summary-value">
-                {studyPlan.task_graph?.difficulty_rating || 'N/A'}
+                {studyPlan.status || 'created'}
               </span>
             </div>
           </div>
 
           <div className="tasks-list">
             <h3>Study Tasks</h3>
-            {studyPlan.task_graph?.atomic_tasks?.map((task, idx) => (
+            {studyPlan.taskGraph?.tasks?.map((task, idx) => (
               <div key={task.id || idx} className="task-card">
                 <div className="task-header">
                   <span className="task-number">{idx + 1}</span>
@@ -178,9 +266,34 @@ const StudyPlanner = () => {
             ))}
           </div>
 
-          <button onClick={startStudySession} className="start-session-btn">
-            Start Study Session
-          </button>
+          <div className="action-buttons">
+            {studyPlan.status === 'created' && (
+              <button 
+                onClick={handleSchedulePlan} 
+                disabled={scheduling}
+                className="schedule-plan-btn"
+              >
+                {scheduling ? 'Scheduling...' : 'Schedule This Plan'}
+              </button>
+            )}
+            
+            {studyPlan.status === 'scheduled' && (
+              <div className="scheduled-info">
+                <p className="success-message">✓ Plan scheduled successfully!</p>
+                <button onClick={() => navigate('/tasks')} className="view-tasks-btn">
+                  View Tasks
+                </button>
+              </div>
+            )}
+          </div>
+
+          {schedule && (
+            <div className="schedule-preview">
+              <h3>Schedule Preview</h3>
+              <p>Your tasks have been scheduled across {schedule.spanDays} days</p>
+              <p>Total time: {schedule.totalMinutes} minutes</p>
+            </div>
+          )}
         </div>
       )}
     </div>

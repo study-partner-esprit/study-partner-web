@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { aiAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import WebcamCapture from '../components/WebcamCapture';
 import './StudySession.css';
 
 const StudySession = () => {
@@ -24,6 +25,44 @@ const StudySession = () => {
   const sessionTimerRef = useRef(null);
   const signalPollingRef = useRef(null);
   const coachPollingRef = useRef(null);
+
+  // Handle frame capture from webcam
+  const handleFrameCapture = async (frameBlob) => {
+    if (!sessionActive || !user?._id) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('user_id', user._id);
+      formData.append('frame', frameBlob, 'frame.jpg');
+
+      const response = await fetch('http://localhost:8000/api/ai/signals/analyze-frame', {
+        method: 'POST',
+        body: formData
+      });
+setSignals(null);
+    setSignalHistory([]);
+    
+      if (response.ok) {
+        const analysis = await response.json();
+        
+        // Update signals state
+        setSignals({
+          timestamp: analysis.timestamp,
+          focus: analysis.focus,
+          fatigue: analysis.fatigue
+        });
+        
+        // Add to history
+        setSignalHistory(prev => [...prev.slice(-50), {
+          timestamp: new Date(analysis.timestamp),
+          focus: analysis.focus.score,
+          fatigue: analysis.fatigue.score
+        }]);
+      }
+    } catch (error) {
+      console.error('Failed to analyze frame:', error);
+    }
+  };
 
   // Start/stop session
   const toggleSession = () => {
@@ -195,6 +234,21 @@ const StudySession = () => {
           </div>
         )}
       </div>
+
+      {/* Webcam Monitoring */}
+      {sessionActive && (
+        <div className="webcam-section">
+          <h3>📹 Live Monitoring</h3>
+          <WebcamCapture
+            onFrameCapture={handleFrameCapture}
+            captureInterval={3000}
+            enabled={sessionActive}
+          />
+          <p className="webcam-note">
+            Your camera is being used to detect focus and fatigue levels. Data is processed locally and not stored.
+          </p>
+        </div>
+      )}
 
       {/* Signal Dashboard */}
       {sessionActive && signals && (

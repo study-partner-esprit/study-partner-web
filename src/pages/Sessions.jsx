@@ -120,23 +120,23 @@ const Sessions = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0f1923]">
-        <div className="text-white text-xl font-bold tracking-wider">LOADING SESSIONS...</div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-foreground text-xl font-bold tracking-wider">LOADING SESSIONS...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1923] text-white pt-20">
+    <div className="min-h-screen bg-background text-foreground pt-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#0f1923] via-[#1a2633] to-[#0f1923] border-b-4 border-[#ff4655]">
+      <div className="bg-gradient-to-r from-background via-muted/20 to-background border-b-4 border-primary">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-5xl font-bold tracking-wider uppercase">
-                <span className="text-[#ff4655]">//</span> SESSIONS
+                <span className="text-primary">//</span> SESSIONS
               </h1>
-              <p className="text-gray-400 mt-2">Track your study sessions</p>
+              <p className="text-muted-foreground mt-2">Track your study sessions</p>
             </div>
             {!activeSession && (
               <button
@@ -171,7 +171,7 @@ const Sessions = () => {
               </div>
 
               {/* Task Info */}
-              <p className="text-gray-400 text-lg mb-8">
+              <p className="text-muted-foreground text-lg mb-8">
                 {tasks.find(t => t._id === activeSession.taskId)?.title || 'General Study'}
               </p>
 
@@ -196,7 +196,7 @@ const Sessions = () => {
 
           {sessions.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-400 text-xl mb-4">NO SESSIONS YET</p>
+              <p className="text-muted-foreground text-xl mb-4">NO SESSIONS YET</p>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider"
@@ -212,21 +212,21 @@ const Sessions = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-[#0f1923] border-l-4 border-[#ff4655] p-4 hover:bg-[#1a2633] transition-all"
+                  className="bg-card border-l-4 border-primary p-4 hover:bg-muted/50 transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="font-bold text-lg mb-1">
                         {tasks.find(t => t._id === session.taskId)?.title || 'Study Session'}
                       </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>📅 {formatDate(session.startTime)}</span>
                         {session.duration && (
                           <span>⏱ {Math.floor(session.duration / 60)} minutes</span>
                         )}
                       </div>
                       {session.notes && (
-                        <p className="text-gray-400 text-sm mt-2">{session.notes}</p>
+                        <p className="text-muted-foreground text-sm mt-2">{session.notes}</p>
                       )}
                     </div>
                     <div className={`px-4 py-2 text-sm font-bold ${
@@ -256,19 +256,19 @@ const Sessions = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#1a2633] border-2 border-[#ff4655] p-8 max-w-md w-full"
+              className="bg-card border-2 border-primary p-8 max-w-md w-full"
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-[#ff4655]">//</span> NEW SESSION
+                <span className="text-primary">//</span> NEW SESSION
               </h2>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">SELECT TASK</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">SELECT TASK</label>
                   <select
                     value={formData.taskId}
                     onChange={(e) => setFormData({ ...formData, taskId: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                   >
                     <option value="">-- Select a task --</option>
                     {tasks.map((task) => (
@@ -280,11 +280,11 @@ const Sessions = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">NOTES (Optional)</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">NOTES (Optional)</label>
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none h-24"
+                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none h-24"
                     placeholder="Session notes..."
                   />
                 </div>

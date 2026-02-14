@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { tasksAPI } from '../services/api';
+import { tasksAPI, courseAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import { Sparkles, BookOpen, Loader2 } from 'lucide-react';
 
 const Tasks = () => {
   const { user } = useAuthStore();
@@ -21,7 +22,7 @@ const Tasks = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [filter]);
+  }, [filter, user]);
 
   const fetchTasks = async () => {
     try {
@@ -108,30 +109,31 @@ const Tasks = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0f1923]">
-        <div className="text-white text-xl font-bold tracking-wider">LOADING TASKS...</div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-foreground text-xl font-bold tracking-wider">LOADING TASKS...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1923] text-white pt-20">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#0f1923] via-[#1a2633] to-[#0f1923] border-b-4 border-[#ff4655]">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <div className="bg-gradient-to-r from-background via-muted/20 to-background border-b-4 border-primary">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-5xl font-bold tracking-wider uppercase">
-                <span className="text-[#ff4655]">//</span> TASKS
+              <h1 className="text-4xl font-bold tracking-wider uppercase">
+                <span className="text-primary">//</span> TASKS
               </h1>
-              <p className="text-gray-400 mt-2">Manage your study tasks</p>
+              <p className="text-muted-foreground mt-2">Manage your study tasks</p>
             </div>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] transition-all duration-300 font-bold tracking-wider"
-            >
-              + NEW TASK
-            </button>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-6 py-3 bg-primary hover:bg-primary/80 transition-all duration-300 font-bold tracking-wider text-primary-foreground"
+              >
+                + NEW TASK
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -145,8 +147,8 @@ const Tasks = () => {
               onClick={() => setFilter(status)}
               className={`px-6 py-2 font-bold tracking-wider transition-all border-2 ${
                 filter === status
-                  ? 'bg-[#ff4655] border-[#ff4655] text-white'
-                  : 'bg-[#1a2633] border-[#2e3a4a] text-gray-400 hover:border-[#ff4655]'
+                  ? 'bg-primary border-primary text-primary-foreground'
+                  : 'bg-card border-border text-muted-foreground hover:border-primary'
               }`}
             >
               {status.toUpperCase().replace('-', ' ')}
@@ -159,7 +161,7 @@ const Tasks = () => {
           <AnimatePresence>
             {filteredTasks.length === 0 ? (
               <div className="col-span-full text-center py-20">
-                <p className="text-gray-400 text-xl mb-4">NO TASKS FOUND</p>
+                <p className="text-muted-foreground text-xl mb-4">NO TASKS FOUND</p>
                 <button
                   onClick={() => setShowCreateModal(true)}
                   className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider"
@@ -196,42 +198,42 @@ const Tasks = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-[#1a2633] border-2 border-[#ff4655] p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-card border-2 border-primary p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-[#ff4655]">//</span> {editingTask ? 'EDIT' : 'NEW'} TASK
+                <span className="text-primary">//</span> {editingTask ? 'EDIT' : 'NEW'} TASK
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">TITLE</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">TITLE</label>
                   <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                     placeholder="Task title..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">DESCRIPTION</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">DESCRIPTION</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none h-24"
+                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none h-24"
                     placeholder="Task description..."
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-gray-300">PRIORITY</label>
+                    <label className="block text-sm font-bold mb-2 text-foreground">PRIORITY</label>
                     <select
                       value={formData.priority}
                       onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                      className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                     >
                       <option value="low">LOW</option>
                       <option value="medium">MEDIUM</option>
@@ -240,19 +242,19 @@ const Tasks = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-gray-300">ESTIMATED TIME (min)</label>
+                    <label className="block text-sm font-bold mb-2 text-foreground">ESTIMATED TIME (min)</label>
                     <input
                       type="number"
                       value={formData.estimatedTime}
                       onChange={(e) => setFormData({ ...formData, estimatedTime: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                      className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                       placeholder="60"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">DUE DATE</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">DUE DATE</label>
                   <input
                     type="date"
                     value={formData.dueDate}
@@ -262,7 +264,7 @@ const Tasks = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-gray-300">TAGS (comma separated)</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">TAGS (comma separated)</label>
                   <input
                     type="text"
                     value={formData.tags}
@@ -292,6 +294,8 @@ const Tasks = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Planner modal removed from Tasks page — use Planner page for scheduling */}
     </div>
   );
 };
@@ -315,28 +319,37 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       <div className={`absolute top-4 right-4 px-2 py-1 text-xs font-bold ${
         task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
         task.status === 'in-progress' ? 'bg-yellow-500/20 text-yellow-400' :
-        'bg-gray-500/20 text-gray-400'
+        'bg-muted/50 text-muted-foreground'
       }`}>
         {task.status?.toUpperCase().replace('-', ' ')}
       </div>
 
       {/* Content */}
       <div className="mt-2">
-        <h3 className="text-xl font-bold mb-2 text-white">{task.title}</h3>
+        <h3 className="text-xl font-bold mb-2 text-foreground">{task.title}</h3>
         {task.description && (
-          <p className="text-gray-400 text-sm mb-4 line-clamp-3">{task.description}</p>
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{task.description}</p>
+        )}
+
+        {/* Task source badge */}
+        {task.studyPlanId && (
+          <div className="mb-3">
+            <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-bold">
+              FROM STUDY PLAN
+            </span>
+          </div>
         )}
 
         <div className="flex flex-wrap gap-2 mb-4">
           {task.tags?.map((tag, i) => (
-            <span key={i} className="px-2 py-1 bg-[#0f1923] text-xs text-gray-400">
+            <span key={i} className="px-2 py-1 bg-muted text-xs text-muted-foreground">
               #{tag}
             </span>
           ))}
         </div>
 
         {task.estimatedTime && (
-          <div className="text-sm text-gray-400 mb-4">
+          <div className="text-sm text-muted-foreground mb-4">
             ⏱ {task.estimatedTime} minutes
           </div>
         )}

@@ -96,24 +96,6 @@
 .text-muted {
   color: hsl(var(--muted-foreground));
 }
-.card-valorant {
-  background: hsl(var(--card) / 1);
-  border: 1px solid hsl(var(--border) / 0.6);
-  box-shadow: 0 6px 18px rgba(11,13,17,0.06);
-}
-.card-valorant .card-inner-sheen {
-  position: absolute;
-  inset: 0;
-  /* Subtle sheen on light theme only; in dark mode the sheen causes an unwanted glare */
-  background: linear-gradient(120deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-
-/* Remove the inner sheen in dark mode to avoid strong glare/halo */
-.dark .card-valorant .card-inner-sheen {
-  display: none;
-}
 
 /* Add a subtle white highlight/shadow for headings in How It Works dark mode */
 .howitworks-title {

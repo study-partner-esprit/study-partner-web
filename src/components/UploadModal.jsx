@@ -1,41 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Image as ImageIcon, FileText, Check, AlertCircle } from 'lucide-react';
-import { aiAPI } from '../services/api';
+import { X, Upload, FileText, Check, AlertCircle } from 'lucide-react';
+import { courseAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import './UploadModal.css';
 
-const UploadModal = ({ isOpen, onClose, onUploadComplete, preSelectedSubject = null }) => {
+const UploadModal = ({ isOpen, onClose, onUploadComplete, subjectId, subjectName }) => {
   const user = useAuthStore((state) => state.user);
   const [courseTitle, setCourseTitle] = useState('');
-  const [subjectName, setSubjectName] = useState(preSelectedSubject || '');
-  const [subjectImage, setSubjectImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [courseDescription, setCourseDescription] = useState('');
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   
   const fileInputRef = useRef(null);
-  const imageInputRef = useRef(null);
-
-  useEffect(() => {
-    if (preSelectedSubject) {
-      setSubjectName(preSelectedSubject);
-    }
-  }, [preSelectedSubject]);
 
   useEffect(() => {
     if (!isOpen) {
       // Reset form on close
       setCourseTitle('');
-      if (!preSelectedSubject) setSubjectName('');
-      setSubjectImage(null);
-      setImagePreview(null);
+      setCourseDescription('');
       setFiles([]);
       setError(null);
     }
-  }, [isOpen, preSelectedSubject]);
+  }, [isOpen]);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -63,22 +52,14 @@ const UploadModal = ({ isOpen, onClose, onUploadComplete, preSelectedSubject = n
     }
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSubjectImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
-
   const removeFile = (index) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!courseTitle || !subjectName || files.length === 0) {
-      setError("Please fill in all required fields and upload at least one PDF.");
+    if (!courseTitle || files.length === 0) {
+      setError("Please provide course title and upload at least one PDF.");
       return;
     }
 
@@ -87,23 +68,19 @@ const UploadModal = ({ isOpen, onClose, onUploadComplete, preSelectedSubject = n
 
     try {
       const formData = new FormData();
-      formData.append('course_title', courseTitle);
-      formData.append('subject_name', subjectName);
-      formData.append('user_id', user._id);
+      formData.append('title', courseTitle);
+      formData.append('description', courseDescription);
+      formData.append('subject_id', subjectId);
       
       files.forEach((file) => {
         formData.append('files', file);
       });
 
-      if (subjectImage) {
-        formData.append('subject_image', subjectImage);
-      }
-
-      await aiAPI.ingestCourse(formData);
+      await courseAPI.create(formData);
       onUploadComplete();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.detail || "Failed to upload course. Please try again.");
+      setError(err.response?.data?.error || "Failed to upload course. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -129,46 +106,39 @@ const UploadModal = ({ isOpen, onClose, onUploadComplete, preSelectedSubject = n
 
           <div className="modal-content">
             <div className="form-group">
-              <label>Course Title</label>
+              <label>Subject</label>
               <input 
                 type="text" 
-                placeholder="e.g. Advanced Calculus II"
-                value={courseTitle}
-                onChange={(e) => setCourseTitle(e.target.value)}
+                value={subjectName}
                 className="modal-input"
+                disabled
+                style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group flex-1">
-                <label>Subject</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g. Mathematics"
-                  value={subjectName}
-                  onChange={(e) => setSubjectName(e.target.value)}
-                  className="modal-input"
-                  disabled={!!preSelectedSubject}
-                />
-              </div>
-              
-              <div className="form-group image-upload-group">
-                <label>Cover Image (Optional)</label>
-                <div 
-                  className="image-upload-box"
-                  onClick={() => imageInputRef.current?.click()}
-                  style={imagePreview ? { backgroundImage: `url(${imagePreview})` } : {}}
-                >
-                  {!imagePreview && <ImageIcon size={20} />}
-                  <input 
-                    type="file" 
-                    ref={imageInputRef}
-                    className="hidden" 
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </div>
-              </div>
+            <div className="form-group">
+              <label>Course Title *</label>
+              <input 
+                type="text" 
+                placeholder="e.g., Map Reduce, Introduction to Hadoop"
+                value={courseTitle}
+                onChange={(e) => setCourseTitle(e.target.value)}
+                className="modal-input"
+                disabled={uploading}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Description (Optional)</label>
+              <textarea 
+                placeholder="Brief description of the course..."
+                value={courseDescription}
+                onChange={(e) => setCourseDescription(e.target.value)}
+                className="modal-input"
+                disabled={uploading}
+                rows="3"
+              />
             </div>
 
             <div className="form-group">

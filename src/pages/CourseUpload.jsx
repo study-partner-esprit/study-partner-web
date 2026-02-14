@@ -1,29 +1,72 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { aiAPI } from '../services/api';
+import { aiAPI, courseAPI, subjectAPI, gamificationAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import XPNotification from '../components/XPNotification';
+import LevelUpModal from '../components/LevelUpModal';
 import './CourseUpload.css';
 
 const CourseUpload = () => {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
   const [courseTitle, setCourseTitle] = useState('');
-  const [subjectName, setSubjectName] = useState(location.state?.subjectName || 'General');
+  const [subjectName, setSubjectName] = useState(location.state?.subjectName || '');
+  const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [showXPNotification, setShowXPNotification] = useState(false);
+  const [xpAwarded, setXpAwarded] = useState(0);
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [levelUpData, setLevelUpData] = useState(null);
 
-  const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files));
+  const handleSubjectChange = (e) => {
+    const value = e.target.value;
+    setSubjectName(value);
+    
+    // Find existing subject by name
+    const existingSubject = subjects.find(s => s.name === value);
+    if (existingSubject) {
+      setSelectedSubjectId(existingSubject.id);
+    } else {
+      setSelectedSubjectId(''); // Will create new subject
+    }
+  };
+
+  const ensureSubjectExists = async (subjectName) => {
+    // Check if subject already exists
+    const existingSubject = subjects.find(s => s.name === subjectName);
+    if (existingSubject) {
+      return existingSubject.id;
+    }
+    
+    // Create new subject
+    try {
+      const formData = new FormData();
+      formData.append('name', subjectName);
+      formData.append('description', `${subjectName} subject`);
+      formData.append('user_id', user._id);
+      
+      const response = await subjectAPI.create(formData);
+      const newSubject = response.data.subject;
+      
+      // Add to subjects list
+      setSubjects(prev => [...prev, newSubject]);
+      
+      return newSubject.id;
+    } catch (error) {
+      console.error('Failed to create subject:', error);
+      throw new Error('Failed to create subject');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!courseTitle || files.length === 0) {
-      setUploadStatus({ type: 'error', message: 'Please provide course title and at least one PDF file' });
+    if (!courseTitle || !subjectName || files.length === 0) {
+      setUploadStatus({ type: 'error', message: 'Please provide course title, subject, and at least one PDF file' });
       return;
     }
 
@@ -31,16 +74,50 @@ const CourseUpload = () => {
     setUploadStatus(null);
 
     try {
+      // Ensure subject exists
+      const subjectId = await ensureSubjectExists(subjectName);
+
       const formData = new FormData();
-      formData.append('course_title', courseTitle);
-      formData.append('subject_name', subjectName);
+      formData.append('title', courseTitle);
+      formData.append('subject_id', subjectId);
       formData.append('user_id', user._id);
       
       files.forEach((file) => {
         formData.append('files', file);
       });
 
-      const response = await aiAPI.ingestCourse(formData);
+      const response = await courseAPI.create(formData);
+      
+      // Award XP for course upload
+      try {
+        const xpResponse = await gamificationAPI.awardXP({
+          action: 'course_upload',
+          metadata: {
+            course_title: courseTitle,
+            subject_name: subjectName,
+            file_count: files.length
+          }
+        });
+        
+        // Show XP notification
+        setXpAwarded(xpResponse.xp_awarded);
+        setShowXPNotification(true);
+        
+        // Show level-up modal if leveled up
+        if (xpResponse.leveled_up) {
+          setLevelUpData({
+            newLevel: xpResponse.new_level,
+            totalXP: xpResponse.total_xp
+          });
+          // Delay level-up modal to show after XP notification
+          setTimeout(() => {
+            setShowLevelUpModal(true);
+          }, 3500);
+        }
+      } catch (xpError) {
+        console.error('Failed to award XP:', xpError);
+        // Don't block upload success if XP fails
+      }
       
       setUploadStatus({
         type: 'success',
@@ -68,7 +145,24 @@ const CourseUpload = () => {
   const loadSubjects = async () => {
     if (!user?._id) return;
     try {
-      const response = await aiAPI.listSubjects(user._id);
+      const response = await subjectAPI.list();
+      {/* XP Notification */}
+      <XPNotification
+        xpAwarded={xpAwarded}
+        visible={showXPNotification}
+        onComplete={() => setShowXPNotification(false)}
+      />
+
+      {/* Level-Up Modal */}
+      {levelUpData && (
+        <LevelUpModal
+          visible={showLevelUpModal}
+          newLevel={levelUpData.newLevel}
+          totalXP={levelUpData.totalXP}
+          onClose={() => setShowLevelUpModal(false)}
+        />
+      )}
+
       setSubjects(response.data.subjects || []);
     } catch (error) {
       console.error('Failed to load subjects:', error);
@@ -81,7 +175,7 @@ const CourseUpload = () => {
       return;
     }
     try {
-      const response = await aiAPI.listCourses(user._id);
+      const response = await courseAPI.list();
       setCourses(response.data.courses || []);
     } catch (error) {
       console.error('Failed to load courses:', error);
@@ -121,7 +215,7 @@ const CourseUpload = () => {
               id="subject-name"
               type="text"
               value={subjectName}
-              onChange={(e) => setSubjectName(e.target.value)}
+              onChange={handleSubjectChange}
               placeholder="e.g., Mathematics, Physics, Computer Science"
               disabled={uploading}
               list="subject-suggestions"
