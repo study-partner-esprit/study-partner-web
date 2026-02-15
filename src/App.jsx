@@ -17,6 +17,7 @@ import StudySession from './pages/StudySession';
 import Subjects from './pages/Subjects';
 import SubjectDetail from './pages/SubjectDetail';
 import Calendar from './pages/Calendar';
+import SessionManager from './components/SessionManager';
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <>
+      <SessionManager />
       <Navbar minimal={minimalNav} />
       <div className="relative z-10 w-full min-h-screen pt-20">
         <Routes>

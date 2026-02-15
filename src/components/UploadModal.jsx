@@ -6,7 +6,6 @@ import { useAuthStore } from '../store/authStore';
 import './UploadModal.css';
 
 const UploadModal = ({ isOpen, onClose, onUploadComplete, subjectId, subjectName }) => {
-  const user = useAuthStore((state) => state.user);
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
   const [files, setFiles] = useState([]);

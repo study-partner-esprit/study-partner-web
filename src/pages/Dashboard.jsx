@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { profileAPI, tasksAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
-import AnimatedBackground from '../components/AnimatedBackground'; // Ensure this matches Landing page background
 
 const Dashboard = () => {
   const { user, logout } = useAuthStore();
@@ -44,7 +43,6 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background relative overflow-hidden">
-        <AnimatedBackground />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -61,9 +59,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden transition-colors duration-300">
-      <AnimatedBackground />
-      
-      {/* Content wrapper with z-index to sit above background */}
+      {/* Content wrapper */}
       <div className="relative z-10 pt-24 pb-12">
         {/* Header with theme-aware design */}
         <div className="mb-8 border-b border-border/40 bg-background/50 backdrop-blur-sm">

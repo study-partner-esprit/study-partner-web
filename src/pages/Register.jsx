@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { login: setAuth } = useAuthStore();
+  const { login } = useAuthStore();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,10 +44,10 @@ const Register = () => {
     try {
       const { confirmPassword, ...registerData } = formData;
       const response = await authAPI.register(registerData);
-      const { token, user } = response.data;
+      const { token, refreshToken, user } = response.data;
 
-      // Save auth data
-      setAuth(user, token);
+      // Save auth data with refresh token
+      login(user, token, refreshToken);
 
       // Redirect to dashboard
       navigate('/dashboard');

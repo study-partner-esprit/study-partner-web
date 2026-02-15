@@ -1,301 +1,318 @@
-import { useState, useEffect } from 'react';
-import { studyPlanAPI, courseAPI } from '../services/api';
+import { useState, useEffect, useCallback } from 'react';
+import { studyPlanAPI, tasksAPI, availabilityAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
-import { useNavigate } from 'react-router-dom';
+import WeeklyCalendar from '../components/WeeklyCalendar';
 import './StudyPlanner.css';
 
 const StudyPlanner = () => {
   const user = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
   
-  const [goal, setGoal] = useState('');
-  const [availableTime, setAvailableTime] = useState(120);
-  const [selectedCourse, setSelectedCourse] = useState('');
-  const [courses, setCourses] = useState([]);
-  const [studyPlans, setStudyPlans] = useState([]);
-  const [creating, setCreating] = useState(false);
   const [scheduling, setScheduling] = useState(false);
-  const [studyPlan, setStudyPlan] = useState(null);
   const [error, setError] = useState(null);
-  const [schedule, setSchedule] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [availability, setAvailability] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState([]);
+  const [weeksView, setWeeksView] = useState(2);
+  
+  // Initialize to start of current week (Monday)
+  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.setDate(diff));
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  });
 
   useEffect(() => {
-    console.log('StudyPlanner useEffect running, user:', user);
-    if (user) {
-      loadCourses();
-      loadStudyPlans();
-    } else {
-      console.log('No user, loading study plans anyway for testing');
-      loadStudyPlans();
-    }
-  }, [user]);
-
-  const loadCourses = async () => {
-    if (!user?._id) {
-      console.warn('User ID not available, skipping course load');
-      return;
-    }
-    try {
-      const response = await courseAPI.list();
-      setCourses(response.data.courses || []);
-    } catch (error) {
-      console.error('Failed to load courses:', error);
-    }
-  };
-
-  const loadStudyPlans = async () => {
-    // Temporarily use hardcoded user ID for testing
-    const testUserId = '698e506959e37b6793e748dc';
-    try {
-      console.log('Loading study plans...');
-      const response = await studyPlanAPI.getAll();
-      console.log('Study plans response:', response.data);
-      setStudyPlans(response.data.plans || []);
-      console.log('Study plans set:', response.data.plans || []);
-    } catch (error) {
-      console.error('Failed to load study plans:', error);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    console.log('=== StudyPlanner: Component mounted, fetching data ===');
+    console.log('User:', user);
+    console.log('Current week start:', currentWeekStart);
+    console.log('Weeks view:', weeksView);
     
-    if (!goal || availableTime < 30) {
-      setError('Please provide a valid goal and at least 30 minutes of study time');
-      return;
-    }
+    fetchAvailability();
+    fetchScheduledSessions();
+    fetchTasks();
+  }, [user, currentWeekStart, weeksView, fetchScheduledSessions]);
 
-    setCreating(true);
-    setError(null);
-    setStudyPlan(null);
-    setSchedule(null);
+  const goToPreviousWeek = () => {
+    const newStart = new Date(currentWeekStart);
+    newStart.setDate(newStart.getDate() - 7);
+    setCurrentWeekStart(newStart);
+  };
 
+  const goToNextWeek = () => {
+    const newStart = new Date(currentWeekStart);
+    newStart.setDate(newStart.getDate() + 7);
+    setCurrentWeekStart(newStart);
+  };
+
+  const goToCurrentWeek = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+    setCurrentWeekStart(monday);
+  };
+
+  const formatWeekRange = () => {
+    const endDate = new Date(currentWeekStart);
+    endDate.setDate(endDate.getDate() + (weeksView * 7) - 1);
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    return `${currentWeekStart.toLocaleDateString('en-US', options)} - ${endDate.toLocaleDateString('en-US', options)}`;
+  };
+
+  const fetchTasks = async () => {
     try {
-      const response = await studyPlanAPI.create({
-        goal: goal,
-        availableTimeMinutes: parseInt(availableTime),
-        courseId: selectedCourse || null,
-        startDate: new Date().toISOString()
-      });
-
-      setStudyPlan(response.data.plan);
-      // Reload study plans list
-      loadStudyPlans();
+      const response = await tasksAPI.getAll();
+      console.log('All tasks response:', response.data.tasks);
+      // Filter for pending tasks (todo and in-progress) on client side
+      const pendingTasks = (response.data.tasks || []).filter(task => 
+        task.status === 'todo' || task.status === 'in-progress'
+      );
+      console.log('Filtered pending tasks:', pendingTasks);
+      setTasks(pendingTasks);
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to create study plan');
-    } finally {
-      setCreating(false);
+      console.error('Failed to load tasks:', error);
     }
   };
 
-  const handleSchedulePlan = async () => {
-    if (!studyPlan) return;
+  const fetchAvailability = async () => {
+    try {
+      const data = await availabilityAPI.get();
+      setAvailability(data);
+    } catch (err) {
+      console.error('Error fetching availability:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const fetchScheduledSessions = useCallback(async () => {
+    try {
+      console.log('\n=== StudyPlanner: Fetching calendar entries ===');
+      const resp = await studyPlanAPI.getCalendar({ weeks: weeksView, startDate: currentWeekStart.toISOString() });
+      const entries = resp.data.entries || [];
+      console.log(`✓ StudyPlanner: Fetched ${entries.length} calendar entries`);
+
+      // Normalize entries to the shape expected by WeeklyCalendar
+      const mapped = entries.map(e => ({
+        id: e._id || `${e.userId}-${e.startTime}`,
+        taskId: e.taskId,
+        title: e.title,
+        description: e.description,
+        startTime: e.startTime,
+        endTime: e.endTime,
+        estimatedMinutes: e.estimatedMinutes,
+        planId: e.planId,
+        source: e.source,
+        status: e.status
+      }));
+
+      setEvents(mapped);
+    } catch (err) {
+      console.error('✗ StudyPlanner: Error fetching calendar entries:', err);
+    }
+  }, [weeksView, currentWeekStart]);
+
+  const handleSaveSlot = async (slotData) => {
+    try {
+      const newSlot = await availabilityAPI.save(slotData);
+      setAvailability([...availability, newSlot]);
+    } catch (err) {
+      console.error('Error saving slot:', err);
+    }
+  };
+
+  const handleDeleteSlot = async (slotId) => {
+    try {
+      await availabilityAPI.delete(slotId);
+      setAvailability(availability.filter(slot => slot._id !== slotId));
+    } catch (err) {
+      console.error('Error deleting slot:', err);
+    }
+  };
+
+  const handleGenerateSchedule = async () => {
     setScheduling(true);
     setError(null);
+    setSuccess(null);
 
     try {
-      const response = await studyPlanAPI.schedule(studyPlan.id, {
-        maxMinutesPerDay: 240, // 4 hours per day
+      // Helper function to convert availability slots to calendar events
+      const convertAvailabilityToEvents = (slots) => {
+        if (!slots || slots.length === 0) return [];
+        
+        const events = [];
+        const now = new Date();
+        
+        // Get start of current week (Monday)
+        const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ...
+        const diff = currentDay === 0 ? -6 : 1 - currentDay; // Adjust to Monday
+        const monday = new Date(now);
+        monday.setDate(now.getDate() + diff);
+        monday.setHours(0, 0, 0, 0);
+        
+        // Map day names to day indices (0 = Monday, 6 = Sunday)
+        const dayMap = {
+          'Monday': 0, 'Tuesday': 1, 'Wednesday': 2, 'Thursday': 3,
+          'Friday': 4, 'Saturday': 5, 'Sunday': 6
+        };
+        
+        slots.forEach(slot => {
+          try {
+            const dayIndex = dayMap[slot.day_of_week];
+            if (dayIndex === undefined) {
+              console.warn('Invalid day_of_week:', slot.day_of_week);
+              return;
+            }
+            
+            // Calculate the date for this day of the week
+            const slotDate = new Date(monday);
+            slotDate.setDate(monday.getDate() + dayIndex);
+            
+            // Parse start and end times
+            const [startHour, startMin] = slot.start_time.split(':').map(Number);
+            const [endHour, endMin] = slot.end_time.split(':').map(Number);
+            
+            // Create start datetime
+            const startTime = new Date(slotDate);
+            startTime.setHours(startHour, startMin || 0, 0, 0);
+            
+            // Create end datetime
+            const endTime = new Date(slotDate);
+            endTime.setHours(endHour, endMin || 0, 0, 0);
+            
+            events.push({
+              start: startTime.toISOString(),
+              end: endTime.toISOString(),
+              title: slot.label || 'Busy'
+            });
+          } catch (err) {
+            console.error('Error converting slot:', slot, err);
+          }
+        });
+        
+        return events;
+      };
+      
+      // Convert availability slots to calendar events
+      const calendarEvents = convertAvailabilityToEvents(availability);
+      console.log('Converted calendar events:', calendarEvents);
+
+      // Call the schedule-tasks endpoint
+      const response = await studyPlanAPI.scheduleTasks({
+        calendarEvents: calendarEvents,
+        maxMinutesPerDay: 240,
         allowLateNight: false
       });
 
-      setSchedule(response.data.schedule);
+      const schedule = response.data.schedule;
       
-      // Update plan status
-      setStudyPlan(prev => ({ ...prev, status: 'scheduled' }));
+      // Note: Sessions are already saved to calendar by the backend
+      console.log(`✓ Successfully scheduled ${schedule.sessions.length} tasks`);
+      console.log('Sample scheduled session:', schedule.sessions[0]);
       
-      alert('Study plan scheduled successfully! Check the Tasks page to see your scheduled tasks.');
+      // Refresh calendar entries from database to show all events
+      await fetchScheduledSessions();
+      
+      setSuccess(`✓ Successfully scheduled ${schedule.sessions.length} tasks across ${schedule.spanDays} days!`);
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to schedule study plan');
+      setError(error.response?.data?.error || error.response?.data?.details || 'Failed to generate schedule');
+      console.error('Schedule generation error:', error);
     } finally {
       setScheduling(false);
     }
   };
 
-  const startStudySession = () => {
-    if (studyPlan) {
-      navigate('/study-session');
-    }
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-foreground text-xl font-bold tracking-wider">LOADING SCHEDULE...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="study-planner-container">
-      <h1>AI Study Planner</h1>
-      <p className="subtitle">Create a personalized study plan powered by AI</p>
-
-      {/* Existing Study Plans Section */}
-      {studyPlans.length > 0 && (
-        <div className="existing-plans-section">
-          <h2>Your Study Plans</h2>
-          <div className="plans-list">
-            {studyPlans.map((plan) => (
-              <div key={plan.id} className="plan-card">
-                <div className="plan-header">
-                  <h3>{plan.goal}</h3>
-                  <span className={`status-badge ${plan.status}`}>{plan.status}</span>
-                </div>
-                <div className="plan-meta">
-                  <span>{plan.tasksCount} tasks</span>
-                  <span>{plan.totalEstimatedMinutes} min total</span>
-                  <span>Created {new Date(plan.createdAt).toLocaleDateString()}</span>
-                </div>
-                {plan.warning && (
-                  <div className="plan-warning">{plan.warning}</div>
-                )}
-                <div className="plan-actions">
-                  <button 
-                    onClick={() => setStudyPlan(plan)}
-                    className="view-plan-btn"
-                  >
-                    View Plan
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="planner-form-section">
-        <form onSubmit={handleSubmit} className="planner-form">
-          <div className="form-group">
-            <label htmlFor="goal">Learning Goal</label>
-            <textarea
-              id="goal"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              placeholder="e.g., Master linear transformations and eigenvalues in Linear Algebra"
-              rows="3"
-              disabled={creating}
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="time">Available Time (minutes)</label>
-              <input
-                id="time"
-                type="number"
-                min="30"
-                max="480"
-                value={availableTime}
-                onChange={(e) => setAvailableTime(e.target.value)}
-                disabled={creating}
-              />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-background via-muted/20 to-background border-b-4 border-primary">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-4xl font-bold tracking-wider uppercase">
+                <span className="text-primary">//</span> STUDY SCHEDULE
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                {tasks.length > 0 
+                  ? `Schedule your ${tasks.length} pending task${tasks.length !== 1 ? 's' : ''} with AI`
+                  : <>Create tasks first, then schedule them with AI. <a href="/tasks" className="text-primary hover:underline">Go to Tasks →</a></>}
+              </p>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="course">Course (Optional)</label>
-              <select
-                id="course"
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-                disabled={creating}
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={handleGenerateSchedule}
+                disabled={scheduling || tasks.length === 0}
+                className="px-6 py-3 bg-primary hover:bg-primary/80 transition-all duration-300 font-bold tracking-wider text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                title={tasks.length === 0 ? 'Create some tasks first' : 'Generate AI-powered schedule'}
               >
-                <option value="">No specific course</option>
-                {courses.map((course) => (
-                  <option key={course.id} value={course.id}>
-                    {course.title}
-                  </option>
-                ))}
-              </select>
+                {scheduling ? '⏳ GENERATING...' : '📅 GENERATE SCHEDULE'}
+              </button>
             </div>
           </div>
 
-          <button type="submit" disabled={creating} className="create-plan-btn">
-            {creating ? 'Creating Plan...' : 'Generate Study Plan'}
-          </button>
-        </form>
-
-        {error && (
-          <div className="error-message">{error}</div>
-        )}
+          {/* Success/Error Messages */}
+          {success && (
+            <div className="mt-4 p-4 bg-green-500/20 border-2 border-green-500 text-green-500 font-bold">
+              {success}
+            </div>
+          )}
+          {error && (
+            <div className="mt-4 p-4 bg-destructive/20 border-2 border-destructive text-destructive font-bold">
+              {error}
+            </div>
+          )}
+        </div>
       </div>
 
-      {studyPlan && (
-        <div className="study-plan-result">
-          <h2>Your Personalized Study Plan</h2>
-          
-          {studyPlan.warning && (
-            <div className="warning-message">{studyPlan.warning}</div>
-          )}
-          
-          <div className="plan-summary">
-            <div className="summary-card">
-              <span className="summary-label">Total Tasks</span>
-              <span className="summary-value">
-                {studyPlan.tasksCount || 0}
-              </span>
-            </div>
-            <div className="summary-card">
-              <span className="summary-label">Estimated Time</span>
-              <span className="summary-value">
-                {studyPlan.totalEstimatedMinutes || 0} min
-              </span>
-            </div>
-            <div className="summary-card">
-              <span className="summary-label">Status</span>
-              <span className="summary-value">
-                {studyPlan.status || 'created'}
-              </span>
-            </div>
-          </div>
-
-          <div className="tasks-list">
-            <h3>Study Tasks</h3>
-            {studyPlan.taskGraph?.tasks?.map((task, idx) => (
-              <div key={task.id || idx} className="task-card">
-                <div className="task-header">
-                  <span className="task-number">{idx + 1}</span>
-                  <h4>{task.title}</h4>
-                  <span className="task-duration">{task.estimated_minutes} min</span>
-                </div>
-                <p className="task-description">{task.description}</p>
-                <div className="task-meta">
-                  <span className="task-difficulty">
-                    Difficulty: {(task.difficulty * 10).toFixed(1)}/10
-                  </span>
-                  {task.prerequisites && task.prerequisites.length > 0 && (
-                    <span className="task-prereqs">
-                      Prerequisites: {task.prerequisites.join(', ')}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="action-buttons">
-            {studyPlan.status === 'created' && (
-              <button 
-                onClick={handleSchedulePlan} 
-                disabled={scheduling}
-                className="schedule-plan-btn"
-              >
-                {scheduling ? 'Scheduling...' : 'Schedule This Plan'}
-              </button>
-            )}
-            
-            {studyPlan.status === 'scheduled' && (
-              <div className="scheduled-info">
-                <p className="success-message">✓ Plan scheduled successfully!</p>
-                <button onClick={() => navigate('/tasks')} className="view-tasks-btn">
-                  View Tasks
-                </button>
-              </div>
-            )}
-          </div>
-
-          {schedule && (
-            <div className="schedule-preview">
-              <h3>Schedule Preview</h3>
-              <p>Your tasks have been scheduled across {schedule.spanDays} days</p>
-              <p>Total time: {schedule.totalMinutes} minutes</p>
-            </div>
-          )}
+      {/* Calendar Section */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="mb-6 p-6 bg-card border-2 border-border">
+          <h2 className="text-xl font-bold tracking-wider mb-2 text-foreground">📋 HOW IT WORKS</h2>
+          <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+            <li><strong className="text-foreground">Block your busy times</strong> - Click calendar slots to mark when you're unavailable (classes, work, etc.)</li>
+            <li><strong className="text-foreground">Click "Generate Schedule"</strong> - AI analyzes your tasks and availability</li>
+            <li><strong className="text-foreground">View scheduled sessions</strong> - Blue slots show your optimally scheduled study times</li>
+            <li><strong className="text-foreground">Go to Tasks page</strong> - Create or manage tasks to schedule</li>
+          </ol>
         </div>
-      )}
+
+        <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
+          <button className="px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent hover:text-accent-foreground font-medium transition-colors" onClick={goToPreviousWeek}>⬅️ Previous</button>
+          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors" onClick={goToCurrentWeek}>📅 Current Week</button>
+          <button className="px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent hover:text-accent-foreground font-medium transition-colors" onClick={goToNextWeek}>Next ➡️</button>
+          <div className="px-4 py-2 bg-muted rounded-lg font-semibold min-w-[200px] text-center">{formatWeekRange()}</div>
+          
+          <div className="flex items-center gap-2 ml-4">
+            <span className="text-sm font-medium text-muted-foreground">View:</span>
+            <button className={`px-3 py-1 rounded ${weeksView===1?'bg-primary text-primary-foreground':'bg-card border border-border'}`} onClick={() => setWeeksView(1)}>1</button>
+            <button className={`px-3 py-1 rounded ${weeksView===2?'bg-primary text-primary-foreground':'bg-card border border-border'}`} onClick={() => setWeeksView(2)}>2</button>
+            <button className={`px-3 py-1 rounded ${weeksView===4?'bg-primary text-primary-foreground':'bg-card border border-border'}`} onClick={() => setWeeksView(4)}>4</button>
+          </div>
+        </div>
+
+        <WeeklyCalendar
+          availability={availability}
+          events={events}
+          currentWeekStart={currentWeekStart}
+          weeksView={weeksView}
+          onSave={handleSaveSlot}
+          onDelete={handleDeleteSlot}
+        />
+      </div>
     </div>
   );
 };

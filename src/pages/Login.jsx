@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login: setAuth } = useAuthStore();
+  const { login } = useAuthStore();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,10 +29,18 @@ const Login = () => {
 
     try {
       const response = await authAPI.login(formData);
-      const { token, user } = response.data;
+      // Support backends that return { token, user } or { data: { token, user } }
+      const data = response.data?.data || response.data;
+      const token = data?.token || data?.accessToken || data?.authToken;
+      const refreshToken = data?.refreshToken;
+      const user = data?.user || data?.profile || data?.userData;
 
-      // Save auth data
-      setAuth(user, token);
+      if (!token || !user) {
+        throw new Error('Invalid auth response');
+      }
+
+      // Save auth data with refresh token
+      login(user, token, refreshToken);
 
       // Redirect based on role
       if (user.role === 'admin') {

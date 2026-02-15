@@ -35,6 +35,11 @@ const CourseUpload = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
+  };
+
   const ensureSubjectExists = async (subjectName) => {
     // Check if subject already exists
     const existingSubject = subjects.find(s => s.name === subjectName);

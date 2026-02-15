@@ -120,6 +120,17 @@
   transform: scale(1.05);
 }
 
+.time-slot.event-slot {
+  border: 2px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  cursor: default;
+}
+
+.time-slot.event-slot:hover {
+  transform: none;
+  opacity: 1;
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -306,4 +317,25 @@
   .modal-content {
     padding: 24px;
   }
+}
+
+.week-section {
+  margin-bottom: 32px;
+}
+
+.week-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 16px;
+  text-align: center;
+  padding: 12px;
+  background: var(--muted);
+  border-radius: 8px;
+}
+
+.day-header.today {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 700;
 }

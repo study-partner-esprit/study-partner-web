@@ -6,20 +6,88 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 // Create axios instance (no default Content-Type so FormData can set boundary)
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000, // Increased timeout for complex operations like study plan creation
+  timeout: 180000, // Increased timeout for complex operations like study plan creation (3 mins)
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
-  (config) => {
-    // Temporarily use hardcoded token for testing
-    const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OThlNTA2OTU5ZTM3YjY3OTNlNzQ4ZGMiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc3MTAxNjY0NCwiZXhwIjoxNzcxMTAzMDQ0fQ.L22fqpPniQBKc7rYjmsrQ3k0Ujrq6xJCzkI93slr_lk';
-    config.headers.Authorization = `Bearer ${testToken}`;
-    console.log('[API Interceptor] Added test Authorization header');
-    
+  async (config) => {
+    console.log('[API] Interceptor running for:', config.url);
+
+    // Skip token for auth endpoints (login, register, refresh)
+    if (config.url?.includes('/auth/') && !config.url?.includes('/auth/me')) {
+      console.log('[API] Skipping token for auth endpoint');
+      return config;
+    }
+
+    try {
+      // Import auth store dynamically to avoid circular imports
+      const { useAuthStore } = await import('../store/authStore');
+
+      // Get a valid token (will refresh if needed)
+      const token = await useAuthStore.getState().getValidToken();
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log('[API] ✓ Using valid token (first 20 chars):', token.substring(0, 20) + '...');
+      } else {
+        console.log('[API] ✗ No valid token available');
+        // Don't reject here - let the request go through and handle 401 in response interceptor
+      }
+    } catch (error) {
+      console.error('[API] Error in request interceptor:', error);
+    }
+
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle token refresh on 401
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+
+    // If 401 and we haven't already tried to refresh
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // Import auth store dynamically
+        const { useAuthStore } = await import('../store/authStore');
+        const authStore = useAuthStore.getState();
+
+        // Try to refresh token
+        console.log('[API] 401 received, attempting token refresh...');
+        const refreshed = await authStore.refreshTokenAsync();
+
+        if (refreshed) {
+          // Retry the original request with new token
+          const newToken = authStore.token;
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          console.log('[API] Retrying request with refreshed token');
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        console.error('[API] Token refresh failed:', refreshError);
+      }
+
+      // If refresh failed or no refresh token, logout user
+      console.log('[API] Authentication failed, logging out user');
+      const { useAuthStore } = await import('../store/authStore');
+      useAuthStore.getState().logout();
+
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+
     return Promise.reject(error);
   }
 );
@@ -41,6 +109,7 @@ api.interceptors.response.use(
 export const authAPI = {
   register: (data) => api.post('/api/v1/auth/register', data),
   login: (data) => api.post('/api/v1/auth/login', data),
+  refresh: (refreshToken) => api.post('/api/v1/auth/refresh', { refreshToken }),
   getMe: () => api.get('/api/v1/auth/me'),
 };
 
@@ -119,6 +188,8 @@ export const studyPlanAPI = {
   schedule: (planId, contextData) => api.post(`/api/v1/study/plans/${planId}/schedule`, contextData),
   getSchedule: (planId) => api.get(`/api/v1/study/plans/${planId}/schedule`),
   delete: (planId) => api.delete(`/api/v1/study/plans/${planId}`),
+  scheduleTasks: (data) => api.post('/api/v1/study/plans/schedule-tasks', data),
+  getCalendar: (params) => api.get('/api/v1/study/plans/calendar', { params }),
 };
 
 // Availability API (Weekly Calendar) - Goes through Node.js backend
