@@ -6,6 +6,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useAuthStore } from '@/store/authStore';
 import { profileAPI } from '@/services/api';
 import { useState, useEffect } from 'react';
+import NotificationBell from './NotificationBell';
 
 const Navbar = ({ minimal = false }) => {
   const { theme, toggleTheme } = useTheme();
@@ -111,7 +112,9 @@ const Navbar = ({ minimal = false }) => {
                 <Moon className="w-5 h-5 text-foreground" />
               )}
             </motion.button>
-            
+
+            {!minimal && user && <NotificationBell />}
+
             {!minimal && user && (
               <div className="hidden lg:flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm gap-4">
                 <div className="flex items-center gap-2">
@@ -143,7 +146,7 @@ const Navbar = ({ minimal = false }) => {
                               ? profile.avatar
                               : profile.avatar.startsWith('http')
                                 ? profile.avatar
-                                : `http://localhost:3000${profile.avatar}`
+                                : `${import.meta.env.VITE_API_URL || ''}${profile.avatar}`
                             : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
                         }
                         alt="Avatar"

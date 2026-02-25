@@ -92,19 +92,6 @@ api.interceptors.response.use(
   }
 );
 
-// Response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
-      localStorage.removeItem('auth-storage');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
 // Auth API
 export const authAPI = {
   register: (data) => api.post('/api/v1/auth/register', data),
@@ -144,25 +131,28 @@ export const courseAPI = {
   delete: (courseId) => api.delete(`/api/v1/study/courses/${courseId}`)
 };
 
-// AI Services API (connects to Python FastAPI service)
-const AI_API_BASE = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000';
-
+// AI Services API (all routed through API Gateway → ai-orchestrator → Python AI)
 export const aiAPI = {
-  // Study Planning - Now goes through API Gateway → ai-orchestrator → Python AI
+  // Study Planning
   createStudyPlan: (data) => api.post('/api/v1/ai/plan/create', data),
   getUserPlans: () => api.get('/api/v1/ai/plan/list'),
   
   // Coaching
-  getCoachDecision: (data) => axios.post(`${AI_API_BASE}/api/ai/coach/decision`, data),
-  getCoachHistory: (userId, limit = 20) => axios.get(`${AI_API_BASE}/api/ai/coach/history/${userId}`, { params: { limit } }),
+  getCoachDecision: (data) => api.post('/api/v1/ai/coach', data),
+  getCoachHistory: (userId, limit = 20) => api.get(`/api/v1/ai/coach/history/${userId}`, { params: { limit } }),
   
   // Signal Processing
-  getCurrentSignals: (userId) => axios.get(`${AI_API_BASE}/api/ai/signals/current/${userId}`),
-  getSignalHistory: (userId, limit = 50) => axios.get(`${AI_API_BASE}/api/ai/signals/history/${userId}`, { params: { limit } }),
-  processSignals: (userId) => axios.post(`${AI_API_BASE }/api/ai/signals/process`, { user_id: userId }),
+  getCurrentSignals: (userId) => api.get(`/api/v1/ai/signals/current/${userId}`),
+  getSignalHistory: (userId, limit = 50) => api.get(`/api/v1/ai/signals/history/${userId}`, { params: { limit } }),
+  processSignals: (userId) => api.post('/api/v1/ai/signals/process', { user_id: userId }),
+  analyzeFrame: (formData) => api.post('/api/v1/ai/signals/analyze-frame', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 30000
+  }),
+  getLatestSignals: (userId, limit = 10) => api.get(`/api/v1/ai/signals/latest/${userId}`, { params: { limit } }),
   
   // Health check
-  healthCheck: () => axios.get(`${AI_API_BASE}/health`),
+  healthCheck: () => api.get('/api/v1/ai/status'),
   getStats: () => api.get('/api/v1/users/profile/stats'),
   updateStats: (data) => api.patch('/api/v1/users/profile/stats', data),
   getGoals: () => api.get('/api/v1/users/profile/goals'),
@@ -245,6 +235,23 @@ export const analyticsAPI = {
   getInsights: (params) => api.get('/api/v1/analytics/insights', { params }),
 };
 
+// Review / Spaced Repetition API - Goes through AI Orchestrator
+export const reviewAPI = {
+  scheduleReview: (data) => api.post('/api/v1/ai/reviews/schedule', data).then(res => res.data),
+  recordResult: (data) => api.post('/api/v1/ai/reviews/record-result', data).then(res => res.data),
+  getPending: (userId, limit = 20) => api.get(`/api/v1/ai/reviews/pending/${userId}`, { params: { limit } }).then(res => res.data),
+  getStats: (userId) => api.get(`/api/v1/ai/reviews/stats/${userId}`).then(res => res.data),
+};
+
+// Notification API
+export const notificationAPI = {
+  getAll: (params) => api.get('/api/v1/notifications', { params }).then(res => res.data),
+  create: (data) => api.post('/api/v1/notifications', data).then(res => res.data),
+  markRead: (id) => api.patch(`/api/v1/notifications/${id}/read`).then(res => res.data),
+  markAllRead: (userId) => api.patch('/api/v1/notifications/read-all', null, { params: { userId } }).then(res => res.data),
+  delete: (id) => api.delete(`/api/v1/notifications/${id}`).then(res => res.data),
+};
+
 // Legacy support - maintain backward compatibility
 export const login = (credentials) => authAPI.login(credentials);
 export const register = (userData) => authAPI.register(userData);
@@ -255,10 +262,10 @@ export const createTask = (task) => tasksAPI.create(task);
 export const updateTask = (id, task) => tasksAPI.update(id, task);
 export const deleteTask = (id) => tasksAPI.delete(id);
 
-// Session endpoints
-export const getSessions = () => api.get('/api/v1/sessions');
-export const getSession = (id) => api.get(`/api/v1/sessions/${id}`);
-export const createSession = (session) => api.post('/api/v1/sessions', session);
-export const endSession = (id) => api.patch(`/api/v1/sessions/${id}/end`);
+// Session endpoints (fixed to use correct route prefix)
+export const getSessions = () => api.get('/api/v1/study/sessions');
+export const getSession = (id) => api.get(`/api/v1/study/sessions/${id}`);
+export const createSession = (session) => api.post('/api/v1/study/sessions', session);
+export const endSession = (id) => api.patch(`/api/v1/study/sessions/${id}/end`);
 
 export default api;

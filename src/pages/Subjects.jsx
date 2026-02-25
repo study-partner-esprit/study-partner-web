@@ -49,7 +49,7 @@ const Subjects = () => {
     // request it directly from the study service host because the API gateway proxies /uploads
     // to the user-profile service by default.
     if (url.startsWith('/uploads')) {
-      const studyBase = import.meta.env.VITE_STUDY_SERVICE_URL || 'http://localhost:3003';
+      const studyBase = import.meta.env.VITE_STUDY_SERVICE_URL || '';
       return `${studyBase.replace(/\/$/, '')}${url}`;
     }
 

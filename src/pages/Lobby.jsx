@@ -106,7 +106,7 @@ const Lobby = () => {
              >
                  {/* Card Background Image/Avatar */}
                   <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                      style={{ backgroundImage: `url(${profile?.avatar ? (profile.avatar.startsWith('data:') ? profile.avatar : (profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`)) : (user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (user?.name || 'Agent'))})` }}
+                      style={{ backgroundImage: `url(${profile?.avatar ? (profile.avatar.startsWith('data:') ? profile.avatar : (profile.avatar.startsWith('http') ? profile.avatar : `${import.meta.env.VITE_API_URL || ''}${profile.avatar}`)) : (user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (user?.name || 'Agent'))})` }}
                   />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
                  

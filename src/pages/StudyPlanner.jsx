@@ -26,6 +26,33 @@ const StudyPlanner = () => {
     return monday;
   });
 
+  const fetchScheduledSessions = useCallback(async () => {
+    try {
+      console.log('\n=== StudyPlanner: Fetching calendar entries ===');
+      const resp = await studyPlanAPI.getCalendar({ weeks: weeksView, startDate: currentWeekStart.toISOString() });
+      const entries = resp.data.entries || [];
+      console.log(`✓ StudyPlanner: Fetched ${entries.length} calendar entries`);
+
+      // Normalize entries to the shape expected by WeeklyCalendar
+      const mapped = entries.map(e => ({
+        id: e._id || `${e.userId}-${e.startTime}`,
+        taskId: e.taskId,
+        title: e.title,
+        description: e.description,
+        startTime: e.startTime,
+        endTime: e.endTime,
+        estimatedMinutes: e.estimatedMinutes,
+        planId: e.planId,
+        source: e.source,
+        status: e.status
+      }));
+
+      setEvents(mapped);
+    } catch (err) {
+      console.error('✗ StudyPlanner: Error fetching calendar entries:', err);
+    }
+  }, [weeksView, currentWeekStart]);
+
   useEffect(() => {
     console.log('=== StudyPlanner: Component mounted, fetching data ===');
     console.log('User:', user);
@@ -36,6 +63,8 @@ const StudyPlanner = () => {
     fetchScheduledSessions();
     fetchTasks();
   }, [user, currentWeekStart, weeksView, fetchScheduledSessions]);
+
+
 
   const goToPreviousWeek = () => {
     const newStart = new Date(currentWeekStart);
@@ -91,32 +120,6 @@ const StudyPlanner = () => {
     }
   };
 
-  const fetchScheduledSessions = useCallback(async () => {
-    try {
-      console.log('\n=== StudyPlanner: Fetching calendar entries ===');
-      const resp = await studyPlanAPI.getCalendar({ weeks: weeksView, startDate: currentWeekStart.toISOString() });
-      const entries = resp.data.entries || [];
-      console.log(`✓ StudyPlanner: Fetched ${entries.length} calendar entries`);
-
-      // Normalize entries to the shape expected by WeeklyCalendar
-      const mapped = entries.map(e => ({
-        id: e._id || `${e.userId}-${e.startTime}`,
-        taskId: e.taskId,
-        title: e.title,
-        description: e.description,
-        startTime: e.startTime,
-        endTime: e.endTime,
-        estimatedMinutes: e.estimatedMinutes,
-        planId: e.planId,
-        source: e.source,
-        status: e.status
-      }));
-
-      setEvents(mapped);
-    } catch (err) {
-      console.error('✗ StudyPlanner: Error fetching calendar entries:', err);
-    }
-  }, [weeksView, currentWeekStart]);
 
   const handleSaveSlot = async (slotData) => {
     try {

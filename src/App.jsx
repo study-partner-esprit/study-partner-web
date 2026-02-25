@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import Landing from './pages/Landing';
@@ -18,19 +18,33 @@ import Subjects from './pages/Subjects';
 import SubjectDetail from './pages/SubjectDetail';
 import Calendar from './pages/Calendar';
 import SessionManager from './components/SessionManager';
+import NotificationCenter from './components/NotificationCenter';
+import useNotificationStore from './store/notificationStore';
 
 function App() {
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
+  const { startPolling, stopPolling } = useNotificationStore();
   const isLandingPage = location.pathname === '/';
   const isLobby = location.pathname === '/lobby';
 
   // Show full navbar on landing page if user is logged in
   const minimalNav = (isLandingPage || isLobby) && !user;
 
+  // Start/stop notification polling based on authentication
+  useEffect(() => {
+    if (user?._id) {
+      const cleanup = startPolling(user._id);
+      return cleanup;
+    } else {
+      stopPolling();
+    }
+  }, [user?._id, startPolling, stopPolling]);
+
   return (
     <>
       <SessionManager />
+      <NotificationCenter />
       <Navbar minimal={minimalNav} />
       <div className="relative z-10 w-full min-h-screen pt-20">
         <Routes>
@@ -104,7 +118,9 @@ function App() {
           <Route 
             path="/planner" 
             element={
-              <StudyPlanner />
+              <PrivateRoute>
+                <StudyPlanner />
+              </PrivateRoute>
             } 
           />
           <Route 

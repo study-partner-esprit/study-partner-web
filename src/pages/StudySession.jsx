@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { aiAPI } from '../services/api';
+import { aiAPI, notificationAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import WebcamCapture from '../components/WebcamCapture';
 import './StudySession.css';
@@ -12,7 +12,13 @@ const StudySession = () => {
   const [sessionDuration, setSessionDuration] = useState(0);
   const [doNotDisturb, setDoNotDisturb] = useState(false);
   const [ignoredCount, setIgnoredCount] = useState(0);
-  
+
+  // Break detection state
+  const [breakCount, setBreakCount] = useState(0);
+  const [currentBreakDuration, setCurrentBreakDuration] = useState(0);
+  const [isOnBreak, setIsOnBreak] = useState(false);
+  const [lastBreakNotification, setLastBreakNotification] = useState(0);
+
   // Signal state
   const [signals, setSignals] = useState(null);
   const [signalHistory, setSignalHistory] = useState([]);
@@ -35,32 +41,81 @@ const StudySession = () => {
       formData.append('user_id', user._id);
       formData.append('frame', frameBlob, 'frame.jpg');
 
-      const response = await fetch('http://localhost:8000/api/ai/signals/analyze-frame', {
-        method: 'POST',
-        body: formData
+      const response = await aiAPI.analyzeFrame(formData);
+      const analysis = response.data;
+
+      // Update signals state
+      setSignals({
+        timestamp: analysis.timestamp,
+        focus: analysis.focus,
+        fatigue: analysis.fatigue
       });
-setSignals(null);
-    setSignalHistory([]);
-    
-      if (response.ok) {
-        const analysis = await response.json();
-        
-        // Update signals state
-        setSignals({
-          timestamp: analysis.timestamp,
-          focus: analysis.focus,
-          fatigue: analysis.fatigue
+
+      // Add to history
+      setSignalHistory(prev => [...prev.slice(-50), {
+        timestamp: new Date(analysis.timestamp),
+        focus: analysis.focus.score,
+        fatigue: analysis.fatigue.score
+      }]);
+
+      // Break detection logic
+      const isDistracted = analysis.focus.score < 0.3; // Low focus indicates distraction
+      const breakThreshold = 30; // 30 seconds of continuous distraction
+      const notificationCooldown = 300; // 5 minutes between break notifications
+
+      if (isDistracted) {
+        setCurrentBreakDuration(prev => {
+          const newDuration = prev + 10; // 10 seconds (polling interval)
+
+          // Check if this constitutes a break
+          if (newDuration >= breakThreshold && !isOnBreak) {
+            setIsOnBreak(true);
+            setBreakCount(prev => prev + 1);
+
+            // Send break notification if enough time has passed since last notification
+            const now = Date.now();
+            if (now - lastBreakNotification > notificationCooldown * 1000) {
+              // Create break notification
+              createBreakNotification();
+              setLastBreakNotification(now);
+            }
+          }
+
+          return newDuration;
         });
-        
-        // Add to history
-        setSignalHistory(prev => [...prev.slice(-50), {
-          timestamp: new Date(analysis.timestamp),
-          focus: analysis.focus.score,
-          fatigue: analysis.fatigue.score
-        }]);
+      } else {
+        // Reset break detection if user is focused again
+        if (isOnBreak) {
+          setIsOnBreak(false);
+          // Optionally notify user that break has ended
+        }
+        setCurrentBreakDuration(0);
       }
+
     } catch (error) {
       console.error('Failed to analyze frame:', error);
+    }
+  };
+
+  // Create break notification
+  const createBreakNotification = async () => {
+    if (!user?._id) return;
+
+    try {
+      await notificationAPI.create({
+        userId: user._id,
+        type: 'break_suggestion',
+        title: 'Break Detected',
+        message: `You've been distracted for ${Math.round(currentBreakDuration)} seconds. Consider taking a short break to recharge.`,
+        priority: 'normal',
+        metadata: {
+          breakDuration: currentBreakDuration,
+          sessionDuration: sessionDuration,
+          breakCount: breakCount + 1
+        }
+      });
+    } catch (error) {
+      console.error('Failed to create break notification:', error);
     }
   };
 
@@ -77,6 +132,12 @@ setSignals(null);
     setSessionActive(true);
     setSessionDuration(0);
     setIgnoredCount(0);
+
+    // Reset break detection state
+    setBreakCount(0);
+    setCurrentBreakDuration(0);
+    setIsOnBreak(false);
+    setLastBreakNotification(0);
     
     // Start session timer
     sessionTimerRef.current = setInterval(() => {
@@ -295,6 +356,30 @@ setSignals(null);
                 <span className="signal-confidence">
                   Confidence: {(signals.fatigue.confidence * 100).toFixed(0)}%
                 </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Break Detection Status */}
+      {sessionActive && (
+        <div className="signals-dashboard" style={{ marginTop: '16px' }}>
+          <div className={`signal-card ${isOnBreak ? 'fatigue-signal' : 'focus-signal'}`}>
+            <h3>☕ Break Detection</h3>
+            <div className="signal-content">
+              <div className="signal-details" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <span className={`state-badge ${isOnBreak ? 'badge-danger' : 'badge-success'}`}>
+                  {isOnBreak ? '🔴 On Break' : '🟢 Studying'}
+                </span>
+                <span className="signal-score">
+                  Breaks: {breakCount}
+                </span>
+                {isOnBreak && (
+                  <span className="signal-confidence">
+                    Break duration: {formatDuration(Math.floor(currentBreakDuration))}
+                  </span>
+                )}
               </div>
             </div>
           </div>
