@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { profileAPI, tasksAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import QuestPanel from '../components/QuestPanel';
 
 const Dashboard = () => {
   const { user, logout } = useAuthStore();
@@ -272,6 +273,9 @@ const Dashboard = () => {
                   </Link>
                 </div>
               </div>
+
+              {/* Quest Panel */}
+              <QuestPanel />
             </motion.div>
           </div>
         </div>

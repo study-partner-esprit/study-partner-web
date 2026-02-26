@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { aiAPI, notificationAPI } from '../services/api';
+import { aiAPI, notificationAPI, focusAPI, sessionsAPI, gamificationAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import WebcamCapture from '../components/WebcamCapture';
 import './StudySession.css';
@@ -12,6 +12,10 @@ const StudySession = () => {
   const [sessionDuration, setSessionDuration] = useState(0);
   const [doNotDisturb, setDoNotDisturb] = useState(false);
   const [ignoredCount, setIgnoredCount] = useState(0);
+
+  // Session ID refs (persist across renders without triggering re-renders)
+  const studySessionIdRef = useRef(null);
+  const focusSessionIdRef = useRef(null);
 
   // Break detection state
   const [breakCount, setBreakCount] = useState(0);
@@ -57,6 +61,19 @@ const StudySession = () => {
         focus: analysis.focus.score,
         fatigue: analysis.fatigue.score
       }]);
+
+      // Record focus data point in the FocusSession (signal-processing service)
+      if (focusSessionIdRef.current) {
+        try {
+          await focusAPI.addDataPoint(focusSessionIdRef.current, {
+            focusLevel: Math.round(analysis.focus.score * 100),
+            isDistracted: analysis.focus.score < 0.4,
+            gazeData: { x: 0, y: 0 }
+          });
+        } catch (err) {
+          // Silent fail — don't interrupt the session for a data point
+        }
+      }
 
       // Break detection logic
       const isDistracted = analysis.focus.score < 0.3; // Low focus indicates distraction
@@ -128,7 +145,7 @@ const StudySession = () => {
     }
   };
 
-  const startSession = () => {
+  const startSession = async () => {
     setSessionActive(true);
     setSessionDuration(0);
     setIgnoredCount(0);
@@ -138,6 +155,25 @@ const StudySession = () => {
     setCurrentBreakDuration(0);
     setIsOnBreak(false);
     setLastBreakNotification(0);
+
+    // Create a StudySession record in the backend
+    try {
+      const sessionRes = await sessionsAPI.create({ status: 'active' });
+      const session = sessionRes.data?.session || sessionRes.data;
+      studySessionIdRef.current = session._id;
+      console.log('[StudySession] Created study session:', session._id);
+    } catch (err) {
+      console.error('[StudySession] Failed to create study session:', err);
+    }
+
+    // Start focus tracking session linked to the study session
+    try {
+      const focusRes = await focusAPI.startSession({ studySessionId: studySessionIdRef.current });
+      focusSessionIdRef.current = focusRes.data?.sessionId;
+      console.log('[StudySession] Started focus tracking:', focusSessionIdRef.current);
+    } catch (err) {
+      console.error('[StudySession] Failed to start focus tracking:', err);
+    }
     
     // Start session timer
     sessionTimerRef.current = setInterval(() => {
@@ -159,7 +195,7 @@ const StudySession = () => {
     setTimeout(() => requestCoachDecision(), 5000);
   };
 
-  const stopSession = () => {
+  const stopSession = async () => {
     setSessionActive(false);
     
     // Clear all timers
@@ -175,6 +211,49 @@ const StudySession = () => {
       clearInterval(coachPollingRef.current);
       coachPollingRef.current = null;
     }
+
+    // End focus tracking session and get summary
+    let focusScore = 0;
+    let focusSummary = null;
+    if (focusSessionIdRef.current) {
+      try {
+        const focusEndRes = await focusAPI.endSession(focusSessionIdRef.current);
+        focusScore = focusEndRes.data?.focusScore || 0;
+        focusSummary = focusEndRes.data?.summary;
+        console.log('[StudySession] Focus session ended:', focusScore, focusSummary);
+      } catch (err) {
+        console.error('[StudySession] Failed to end focus session:', err);
+      }
+    }
+
+    // End study session record with focus data
+    if (studySessionIdRef.current) {
+      try {
+        await sessionsAPI.update(studySessionIdRef.current, {
+          status: 'completed',
+          duration: sessionDuration,
+          focusScore: focusSummary?.avgFocusLevel || focusScore,
+          endTime: new Date().toISOString()
+        });
+        console.log('[StudySession] Study session ended');
+      } catch (err) {
+        console.error('[StudySession] Failed to end study session:', err);
+      }
+    }
+
+    // Award XP for perfect focus session (score > 80)
+    if (focusScore > 80 || (focusSummary?.avgFocusLevel && focusSummary.avgFocusLevel > 80)) {
+      try {
+        await gamificationAPI.awardXP({ action: 'perfect_focus_session' });
+        console.log('[StudySession] Awarded XP for perfect focus session!');
+      } catch (err) {
+        console.error('[StudySession] Failed to award XP:', err);
+      }
+    }
+
+    // Clean up refs
+    studySessionIdRef.current = null;
+    focusSessionIdRef.current = null;
   };
 
   // Fetch current signals (focus/fatigue)

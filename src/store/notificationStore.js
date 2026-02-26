@@ -1,12 +1,17 @@
 import { create } from 'zustand';
 import { notificationAPI } from '../services/api';
 
+const WS_BASE = import.meta.env.VITE_WS_URL || 
+  `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.hostname}:3007`;
+
 const useNotificationStore = create((set, get) => ({
   notifications: [],
   unreadCount: 0,
   isLoading: false,
   error: null,
   isOpen: false,
+  ws: null,
+  pollingInterval: null,
 
   // Actions
   fetchNotifications: async (userId) => {
@@ -81,28 +86,79 @@ const useNotificationStore = create((set, get) => ({
     set({ isOpen: false });
   },
 
-  // Start polling for new notifications
+  // Connect WebSocket with polling fallback
   startPolling: (userId, interval = 30000) => {
-    const poll = () => {
-      get().fetchNotifications(userId);
-    };
-
     // Initial fetch
-    poll();
+    get().fetchNotifications(userId);
 
-    // Set up polling
-    const intervalId = setInterval(poll, interval);
+    // Try WebSocket first
+    try {
+      const wsUrl = `${WS_BASE}/ws/notifications?userId=${userId}`;
+      const ws = new WebSocket(wsUrl);
 
-    // Store interval ID for cleanup
+      ws.onopen = () => {
+        console.log('[Notifications] WebSocket connected');
+        // Clear polling if it was started as fallback
+        const { pollingInterval } = get();
+        if (pollingInterval) {
+          clearInterval(pollingInterval);
+          set({ pollingInterval: null });
+        }
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'new_notification' && data.notification) {
+            get().addNotification(data.notification);
+          }
+        } catch (err) {
+          console.warn('[Notifications] Failed to parse WS message:', err);
+        }
+      };
+
+      ws.onclose = () => {
+        console.log('[Notifications] WebSocket closed, falling back to polling');
+        set({ ws: null });
+        // Fallback to polling
+        if (!get().pollingInterval) {
+          const id = setInterval(() => get().fetchNotifications(userId), interval);
+          set({ pollingInterval: id });
+        }
+      };
+
+      ws.onerror = (err) => {
+        console.warn('[Notifications] WebSocket error, will fallback to polling');
+      };
+
+      set({ ws });
+    } catch (e) {
+      console.warn('[Notifications] WebSocket not available, using polling');
+    }
+
+    // Start polling as initial fallback (will be cleared if WS connects)
+    const intervalId = setInterval(() => get().fetchNotifications(userId), interval);
     set({ pollingInterval: intervalId });
 
     return () => {
-      clearInterval(intervalId);
+      const { ws, pollingInterval } = get();
+      if (ws) {
+        ws.close();
+        set({ ws: null });
+      }
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        set({ pollingInterval: null });
+      }
     };
   },
 
   stopPolling: () => {
-    const { pollingInterval } = get();
+    const { ws, pollingInterval } = get();
+    if (ws) {
+      ws.close();
+      set({ ws: null });
+    }
     if (pollingInterval) {
       clearInterval(pollingInterval);
       set({ pollingInterval: null });

@@ -151,6 +151,10 @@ export const aiAPI = {
   }),
   getLatestSignals: (userId, limit = 10) => api.get(`/api/v1/ai/signals/latest/${userId}`, { params: { limit } }),
   
+  // AI Search
+  search: (data) => api.post('/api/v1/ai/search/ask', data),
+  searchHistory: (userId, limit = 20) => api.get(`/api/v1/ai/search/history/${userId}`, { params: { limit } }),
+  
   // Health check
   healthCheck: () => api.get('/api/v1/ai/status'),
   getStats: () => api.get('/api/v1/users/profile/stats'),
@@ -250,6 +254,12 @@ export const notificationAPI = {
   markRead: (id) => api.patch(`/api/v1/notifications/${id}/read`).then(res => res.data),
   markAllRead: (userId) => api.patch('/api/v1/notifications/read-all', null, { params: { userId } }).then(res => res.data),
   delete: (id) => api.delete(`/api/v1/notifications/${id}`).then(res => res.data),
+};
+
+// Quest API
+export const questAPI = {
+  getAll: () => api.get('/api/v1/users/quests').then(res => res.data),
+  progress: (action) => api.post('/api/v1/users/quests/progress', { action }).then(res => res.data),
 };
 
 // Legacy support - maintain backward compatibility

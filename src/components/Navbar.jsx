@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut, CheckSquare } from 'lucide-react';
+import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut, CheckSquare, Brain, Search } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuthStore } from '@/store/authStore';
 import { profileAPI } from '@/services/api';
@@ -34,6 +34,9 @@ const Navbar = ({ minimal = false }) => {
     { path: '/tasks', label: 'Tasks', icon: CheckSquare },
     { path: '/planner', label: 'Study Plans', icon: Target },
     { path: '/study-session', label: 'Session', icon: Zap },
+    { path: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+    { path: '/reviews', label: 'Reviews', icon: Brain },
+    { path: '/search', label: 'Search', icon: Search },
   ];
 
   return (

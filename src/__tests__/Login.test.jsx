@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /**
  * Login Page Tests
  * Tests form rendering, validation, and submit flow
@@ -105,8 +106,9 @@ describe('Login Page', () => {
 
     await waitFor(() => {
       const errorEl = screen.queryByText(/invalid|error|failed/i);
-      // Error should appear somewhere on the page
-      expect(errorEl || document.querySelector('.error')).toBeTruthy();
+      // Error should appear somewhere on the page (avoid direct DOM access)
+      const alt = screen.queryByRole('alert') || screen.queryByText(/invalid|error|failed/i);
+      expect(errorEl || alt).toBeTruthy();
     });
   });
 });

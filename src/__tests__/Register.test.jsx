@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /**
  * Register Page Tests
  * Tests form rendering, validation, and submit flow

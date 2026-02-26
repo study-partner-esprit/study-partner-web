@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /**
  * PrivateRoute Component Tests
  * Tests auth guard and admin redirect logic

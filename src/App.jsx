@@ -17,6 +17,9 @@ import StudySession from './pages/StudySession';
 import Subjects from './pages/Subjects';
 import SubjectDetail from './pages/SubjectDetail';
 import Calendar from './pages/Calendar';
+import Leaderboard from './pages/Leaderboard';
+import ReviewCenter from './pages/ReviewCenter';
+import AISearch from './pages/AISearch';
 import SessionManager from './components/SessionManager';
 import NotificationCenter from './components/NotificationCenter';
 import useNotificationStore from './store/notificationStore';
@@ -136,6 +139,30 @@ function App() {
             element={
               <PrivateRoute>
                 <Calendar />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/leaderboard" 
+            element={
+              <PrivateRoute>
+                <Leaderboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/reviews" 
+            element={
+              <PrivateRoute>
+                <ReviewCenter />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/search" 
+            element={
+              <PrivateRoute>
+                <AISearch />
               </PrivateRoute>
             } 
           />
