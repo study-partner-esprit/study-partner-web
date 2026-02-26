@@ -105,11 +105,11 @@
 }
 
 .alert-success svg {
-    color: rgb(16, 185, 129);
+  color: rgb(16, 185, 129);
 }
 
 .alert-error svg {
-    color: hsl(var(--destructive));
+  color: hsl(var(--destructive));
 }
 
 .week-navigation {

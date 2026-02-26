@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { authAPI } from '../services/api';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { authAPI } from "../services/api";
 
 const useAuthStore = create(
   persist(
@@ -75,7 +75,8 @@ const useAuthStore = create(
 
         try {
           const response = await authAPI.refresh(refreshToken);
-          const { token: newToken, refreshToken: newRefreshToken } = response.data;
+          const { token: newToken, refreshToken: newRefreshToken } =
+            response.data;
 
           const expiry = new Date();
           expiry.setHours(expiry.getHours() + 1);
@@ -87,10 +88,10 @@ const useAuthStore = create(
             isRefreshing: false,
           });
 
-          console.log('[Auth] Token refreshed successfully');
+          console.log("[Auth] Token refreshed successfully");
           return true;
         } catch (error) {
-          console.error('[Auth] Token refresh failed:', error);
+          console.error("[Auth] Token refresh failed:", error);
           set({ isRefreshing: false });
           // If refresh fails, logout user
           get().logout();
@@ -100,7 +101,8 @@ const useAuthStore = create(
 
       // Get valid token (refresh if needed)
       getValidToken: async () => {
-        const { token, isSessionValid, shouldRefreshToken, refreshTokenAsync } = get();
+        const { token, isSessionValid, shouldRefreshToken, refreshTokenAsync } =
+          get();
 
         if (!token) return null;
 
@@ -130,15 +132,15 @@ const useAuthStore = create(
       },
 
       isAdmin: () => {
-        return get().hasRole('admin');
+        return get().hasRole("admin");
       },
 
       isStudent: () => {
-        return get().hasRole('student');
+        return get().hasRole("student");
       },
 
       isTeacher: () => {
-        return get().hasRole('teacher');
+        return get().hasRole("teacher");
       },
 
       // Permission-based access control
@@ -149,18 +151,25 @@ const useAuthStore = create(
         // Define permissions based on roles
         const rolePermissions = {
           admin: [
-            'user.create', 'user.read', 'user.update', 'user.delete',
-            'study.create', 'study.read', 'study.update', 'study.delete',
-            'analytics.read', 'system.admin'
+            "user.create",
+            "user.read",
+            "user.update",
+            "user.delete",
+            "study.create",
+            "study.read",
+            "study.update",
+            "study.delete",
+            "analytics.read",
+            "system.admin",
           ],
           teacher: [
-            'study.create', 'study.read', 'study.update',
-            'user.read', 'analytics.read'
+            "study.create",
+            "study.read",
+            "study.update",
+            "user.read",
+            "analytics.read",
           ],
-          student: [
-            'study.read', 'study.create', 'study.update',
-            'user.read'
-          ]
+          student: ["study.read", "study.create", "study.update", "user.read"],
         };
 
         const userPermissions = rolePermissions[user.role] || [];
@@ -168,12 +177,12 @@ const useAuthStore = create(
       },
 
       // Check if user can access a resource
-      canAccess: (resource, action = 'read') => {
+      canAccess: (resource, action = "read") => {
         return get().hasPermission(`${resource}.${action}`);
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       // Only persist these fields
       partialize: (state) => ({
         user: state.user,
@@ -181,8 +190,8 @@ const useAuthStore = create(
         refreshToken: state.refreshToken,
         sessionExpiry: state.sessionExpiry,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export { useAuthStore };

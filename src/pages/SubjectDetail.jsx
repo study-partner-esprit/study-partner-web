@@ -1,10 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { subjectAPI, courseAPI, studyPlanAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import { BookOpen, ArrowLeft, FileText, Calendar, Plus, Upload, X, AlertCircle, Eye, Download, Sparkles } from 'lucide-react';
-import UploadModal from '../components/UploadModal';
-import './SubjectDetail.css';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { subjectAPI, courseAPI, studyPlanAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import {
+  BookOpen,
+  ArrowLeft,
+  FileText,
+  Calendar,
+  Plus,
+  Upload,
+  X,
+  AlertCircle,
+  Eye,
+  Download,
+  Sparkles,
+} from "lucide-react";
+import UploadModal from "../components/UploadModal";
+import "./SubjectDetail.css";
 
 // Add Files Modal Component
 const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
@@ -36,19 +48,21 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFiles = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
-      setFiles(prev => [...prev, ...droppedFiles]);
+      const droppedFiles = Array.from(e.dataTransfer.files).filter(
+        (file) => file.type === "application/pdf",
+      );
+      setFiles((prev) => [...prev, ...droppedFiles]);
     }
   };
 
   const handleFileChange = (e) => {
     if (e.target.files) {
-      setFiles(prev => [...prev, ...Array.from(e.target.files)]);
+      setFiles((prev) => [...prev, ...Array.from(e.target.files)]);
     }
   };
 
   const removeFile = (index) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -64,13 +78,15 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
     try {
       const formData = new FormData();
       files.forEach((file) => {
-        formData.append('files', file);
+        formData.append("files", file);
       });
 
       await courseAPI.addFiles(course.id, formData);
       onUploadComplete();
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to add files. Please try again.");
+      setError(
+        err.response?.data?.error || "Failed to add files. Please try again.",
+      );
     } finally {
       setUploading(false);
     }
@@ -91,12 +107,12 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
         <div className="modal-content">
           <div className="form-group">
             <label>Additional Course Materials (PDF)</label>
-            <div 
-              className={`file-drop-zone ${dragActive ? 'active' : ''}`}
+            <div
+              className={`file-drop-zone ${dragActive ? "active" : ""}`}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDrop={handleDrop}
-              onClick={() => document.getElementById('file-input-add').click()}
+              onClick={() => document.getElementById("file-input-add").click()}
             >
               <Upload size={48} />
               <p>Drag & drop PDF files here, or click to browse</p>
@@ -106,7 +122,7 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
                 multiple
                 accept=".pdf"
                 onChange={handleFileChange}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           </div>
@@ -118,8 +134,13 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
                 <div key={index} className="file-item">
                   <FileText size={20} />
                   <span>{file.name}</span>
-                  <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                  <button onClick={() => removeFile(index)} className="remove-file">
+                  <span className="file-size">
+                    ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                  </span>
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="remove-file"
+                  >
                     <X size={16} />
                   </button>
                 </div>
@@ -135,15 +156,21 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
           )}
 
           <div className="modal-actions">
-            <button onClick={onClose} className="cancel-btn" disabled={uploading}>
+            <button
+              onClick={onClose}
+              className="cancel-btn"
+              disabled={uploading}
+            >
               Cancel
             </button>
-            <button 
-              onClick={handleSubmit} 
-              className="upload-btn" 
+            <button
+              onClick={handleSubmit}
+              className="upload-btn"
               disabled={uploading || files.length === 0}
             >
-              {uploading ? 'Adding Files...' : `Add ${files.length} File${files.length !== 1 ? 's' : ''}`}
+              {uploading
+                ? "Adding Files..."
+                : `Add ${files.length} File${files.length !== 1 ? "s" : ""}`}
             </button>
           </div>
         </div>
@@ -159,18 +186,25 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
   const handleDownload = (file) => {
     // For now, we'll just show an alert since files are processed and removed
     // In a production system, you'd store files permanently and provide download links
-    alert(`Download functionality for ${file.originalName} would be implemented here. Files are currently processed and removed after AI analysis.`);
+    alert(
+      `Download functionality for ${file.originalName} would be implemented here. Files are currently processed and removed after AI analysis.`,
+    );
   };
 
   const handleView = (file) => {
     // For PDFs, we could open in a new tab or embed a viewer
     // Since files are removed after processing, this is a placeholder
-    alert(`View functionality for ${file.originalName} would be implemented here. In a full implementation, files would be stored permanently.`);
+    alert(
+      `View functionality for ${file.originalName} would be implemented here. In a full implementation, files would be stored permanently.`,
+    );
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container course-detail-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-container course-detail-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>{course.title}</h2>
           <button onClick={onClose} className="close-btn">
@@ -189,7 +223,9 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
           <div className="course-info">
             <div className="info-item">
               <span className="label">Status:</span>
-              <span className={`status-badge ${course.status}`}>{course.status}</span>
+              <span className={`status-badge ${course.status}`}>
+                {course.status}
+              </span>
             </div>
             <div className="info-item">
               <span className="label">Files:</span>
@@ -210,7 +246,13 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
           <div className="course-files">
             <div className="files-header">
               <h3>Course Documents</h3>
-              <button className="add-files-btn" onClick={() => { onClose(); onAddFiles(course); }}>
+              <button
+                className="add-files-btn"
+                onClick={() => {
+                  onClose();
+                  onAddFiles(course);
+                }}
+              >
                 <Upload size={16} />
                 Add More Files
               </button>
@@ -226,20 +268,20 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
                     <div className="file-info">
                       <div className="file-name">{file.originalName}</div>
                       <div className="file-meta">
-                        {(file.size / 1024 / 1024).toFixed(2)} MB • 
-                        Uploaded {new Date(file.uploadedAt).toLocaleDateString()}
+                        {(file.size / 1024 / 1024).toFixed(2)} MB • Uploaded{" "}
+                        {new Date(file.uploadedAt).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="file-actions">
-                      <button 
-                        className="file-action-btn view-btn" 
+                      <button
+                        className="file-action-btn view-btn"
                         onClick={() => handleView(file)}
                         title="View Document"
                       >
                         <Eye size={16} />
                       </button>
-                      <button 
-                        className="file-action-btn download-btn" 
+                      <button
+                        className="file-action-btn download-btn"
                         onClick={() => handleDownload(file)}
                         title="Download Document"
                       >
@@ -253,7 +295,13 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
               <div className="no-files">
                 <FileText size={48} />
                 <p>No documents uploaded yet</p>
-                <button className="add-files-btn" onClick={() => { onClose(); onAddFiles(course); }}>
+                <button
+                  className="add-files-btn"
+                  onClick={() => {
+                    onClose();
+                    onAddFiles(course);
+                  }}
+                >
                   <Upload size={16} />
                   Upload Documents
                 </button>
@@ -270,11 +318,13 @@ const CourseDetailModal = ({ isOpen, onClose, course, onAddFiles }) => {
                     <h4>{topic.title}</h4>
                     {topic.subtopics && topic.subtopics.length > 0 && (
                       <div className="subtopics">
-                        {topic.subtopics.slice(0, 3).map((subtopic, subIndex) => (
-                          <div key={subIndex} className="subtopic">
-                            {subtopic.title}
-                          </div>
-                        ))}
+                        {topic.subtopics
+                          .slice(0, 3)
+                          .map((subtopic, subIndex) => (
+                            <div key={subIndex} className="subtopic">
+                              {subtopic.title}
+                            </div>
+                          ))}
                         {topic.subtopics.length > 3 && (
                           <div className="more-subtopics">
                             +{topic.subtopics.length - 3} more subtopics
@@ -324,14 +374,14 @@ const SubjectDetail = () => {
       const coursesResponse = await courseAPI.list(subjectId);
       setCourses(coursesResponse.data.courses || []);
     } catch (error) {
-      console.error('Failed to load subject data:', error);
+      console.error("Failed to load subject data:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleBack = () => {
-    navigate('/subjects');
+    navigate("/subjects");
   };
 
   const handleAddFiles = (course) => {
@@ -345,7 +395,7 @@ const SubjectDetail = () => {
       setSelectedCourseForDetail(response.data.course);
       setIsCourseDetailModalOpen(true);
     } catch (error) {
-      console.error('Failed to load course details:', error);
+      console.error("Failed to load course details:", error);
     }
   };
 
@@ -356,42 +406,54 @@ const SubjectDetail = () => {
   };
 
   const handleGeneratePlan = async (course) => {
-    if (course.status !== 'completed') {
-      alert('Course is still being processed. Please wait until processing is complete.');
+    if (course.status !== "completed") {
+      alert(
+        "Course is still being processed. Please wait until processing is complete.",
+      );
       return;
     }
 
-    const goal = prompt(`What do you want to learn from "${course.title}"?`, `Master all concepts in ${course.title}`);
-    
+    const goal = prompt(
+      `What do you want to learn from "${course.title}"?`,
+      `Master all concepts in ${course.title}`,
+    );
+
     if (!goal) return;
 
-    const availableTime = prompt('How many minutes do you have available for studying?', '240');
-    
+    const availableTime = prompt(
+      "How many minutes do you have available for studying?",
+      "240",
+    );
+
     if (!availableTime) return;
 
-    setGeneratingPlan(prev => ({ ...prev, [course.id]: true }));
+    setGeneratingPlan((prev) => ({ ...prev, [course.id]: true }));
 
     try {
       const response = await studyPlanAPI.create({
         goal: goal,
         availableTimeMinutes: parseInt(availableTime),
         courseId: course.id,
-        startDate: new Date().toISOString()
+        startDate: new Date().toISOString(),
       });
 
-      const message = response.data.plan.warning 
+      const message = response.data.plan.warning
         ? `Study plan created successfully with ${response.data.plan.tasksCount} tasks!\n\nNote: ${response.data.plan.warning}`
         : `Study plan created successfully with ${response.data.plan.tasksCount} tasks!`;
-      
+
       alert(message);
-      navigate('/planner');
+      navigate("/planner");
     } catch (error) {
-      console.error('Failed to generate plan:', error);
-      const errorMessage = error.response?.data?.error || 'Failed to generate study plan. Please try again.';
-      const errorDetails = error.response?.data?.details ? `\n\nDetails: ${error.response.data.details}` : '';
+      console.error("Failed to generate plan:", error);
+      const errorMessage =
+        error.response?.data?.error ||
+        "Failed to generate study plan. Please try again.";
+      const errorDetails = error.response?.data?.details
+        ? `\n\nDetails: ${error.response.data.details}`
+        : "";
       alert(errorMessage + errorDetails);
     } finally {
-      setGeneratingPlan(prev => ({ ...prev, [course.id]: false }));
+      setGeneratingPlan((prev) => ({ ...prev, [course.id]: false }));
     }
   };
 
@@ -432,12 +494,15 @@ const SubjectDetail = () => {
           </div>
           <h2>{subject.name}</h2>
           <p className="course-count-badge">
-            {courses.length} {courses.length === 1 ? 'Course' : 'Courses'}
+            {courses.length} {courses.length === 1 ? "Course" : "Courses"}
           </p>
         </div>
 
         <div className="sidebar-actions">
-          <button className="add-course-btn" onClick={() => setIsModalOpen(true)}>
+          <button
+            className="add-course-btn"
+            onClick={() => setIsModalOpen(true)}
+          >
             <Plus size={20} />
             Add Course
           </button>
@@ -481,23 +546,29 @@ const SubjectDetail = () => {
                     </span>
                     <span className="meta-item">
                       <FileText size={14} />
-                      {course.filesCount || 0} {course.filesCount === 1 ? 'file' : 'files'}
+                      {course.filesCount || 0}{" "}
+                      {course.filesCount === 1 ? "file" : "files"}
                     </span>
                   </div>
                 </div>
                 <div className="course-footer">
-                  <button className="view-btn" onClick={() => handleViewCourse(course)}>
+                  <button
+                    className="view-btn"
+                    onClick={() => handleViewCourse(course)}
+                  >
                     <Eye size={16} />
                     View Details
                   </button>
-                  {course.status === 'completed' && (
-                    <button 
-                      className="generate-plan-btn" 
+                  {course.status === "completed" && (
+                    <button
+                      className="generate-plan-btn"
                       onClick={() => handleGeneratePlan(course)}
                       disabled={generatingPlan[course.id]}
                     >
                       <Sparkles size={16} />
-                      {generatingPlan[course.id] ? 'Generating...' : 'Generate Plan'}
+                      {generatingPlan[course.id]
+                        ? "Generating..."
+                        : "Generate Plan"}
                     </button>
                   )}
                 </div>
@@ -507,9 +578,9 @@ const SubjectDetail = () => {
         )}
       </div>
 
-      <UploadModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <UploadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onUploadComplete={loadSubjectData}
         subjectId={subjectId}
         subjectName={subject?.name}

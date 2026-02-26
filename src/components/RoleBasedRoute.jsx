@@ -1,7 +1,11 @@
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { Navigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
-const RoleBasedRoute = ({ children, allowedRoles = [], requireAuth = true }) => {
+const RoleBasedRoute = ({
+  children,
+  allowedRoles = [],
+  requireAuth = true,
+}) => {
   const { isAuthenticated, user, hasAnyRole } = useAuthStore();
 
   // Check authentication
@@ -12,9 +16,9 @@ const RoleBasedRoute = ({ children, allowedRoles = [], requireAuth = true }) => 
   // Check role-based access
   if (allowedRoles.length > 0 && !hasAnyRole(allowedRoles)) {
     // Redirect based on user role
-    if (user?.role === 'admin') {
+    if (user?.role === "admin") {
       return <Navigate to="/admin/dashboard" replace />;
-    } else if (user?.role === 'teacher') {
+    } else if (user?.role === "teacher") {
       return <Navigate to="/dashboard" replace />;
     } else {
       return <Navigate to="/dashboard" replace />;

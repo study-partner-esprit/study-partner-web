@@ -1,33 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext({
-  theme: 'dark',
+  theme: "dark",
   toggleTheme: () => {},
 });
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme');
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
       if (savedTheme) {
         return savedTheme;
       }
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
       }
     }
-    return 'dark'; // Default to dark for futuristic look
+    return "dark"; // Default to dark for futuristic look
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
+    root.classList.remove("light", "dark");
     root.classList.add(theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   return (

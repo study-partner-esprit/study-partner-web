@@ -3,25 +3,25 @@
  * PrivateRoute Component Tests
  * Tests auth guard and admin redirect logic
  */
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import "@testing-library/jest-dom";
 
 // Mock the auth store
 const mockStore = {
   isAuthenticated: false,
-  user: null
+  user: null,
 };
 
-jest.mock('../../store/authStore', () => ({
+jest.mock("../../store/authStore", () => ({
   __esModule: true,
-  default: (selector) => selector(mockStore)
+  default: (selector) => selector(mockStore),
 }));
 
-import PrivateRoute from '../../components/PrivateRoute';
+import PrivateRoute from "../../components/PrivateRoute";
 
-const renderWithRouter = (ui, { route = '/' } = {}) => {
+const renderWithRouter = (ui, { route = "/" } = {}) => {
   return render(
     <MemoryRouter initialEntries={[route]}>
       <Routes>
@@ -29,62 +29,62 @@ const renderWithRouter = (ui, { route = '/' } = {}) => {
         <Route path="/login" element={<div>Login Page</div>} />
         <Route path="/dashboard" element={<div>Dashboard</div>} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 };
 
-describe('PrivateRoute', () => {
+describe("PrivateRoute", () => {
   afterEach(() => {
     mockStore.isAuthenticated = false;
     mockStore.user = null;
   });
 
-  it('should redirect to login when not authenticated', () => {
+  it("should redirect to login when not authenticated", () => {
     renderWithRouter(
       <PrivateRoute>
         <div>Protected Content</div>
-      </PrivateRoute>
+      </PrivateRoute>,
     );
 
-    expect(screen.getByText('Login Page')).toBeInTheDocument();
+    expect(screen.getByText("Login Page")).toBeInTheDocument();
   });
 
-  it('should render children when authenticated', () => {
+  it("should render children when authenticated", () => {
     mockStore.isAuthenticated = true;
-    mockStore.user = { role: 'student' };
+    mockStore.user = { role: "student" };
 
     renderWithRouter(
       <PrivateRoute>
         <div>Protected Content</div>
-      </PrivateRoute>
+      </PrivateRoute>,
     );
 
-    expect(screen.getByText('Protected Content')).toBeInTheDocument();
+    expect(screen.getByText("Protected Content")).toBeInTheDocument();
   });
 
-  it('should redirect non-admin from admin route', () => {
+  it("should redirect non-admin from admin route", () => {
     mockStore.isAuthenticated = true;
-    mockStore.user = { role: 'student' };
+    mockStore.user = { role: "student" };
 
     renderWithRouter(
       <PrivateRoute requireAdmin>
         <div>Admin Content</div>
-      </PrivateRoute>
+      </PrivateRoute>,
     );
 
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
-  it('should render admin content for admin users', () => {
+  it("should render admin content for admin users", () => {
     mockStore.isAuthenticated = true;
-    mockStore.user = { role: 'admin' };
+    mockStore.user = { role: "admin" };
 
     renderWithRouter(
       <PrivateRoute requireAdmin>
         <div>Admin Content</div>
-      </PrivateRoute>
+      </PrivateRoute>,
     );
 
-    expect(screen.getByText('Admin Content')).toBeInTheDocument();
+    expect(screen.getByText("Admin Content")).toBeInTheDocument();
   });
 });

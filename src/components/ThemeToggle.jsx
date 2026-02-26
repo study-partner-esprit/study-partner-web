@@ -1,8 +1,8 @@
-import React from 'react';
-import { Moon, Sun } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -22,9 +22,9 @@ const ThemeToggle = () => {
         <motion.div
           initial={false}
           animate={{
-            y: theme === 'dark' ? -50 : 0,
-            opacity: theme === 'dark' ? 0 : 1,
-            rotate: theme === 'dark' ? 90 : 0,
+            y: theme === "dark" ? -50 : 0,
+            opacity: theme === "dark" ? 0 : 1,
+            rotate: theme === "dark" ? 90 : 0,
           }}
           transition={{ duration: 0.2 }}
           className="absolute"
@@ -32,14 +32,14 @@ const ThemeToggle = () => {
           <Sun className="h-[1.2rem] w-[1.2rem] text-yellow-500" />
         </motion.div>
         <motion.div
-           initial={false}
-           animate={{
-             y: theme === 'dark' ? 0 : 50,
-             opacity: theme === 'dark' ? 1 : 0,
-             rotate: theme === 'dark' ? 0 : -90,
-           }}
-           transition={{ duration: 0.2 }}
-           className="absolute"
+          initial={false}
+          animate={{
+            y: theme === "dark" ? 0 : 50,
+            opacity: theme === "dark" ? 1 : 0,
+            rotate: theme === "dark" ? 0 : -90,
+          }}
+          transition={{ duration: 0.2 }}
+          className="absolute"
         >
           <Moon className="h-[1.2rem] w-[1.2rem] text-primary" />
         </motion.div>

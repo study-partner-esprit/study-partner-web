@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { tasksAPI, courseAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import { Sparkles, BookOpen, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { tasksAPI, courseAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import { Sparkles, BookOpen, Loader2 } from "lucide-react";
 
 const Tasks = () => {
   const { user } = useAuthStore();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // all, todo, in-progress, completed
+  const [filter, setFilter] = useState("all"); // all, todo, in-progress, completed
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    priority: 'medium',
-    estimatedTime: '',
-    dueDate: '',
-    tags: ''
+    title: "",
+    description: "",
+    priority: "medium",
+    estimatedTime: "",
+    dueDate: "",
+    tags: "",
   });
 
   useEffect(() => {
@@ -26,11 +26,11 @@ const Tasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const params = filter !== 'all' ? { status: filter } : {};
+      const params = filter !== "all" ? { status: filter } : {};
       const response = await tasksAPI.getAll(params);
       setTasks(response.data.tasks || []);
     } catch (error) {
-      console.error('Failed to fetch tasks:', error);
+      console.error("Failed to fetch tasks:", error);
     } finally {
       setLoading(false);
     }
@@ -38,12 +38,16 @@ const Tasks = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const taskData = {
         ...formData,
-        estimatedTime: formData.estimatedTime ? parseInt(formData.estimatedTime) : undefined,
-        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()) : []
+        estimatedTime: formData.estimatedTime
+          ? parseInt(formData.estimatedTime)
+          : undefined,
+        tags: formData.tags
+          ? formData.tags.split(",").map((t) => t.trim())
+          : [],
       };
 
       if (editingTask) {
@@ -55,17 +59,17 @@ const Tasks = () => {
       fetchTasks();
       resetForm();
     } catch (error) {
-      console.error('Failed to save task:', error);
+      console.error("Failed to save task:", error);
     }
   };
 
   const handleDelete = async (taskId) => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
+    if (window.confirm("Are you sure you want to delete this task?")) {
       try {
         await tasksAPI.delete(taskId);
         fetchTasks();
       } catch (error) {
-        console.error('Failed to delete task:', error);
+        console.error("Failed to delete task:", error);
       }
     }
   };
@@ -75,18 +79,18 @@ const Tasks = () => {
       await tasksAPI.update(taskId, { status: newStatus });
       fetchTasks();
     } catch (error) {
-      console.error('Failed to update task status:', error);
+      console.error("Failed to update task status:", error);
     }
   };
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      description: '',
-      priority: 'medium',
-      estimatedTime: '',
-      dueDate: '',
-      tags: ''
+      title: "",
+      description: "",
+      priority: "medium",
+      estimatedTime: "",
+      dueDate: "",
+      tags: "",
     });
     setEditingTask(null);
     setShowCreateModal(false);
@@ -96,11 +100,13 @@ const Tasks = () => {
     setEditingTask(task);
     setFormData({
       title: task.title,
-      description: task.description || '',
-      priority: task.priority || 'medium',
-      estimatedTime: task.estimatedTime || '',
-      dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
-      tags: task.tags?.join(', ') || ''
+      description: task.description || "",
+      priority: task.priority || "medium",
+      estimatedTime: task.estimatedTime || "",
+      dueDate: task.dueDate
+        ? new Date(task.dueDate).toISOString().split("T")[0]
+        : "",
+      tags: task.tags?.join(", ") || "",
     });
     setShowCreateModal(true);
   };
@@ -110,7 +116,9 @@ const Tasks = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-foreground text-xl font-bold tracking-wider">LOADING TASKS...</div>
+        <div className="text-foreground text-xl font-bold tracking-wider">
+          LOADING TASKS...
+        </div>
       </div>
     );
   }
@@ -124,7 +132,9 @@ const Tasks = () => {
               <h1 className="text-4xl font-bold tracking-wider uppercase">
                 <span className="text-primary">//</span> TASKS
               </h1>
-              <p className="text-muted-foreground mt-2">Manage your study tasks</p>
+              <p className="text-muted-foreground mt-2">
+                Manage your study tasks
+              </p>
             </div>
             <div className="flex gap-3 flex-wrap">
               <button
@@ -141,27 +151,29 @@ const Tasks = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Filters */}
         <div className="flex gap-4 mb-8 flex-wrap">
-          {['all', 'todo', 'in-progress', 'completed'].map((status) => (
+          {["all", "todo", "in-progress", "completed"].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
               className={`px-6 py-2 font-bold tracking-wider transition-all border-2 ${
                 filter === status
-                  ? 'bg-primary border-primary text-primary-foreground'
-                  : 'bg-card border-border text-muted-foreground hover:border-primary'
+                  ? "bg-primary border-primary text-primary-foreground"
+                  : "bg-card border-border text-muted-foreground hover:border-primary"
               }`}
             >
-              {status.toUpperCase().replace('-', ' ')}
+              {status.toUpperCase().replace("-", " ")}
             </button>
           ))}
         </div>
 
         {/* Tasks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">  
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
             {filteredTasks.length === 0 ? (
               <div className="col-span-full text-center py-20">
-                <p className="text-muted-foreground text-xl mb-4">NO TASKS FOUND</p>
+                <p className="text-muted-foreground text-xl mb-4">
+                  NO TASKS FOUND
+                </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
                   className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider"
@@ -201,27 +213,36 @@ const Tasks = () => {
               className="bg-card border-2 border-primary p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-primary">//</span> {editingTask ? 'EDIT' : 'NEW'} TASK
+                <span className="text-primary">//</span>{" "}
+                {editingTask ? "EDIT" : "NEW"} TASK
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">TITLE</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">
+                    TITLE
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
                     className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                     placeholder="Task title..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">DESCRIPTION</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">
+                    DESCRIPTION
+                  </label>
                   <textarea
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none h-24"
                     placeholder="Task description..."
                   />
@@ -229,10 +250,14 @@ const Tasks = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-foreground">PRIORITY</label>
+                    <label className="block text-sm font-bold mb-2 text-foreground">
+                      PRIORITY
+                    </label>
                     <select
                       value={formData.priority}
-                      onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, priority: e.target.value })
+                      }
                       className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                     >
                       <option value="low">LOW</option>
@@ -242,11 +267,18 @@ const Tasks = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-foreground">ESTIMATED TIME (min)</label>
+                    <label className="block text-sm font-bold mb-2 text-foreground">
+                      ESTIMATED TIME (min)
+                    </label>
                     <input
                       type="number"
                       value={formData.estimatedTime}
-                      onChange={(e) => setFormData({ ...formData, estimatedTime: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          estimatedTime: e.target.value,
+                        })
+                      }
                       className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
                       placeholder="60"
                     />
@@ -254,21 +286,29 @@ const Tasks = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">DUE DATE</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">
+                    DUE DATE
+                  </label>
                   <input
                     type="date"
                     value={formData.dueDate}
-                    onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, dueDate: e.target.value })
+                    }
                     className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">TAGS (comma separated)</label>
+                  <label className="block text-sm font-bold mb-2 text-foreground">
+                    TAGS (comma separated)
+                  </label>
                   <input
                     type="text"
                     value={formData.tags}
-                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, tags: e.target.value })
+                    }
                     className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
                     placeholder="math, homework, urgent"
                   />
@@ -279,7 +319,7 @@ const Tasks = () => {
                     type="submit"
                     className="flex-1 px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider transition-all"
                   >
-                    {editingTask ? 'UPDATE' : 'CREATE'} TASK
+                    {editingTask ? "UPDATE" : "CREATE"} TASK
                   </button>
                   <button
                     type="button"
@@ -309,26 +349,36 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       className="bg-[#1a2633] border-2 border-[#2e3a4a] p-6 relative overflow-hidden group hover:border-[#ff4655] transition-all"
     >
       {/* Priority indicator */}
-      <div className={`absolute top-0 left-0 w-full h-1 ${
-        task.priority === 'high' ? 'bg-red-500' :
-        task.priority === 'medium' ? 'bg-yellow-500' :
-        'bg-green-500'
-      }`}></div>
+      <div
+        className={`absolute top-0 left-0 w-full h-1 ${
+          task.priority === "high"
+            ? "bg-red-500"
+            : task.priority === "medium"
+              ? "bg-yellow-500"
+              : "bg-green-500"
+        }`}
+      ></div>
 
       {/* Status Badge */}
-      <div className={`absolute top-4 right-4 px-2 py-1 text-xs font-bold ${
-        task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-        task.status === 'in-progress' ? 'bg-yellow-500/20 text-yellow-400' :
-        'bg-muted/50 text-muted-foreground'
-      }`}>
-        {task.status?.toUpperCase().replace('-', ' ')}
+      <div
+        className={`absolute top-4 right-4 px-2 py-1 text-xs font-bold ${
+          task.status === "completed"
+            ? "bg-green-500/20 text-green-400"
+            : task.status === "in-progress"
+              ? "bg-yellow-500/20 text-yellow-400"
+              : "bg-muted/50 text-muted-foreground"
+        }`}
+      >
+        {task.status?.toUpperCase().replace("-", " ")}
       </div>
 
       {/* Content */}
       <div className="mt-2">
         <h3 className="text-xl font-bold mb-2 text-foreground">{task.title}</h3>
         {task.description && (
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{task.description}</p>
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+            {task.description}
+          </p>
         )}
 
         {/* Task source badge */}
@@ -342,7 +392,10 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
 
         <div className="flex flex-wrap gap-2 mb-4">
           {task.tags?.map((tag, i) => (
-            <span key={i} className="px-2 py-1 bg-muted text-xs text-muted-foreground">
+            <span
+              key={i}
+              className="px-2 py-1 bg-muted text-xs text-muted-foreground"
+            >
               #{tag}
             </span>
           ))}
@@ -356,12 +409,17 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
 
         {/* Actions */}
         <div className="flex gap-2 mt-4">
-          {task.status !== 'completed' && (
+          {task.status !== "completed" && (
             <button
-              onClick={() => onStatusChange(task._id, task.status === 'todo' ? 'in-progress' : 'completed')}
+              onClick={() =>
+                onStatusChange(
+                  task._id,
+                  task.status === "todo" ? "in-progress" : "completed",
+                )
+              }
               className="flex-1 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 text-sm font-bold transition-all"
             >
-              {task.status === 'todo' ? 'START' : 'COMPLETE'}
+              {task.status === "todo" ? "START" : "COMPLETE"}
             </button>
           )}
           <button

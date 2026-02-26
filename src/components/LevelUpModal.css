@@ -92,7 +92,8 @@
 }
 
 @keyframes iconPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -137,7 +138,8 @@
 }
 
 @keyframes numberGlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     text-shadow: 2px 2px 4px rgba(102, 126, 234, 0.2);
   }

@@ -1,11 +1,11 @@
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from "../store/authStore";
 
 // Component that renders children only if user has required permission
 export const PermissionGuard = ({
   permission,
   permissions,
   fallback = null,
-  children
+  children,
 }) => {
   const { user, hasPermission, hasAnyRole } = useAuthStore();
 
@@ -25,11 +25,7 @@ export const PermissionGuard = ({
 };
 
 // Component that renders children only if user has required role
-export const RoleGuard = ({
-  roles,
-  fallback = null,
-  children
-}) => {
+export const RoleGuard = ({ roles, fallback = null, children }) => {
   const { hasAnyRole } = useAuthStore();
 
   if (!hasAnyRole(roles)) {
@@ -49,8 +45,8 @@ export const usePermissions = () => {
     hasRole: (role) => hasRole(role),
     hasAnyRole: (roles) => hasAnyRole(roles),
     canAccess: (resource, action) => hasPermission(`${resource}.${action}`),
-    isAdmin: () => hasRole('admin'),
-    isTeacher: () => hasRole('teacher'),
-    isStudent: () => hasRole('student'),
+    isAdmin: () => hasRole("admin"),
+    isTeacher: () => hasRole("teacher"),
+    isStudent: () => hasRole("student"),
   };
 };

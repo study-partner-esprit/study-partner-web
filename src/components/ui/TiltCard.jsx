@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import React, { useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const TiltCard = ({ children, className }) => {
   const ref = useRef(null);
-  
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -49,13 +49,13 @@ const TiltCard = ({ children, className }) => {
       }}
       className={cn(
         "relative transition-all duration-200 ease-out valo-card font-valorant",
-        className
+        className,
       )}
     >
       {/* Decorative Corner Lines & Tech Labels */}
       <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary/50" />
       <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/50" />
-      
+
       {/* Tech Text Decorations (Valorant Gameday style) */}
       <div className="absolute top-2 right-4 text-[10px] font-bold tracking-widest text-primary/30 pointer-events-none select-none">
         // SYS.RDY
@@ -66,14 +66,12 @@ const TiltCard = ({ children, className }) => {
 
       {/* Decorative vertical bar */}
       <div className="absolute top-1/2 left-0 w-1 h-8 -translate-y-1/2 bg-primary/20" />
-      
+
       {/* Inner Content */}
-      <div className="relative z-10 w-full h-full">
-        {children}
-      </div>
-      
+      <div className="relative z-10 w-full h-full">{children}</div>
+
       {/* Hover Reveal Effect */}
-      <div 
+      <div
         style={{ transform: "translateZ(75px)", transformStyle: "preserve-3d" }}
         className="absolute inset-0 bg-primary/5 -z-10 group-hover:opacity-100 opacity-0 transition-opacity"
       />

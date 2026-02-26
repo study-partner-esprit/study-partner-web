@@ -1,17 +1,46 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ChevronRight, Sparkles, Trophy, Star, Zap, Target, Users, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import TiltCard from '@/components/ui/TiltCard';
-import DecryptedText from '@/components/ui/DecryptedText';
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  ChevronRight,
+  Sparkles,
+  Trophy,
+  Star,
+  Zap,
+  Target,
+  Users,
+  TrendingUp,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import TiltCard from "@/components/ui/TiltCard";
+import DecryptedText from "@/components/ui/DecryptedText";
 // import LightRays from '@/components/ui/LightRays'; // Moved to App.jsx global
 
 const HeroSection = () => {
   const stats = [
-    { icon: Users, value: '10K+', label: 'Active Learners', color: 'text-primary' },
-    { icon: Trophy, value: '50K+', label: 'Achievements Earned', color: 'text-yellow-500' },
-    { icon: TrendingUp, value: '85%', label: 'Success Rate', color: 'text-emerald-500' },
-    { icon: Star, value: '4.9/5', label: 'User Rating', color: 'text-yellow-500' },
+    {
+      icon: Users,
+      value: "10K+",
+      label: "Active Learners",
+      color: "text-primary",
+    },
+    {
+      icon: Trophy,
+      value: "50K+",
+      label: "Achievements Earned",
+      color: "text-yellow-500",
+    },
+    {
+      icon: TrendingUp,
+      value: "85%",
+      label: "Success Rate",
+      color: "text-emerald-500",
+    },
+    {
+      icon: Star,
+      value: "4.9/5",
+      label: "User Rating",
+      color: "text-yellow-500",
+    },
   ];
 
   return (
@@ -23,10 +52,9 @@ const HeroSection = () => {
         </span>
       </div>
 
-        <div className="relative w-full z-10">
-          <TiltCard className="rect-card w-full h-screen p-0">
+      <div className="relative w-full z-10">
+        <TiltCard className="rect-card w-full h-screen p-0">
           <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full">
-
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -46,7 +74,7 @@ const HeroSection = () => {
             >
               Level Up Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-red-500 to-orange-500 animate-pulse">
-                Study Game 
+                Study Game
               </span>
             </motion.h1>
 
@@ -56,7 +84,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <DecryptedText 
+              <DecryptedText
                 text="Level up your learning with AI-powered gamification, earn XP, unlock achievements, and turn studying into a fun, personalized adventure."
                 animateOn="view"
                 revealDirection="start"
@@ -76,7 +104,10 @@ const HeroSection = () => {
             >
               <Link to="/register">
                 <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(255, 70, 85, 0.4)" }}
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 20px 40px rgba(255, 70, 85, 0.4)",
+                  }}
                   whileTap={{ scale: 0.95 }}
                   className="valo-btn inline-flex items-center bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25"
                 >
@@ -110,8 +141,12 @@ const HeroSection = () => {
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <Icon className={`w-8 h-8 mx-auto mb-2 ${stat.color}`} />
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-valorant">{stat.value}</div>
-                    <div className="text-xs uppercase tracking-wider font-bold text-muted">{stat.label}</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-valorant">
+                      {stat.value}
+                    </div>
+                    <div className="text-xs uppercase tracking-wider font-bold text-muted">
+                      {stat.label}
+                    </div>
                   </motion.div>
                 );
               })}

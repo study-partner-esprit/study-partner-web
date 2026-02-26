@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -72,7 +72,9 @@
   background: hsl(var(--card) / 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -81,7 +83,6 @@
   box-shadow: 0 0 20px hsl(var(--primary) / 0.15);
   transform: translateY(-2px);
 }
-
 
 @layer base {
   * {
@@ -102,7 +103,7 @@
   transition: text-shadow 160ms ease;
 }
 .dark .howitworks-title {
-  text-shadow: 0 6px 18px rgba(255,255,255,0.06);
+  text-shadow: 0 6px 18px rgba(255, 255, 255, 0.06);
 }
 
 /* CTA sheen handling: keep subtle in light, remove in dark to avoid glare */
@@ -120,7 +121,7 @@
   transition: text-shadow 160ms ease;
 }
 .dark .cta-title {
-  text-shadow: 0 8px 22px rgba(255,255,255,0.06);
+  text-shadow: 0 8px 22px rgba(255, 255, 255, 0.06);
 }
 
 /* Textured Background noise */
@@ -137,7 +138,7 @@
 /* Valorant Style Utilities */
 @layer components {
   /* ... existing valo-card components ... */
-  
+
   /* Outline Text Effect */
   .text-outline {
     -webkit-text-stroke: 1px hsl(var(--primary) / 1);
@@ -147,20 +148,20 @@
     -webkit-text-stroke: 1px hsl(var(--primary) / 1);
     color: transparent;
   }
-  
+
   /* Big background typography */
   .text-outline-lg {
     -webkit-text-stroke: 2px hsl(var(--primary) / 1);
     color: transparent;
     font-weight: 800;
   }
-  
+
   .valo-card {
     position: relative;
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     transition: all 0.25s ease;
     background: hsl(var(--card) / 1);
-    box-shadow: 0 8px 30px rgba(11,13,17,0.06);
+    box-shadow: 0 8px 30px rgba(11, 13, 17, 0.06);
     /* More aggressive polygonal clip */
     clip-path: polygon(
       0 0,
@@ -172,27 +173,30 @@
     );
   }
   .dark .valo-card {
-    border: 1px solid rgba(255,255,255,0.03);
+    border: 1px solid rgba(255, 255, 255, 0.03);
     background: hsl(var(--card) / 1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   }
-  
+
   .valo-card-sm {
     position: relative;
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     background: hsl(var(--card) / 1);
-    box-shadow: 0 6px 18px rgba(11,13,17,0.05);
+    box-shadow: 0 6px 18px rgba(11, 13, 17, 0.05);
     transition: all 0.2s ease;
     clip-path: polygon(
-      10px 0, 100% 0,
-      100% calc(100% - 10px), calc(100% - 10px) 100%,
-      0 100%, 0 10px
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
     );
   }
   .dark .valo-card-sm {
-    border: 1px solid rgba(255,255,255,0.03);
+    border: 1px solid rgba(255, 255, 255, 0.03);
     background: hsl(var(--card) / 1);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
   }
 
   /* Rectangular card variant: sharp corners, no polygon clip */
@@ -201,7 +205,7 @@
     border-radius: 0 !important;
     background: hsl(var(--card) / 1);
     border: 1px solid hsl(var(--border) / 0.6);
-    box-shadow: 0 10px 30px rgba(11,13,17,0.06);
+    box-shadow: 0 10px 30px rgba(11, 13, 17, 0.06);
   }
 
   .rect-card-sm {
@@ -209,7 +213,7 @@
     border-radius: 0 !important;
     background: hsl(var(--card) / 1);
     border: 1px solid hsl(var(--border) / 0.5);
-    box-shadow: 0 6px 18px rgba(11,13,17,0.05);
+    box-shadow: 0 6px 18px rgba(11, 13, 17, 0.05);
   }
 
   .valo-btn {
@@ -217,43 +221,60 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
     transform: translateZ(0);
     clip-path: polygon(
-      10px 0, 100% 0,
-      100% calc(100% - 10px), calc(100% - 10px) 100%,
-      0 100%, 0 10px
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
     );
     background: transparent;
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     color: inherit;
     box-shadow: none;
   }
 
   /* Glitch effect on hover */
   .valo-glitch:hover {
-    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
   }
-  
+
   @keyframes glitch {
-    0% { transform: translate(0) }
-    20% { transform: translate(-2px, 2px) }
-    40% { transform: translate(-2px, -2px) }
-    60% { transform: translate(2px, 2px) }
-    80% { transform: translate(2px, -2px) }
-    100% { transform: translate(0) }
+    0% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(-2px, -2px);
+    }
+    60% {
+      transform: translate(2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+    100% {
+      transform: translate(0);
+    }
   }
 }
 
 .font-valorant {
-  font-family: 'Oswald', 'Space Grotesk', sans-serif;
+  font-family: "Oswald", "Space Grotesk", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 .App {
@@ -325,7 +346,7 @@ code {
   color: hsl(var(--card-foreground) / 1);
   border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 6px 18px rgba(11,13,17,0.06);
+  box-shadow: 0 6px 18px rgba(11, 13, 17, 0.06);
   margin-bottom: 20px;
 }
 

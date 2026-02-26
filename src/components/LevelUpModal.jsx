@@ -1,5 +1,5 @@
-import React from 'react';
-import './LevelUpModal.css';
+import React from "react";
+import "./LevelUpModal.css";
 
 const LevelUpModal = ({ visible, newLevel, totalXP, onClose }) => {
   if (!visible) return null;
@@ -9,11 +9,21 @@ const LevelUpModal = ({ visible, newLevel, totalXP, onClose }) => {
       <div className="levelup-modal" onClick={(e) => e.stopPropagation()}>
         <div className="levelup-confetti">
           {[...Array(30)].map((_, i) => (
-            <div key={i} className="confetti-piece" style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4ecdc4'][Math.floor(Math.random() * 5)]
-            }} />
+            <div
+              key={i}
+              className="confetti-piece"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                backgroundColor: [
+                  "#667eea",
+                  "#764ba2",
+                  "#f093fb",
+                  "#f5576c",
+                  "#4ecdc4",
+                ][Math.floor(Math.random() * 5)],
+              }}
+            />
           ))}
         </div>
 

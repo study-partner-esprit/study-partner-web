@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { gamificationAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import { Trophy, Crown, Star, Zap, Medal, TrendingUp, Award, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { gamificationAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import {
+  Trophy,
+  Crown,
+  Star,
+  Zap,
+  Medal,
+  TrendingUp,
+  Award,
+  Loader2,
+} from "lucide-react";
 
-const RANK_COLORS = ['text-yellow-400', 'text-gray-300', 'text-amber-600'];
+const RANK_COLORS = ["text-yellow-400", "text-gray-300", "text-amber-600"];
 const RANK_ICONS = [Crown, Medal, Award];
 
 const Leaderboard = () => {
@@ -18,12 +27,12 @@ const Leaderboard = () => {
       try {
         const [lb, profile] = await Promise.all([
           gamificationAPI.getLeaderboard(20),
-          gamificationAPI.getProfile()
+          gamificationAPI.getProfile(),
         ]);
         setLeaderboard(lb);
         setMyProfile(profile);
       } catch (err) {
-        console.error('Failed to load leaderboard:', err);
+        console.error("Failed to load leaderboard:", err);
       } finally {
         setLoading(false);
       }
@@ -31,7 +40,7 @@ const Leaderboard = () => {
     fetchData();
   }, []);
 
-  const myRank = leaderboard.findIndex(e => e.userId === user?._id) + 1;
+  const myRank = leaderboard.findIndex((e) => e.userId === user?._id) + 1;
 
   if (loading) {
     return (
@@ -53,7 +62,9 @@ const Leaderboard = () => {
           <Trophy className="w-8 h-8 text-yellow-400" />
           <h1 className="text-3xl font-bold text-foreground">Leaderboard</h1>
         </div>
-        <p className="text-muted-foreground">See how you stack up against other students</p>
+        <p className="text-muted-foreground">
+          See how you stack up against other students
+        </p>
       </motion.div>
 
       {/* My Stats Card */}
@@ -71,21 +82,29 @@ const Leaderboard = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Your Rank</p>
-                <p className="text-2xl font-bold text-foreground">#{myRank || '—'}</p>
+                <p className="text-2xl font-bold text-foreground">
+                  #{myRank || "—"}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Level</p>
-                <p className="text-xl font-bold text-foreground">{myProfile.level}</p>
+                <p className="text-xl font-bold text-foreground">
+                  {myProfile.level}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Total XP</p>
-                <p className="text-xl font-bold text-primary">{myProfile.total_xp?.toLocaleString()}</p>
+                <p className="text-xl font-bold text-primary">
+                  {myProfile.total_xp?.toLocaleString()}
+                </p>
               </div>
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Tasks Done</p>
-                <p className="text-xl font-bold text-foreground">{myProfile.stats?.tasksCompleted || 0}</p>
+                <p className="text-xl font-bold text-foreground">
+                  {myProfile.stats?.tasksCompleted || 0}
+                </p>
               </div>
             </div>
             {/* XP Progress to next level */}
@@ -100,7 +119,7 @@ const Leaderboard = () => {
                   className="h-full bg-primary rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${myProfile.total_xp % 100}%` }}
-                  transition={{ duration: 1, ease: 'easeOut' }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
             </div>
@@ -145,19 +164,31 @@ const Leaderboard = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Rank</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Player</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Level</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">XP</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tasks</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Courses</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Rank
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Player
+                </th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Level
+                </th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  XP
+                </th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Tasks
+                </th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Courses
+                </th>
               </tr>
             </thead>
             <tbody>
               {leaderboard.map((entry, idx) => {
                 const isMe = entry.userId === user?._id;
                 const RankIcon = RANK_ICONS[idx] || TrendingUp;
-                const rankColor = RANK_COLORS[idx] || 'text-muted-foreground';
+                const rankColor = RANK_COLORS[idx] || "text-muted-foreground";
 
                 return (
                   <motion.tr
@@ -166,13 +197,15 @@ const Leaderboard = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 * idx }}
                     className={`border-b border-border/50 transition-colors ${
-                      isMe ? 'bg-primary/10' : 'hover:bg-muted/30'
+                      isMe ? "bg-primary/10" : "hover:bg-muted/30"
                     }`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <RankIcon className={`w-5 h-5 ${rankColor}`} />
-                        <span className={`font-bold ${rankColor}`}>#{idx + 1}</span>
+                        <span className={`font-bold ${rankColor}`}>
+                          #{idx + 1}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -180,8 +213,10 @@ const Leaderboard = () => {
                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
                           {entry.userId?.slice(-2).toUpperCase()}
                         </div>
-                        <span className={`font-medium ${isMe ? 'text-primary' : 'text-foreground'}`}>
-                          {isMe ? 'You' : `Student ${entry.userId?.slice(-4)}`}
+                        <span
+                          className={`font-medium ${isMe ? "text-primary" : "text-foreground"}`}
+                        >
+                          {isMe ? "You" : `Student ${entry.userId?.slice(-4)}`}
                         </span>
                         {isMe && <Zap className="w-4 h-4 text-primary" />}
                       </div>
@@ -205,7 +240,10 @@ const Leaderboard = () => {
               })}
               {leaderboard.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-muted-foreground"
+                  >
                     No players yet. Be the first to earn XP!
                   </td>
                 </tr>

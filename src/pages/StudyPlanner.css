@@ -56,7 +56,7 @@
 }
 
 .create-plan-btn {
-  background: #2196F3;
+  background: #2196f3;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -69,7 +69,7 @@
 }
 
 .create-plan-btn:hover:not(:disabled) {
-  background: #1976D2;
+  background: #1976d2;
 }
 
 .create-plan-btn:disabled {
@@ -126,7 +126,7 @@
 .summary-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2196F3;
+  color: #2196f3;
 }
 
 .tasks-list {
@@ -155,7 +155,7 @@
 }
 
 .task-number {
-  background: #2196F3;
+  background: #2196f3;
   color: white;
   width: 30px;
   height: 30px;
@@ -176,7 +176,7 @@
 
 .task-duration {
   background: #e3f2fd;
-  color: #1976D2;
+  color: #1976d2;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.875rem;
@@ -204,7 +204,7 @@
 }
 
 .start-session-btn {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -230,14 +230,16 @@
 
 .schedule-plan-btn {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .schedule-plan-btn:hover:not(:disabled) {
@@ -265,7 +267,7 @@
 }
 
 .success-message {
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -280,7 +282,9 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .view-calendar-btn {
@@ -298,7 +302,7 @@
   padding: 1.5rem;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #4CAF50;
+  border-left: 4px solid #4caf50;
 }
 
 .schedule-preview h3 {

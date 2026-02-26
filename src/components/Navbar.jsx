@@ -1,12 +1,30 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Moon, Sun, Trophy, Star, Zap, Target, BookOpen, Home, User, BarChart3, Sparkles, Crown, Rocket, LogOut, CheckSquare, Brain, Search } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
-import { useAuthStore } from '@/store/authStore';
-import { profileAPI } from '@/services/api';
-import { useState, useEffect } from 'react';
-import NotificationBell from './NotificationBell';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Moon,
+  Sun,
+  Trophy,
+  Star,
+  Zap,
+  Target,
+  BookOpen,
+  Home,
+  User,
+  BarChart3,
+  Sparkles,
+  Crown,
+  Rocket,
+  LogOut,
+  CheckSquare,
+  Brain,
+  Search,
+} from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
+import { useAuthStore } from "@/store/authStore";
+import { profileAPI } from "@/services/api";
+import { useState, useEffect } from "react";
+import NotificationBell from "./NotificationBell";
 
 const Navbar = ({ minimal = false }) => {
   const { theme, toggleTheme } = useTheme();
@@ -16,28 +34,38 @@ const Navbar = ({ minimal = false }) => {
 
   useEffect(() => {
     if (user) {
-      profileAPI.get().then(res => setProfile(res.data.profile)).catch(console.error);
+      profileAPI
+        .get()
+        .then((res) => setProfile(res.data.profile))
+        .catch(console.error);
     }
   }, [user]);
 
   useEffect(() => {
     try {
       // eslint-disable-next-line no-console
-      console.log('Navbar debug:', { path: location.pathname, minimal, userPresent: !!user, navCount: navItems.length });
+      console.log("Navbar debug:", {
+        path: location.pathname,
+        minimal,
+        userPresent: !!user,
+        navCount: navItems.length,
+      });
     } catch (e) {}
   }, [location.pathname, minimal, user]);
 
-  const navItems = minimal ? [] : [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { path: '/subjects', label: 'Subjects', icon: BookOpen },
-    { path: '/tasks', label: 'Tasks', icon: CheckSquare },
-    { path: '/planner', label: 'Study Plans', icon: Target },
-    { path: '/study-session', label: 'Session', icon: Zap },
-    { path: '/leaderboard', label: 'Leaderboard', icon: Trophy },
-    { path: '/reviews', label: 'Reviews', icon: Brain },
-    { path: '/search', label: 'Search', icon: Search },
-  ];
+  const navItems = minimal
+    ? []
+    : [
+        { path: "/", label: "Home", icon: Home },
+        { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
+        { path: "/subjects", label: "Subjects", icon: BookOpen },
+        { path: "/tasks", label: "Tasks", icon: CheckSquare },
+        { path: "/planner", label: "Study Plans", icon: Target },
+        { path: "/study-session", label: "Session", icon: Zap },
+        { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
+        { path: "/reviews", label: "Reviews", icon: Brain },
+        { path: "/search", label: "Search", icon: Search },
+      ];
 
   return (
     <motion.nav
@@ -52,15 +80,16 @@ const Navbar = ({ minimal = false }) => {
       <div className="relative max-w-7xl mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
           {/* Left Corner: Logo */}
-          <Link to="/" className="relative z-10 flex items-center space-x-4 group">
+          <Link
+            to="/"
+            className="relative z-10 flex items-center space-x-4 group"
+          >
             <motion.div
               className="relative"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div
-                className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg transition-all duration-300"
-              >
+              <motion.div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg transition-all duration-300">
                 <BookOpen className="w-6 h-6 text-foreground" />
               </motion.div>
             </motion.div>
@@ -87,12 +116,14 @@ const Navbar = ({ minimal = false }) => {
                       <motion.div
                         className={`relative px-5 py-2 flex items-center gap-2 font-valorant text-sm ${
                           isActive
-                            ? 'text-primary border-b-2 border-primary text-glow'
-                            : 'text-foreground opacity-80 hover:text-primary hover:text-glow transition-all'
+                            ? "text-primary border-b-2 border-primary text-glow"
+                            : "text-foreground opacity-80 hover:text-primary hover:text-glow transition-all"
                         }`}
                         whileHover={{ y: -2 }}
                       >
-                        <span className="relative z-10 tracking-wider font-bold">{item.label.toUpperCase()}</span>
+                        <span className="relative z-10 tracking-wider font-bold">
+                          {item.label.toUpperCase()}
+                        </span>
                       </motion.div>
                     </Link>
                   );
@@ -103,13 +134,13 @@ const Navbar = ({ minimal = false }) => {
 
           {/* Right Corner: Actions */}
           <div className="relative z-10 flex items-center gap-3 ml-auto">
-             <motion.button
+            <motion.button
               onClick={toggleTheme}
               className="w-10 h-10 rounded-full bg-muted/50 hover:bg-muted border border-border flex items-center justify-center transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {theme === 'dark' ? (
+              {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-yellow-500" />
               ) : (
                 <Moon className="w-5 h-5 text-foreground" />
@@ -132,32 +163,34 @@ const Navbar = ({ minimal = false }) => {
             {user ? (
               <div className="flex items-center gap-4">
                 <Link to="/profile" className="flex items-center gap-3 group">
-                   <div className="text-right hidden sm:block">
-                      <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors uppercase tracking-widest">
-                        {profile?.nickname || user.name}
-                      </div>
-                      <div className="flex items-center justify-end gap-1 text-xs text-[#ff4655] font-black tracking-widest">
-                         <span>LVL</span>
-                         <span className="text-sm">{profile?.level?.current || 1}</span>
-                      </div>
-                   </div>
-                   <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-border group-hover:border-[#ff4655] transition-colors relative">
-                      <img
-                        src={
-                          profile?.avatar
-                            ? profile.avatar.startsWith('data:')
+                  <div className="text-right hidden sm:block">
+                    <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors uppercase tracking-widest">
+                      {profile?.nickname || user.name}
+                    </div>
+                    <div className="flex items-center justify-end gap-1 text-xs text-[#ff4655] font-black tracking-widest">
+                      <span>LVL</span>
+                      <span className="text-sm">
+                        {profile?.level?.current || 1}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-border group-hover:border-[#ff4655] transition-colors relative">
+                    <img
+                      src={
+                        profile?.avatar
+                          ? profile.avatar.startsWith("data:")
+                            ? profile.avatar
+                            : profile.avatar.startsWith("http")
                               ? profile.avatar
-                              : profile.avatar.startsWith('http')
-                                ? profile.avatar
-                                : `${import.meta.env.VITE_API_URL || ''}${profile.avatar}`
-                            : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
-                        }
-                        alt="Avatar"
-                        className="w-full h-full object-cover"
-                      />
-                   </div>
+                              : `${import.meta.env.VITE_API_URL || ""}${profile.avatar}`
+                          : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
+                      }
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </Link>
-                
+
                 <motion.button
                   onClick={logout}
                   className="w-8 h-8 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center hover:bg-destructive/20"
@@ -187,7 +220,7 @@ const Navbar = ({ minimal = false }) => {
         <motion.div
           className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur-2xl rounded-b-3xl"
           initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
+          animate={{ height: "auto", opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <div className="px-6 py-4 space-y-3">
@@ -205,8 +238,8 @@ const Navbar = ({ minimal = false }) => {
                     to={item.path}
                     className={`flex items-center space-x-4 px-4 py-3 rounded-2xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-primary/15 text-primary shadow-lg shadow-primary/20'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:shadow-md'
+                        ? "bg-primary/15 text-primary shadow-lg shadow-primary/20"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:shadow-md"
                     }`}
                   >
                     <motion.div

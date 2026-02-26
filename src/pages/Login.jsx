@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { authAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { authAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -19,12 +19,12 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -36,20 +36,20 @@ const Login = () => {
       const user = data?.user || data?.profile || data?.userData;
 
       if (!token || !user) {
-        throw new Error('Invalid auth response');
+        throw new Error("Invalid auth response");
       }
 
       // Save auth data with refresh token
       login(user, token, refreshToken);
 
       // Redirect based on role
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard');
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
       } else {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
+      setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,10 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -93,7 +96,10 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Password
               </label>
               <input
@@ -125,15 +131,18 @@ const Login = () => {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'SIGNING IN...' : 'SIGN IN'}
+              {loading ? "SIGNING IN..." : "SIGN IN"}
             </button>
           </form>
 
           {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-muted-foreground">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-primary hover:text-primary transition-colors">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-primary hover:text-primary transition-colors"
+              >
                 Create one
               </Link>
             </p>
@@ -142,7 +151,10 @@ const Login = () => {
 
         {/* Back to Home */}
         <div className="text-center mt-6">
-          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            to="/"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
             ← Back to Home
           </Link>
         </div>

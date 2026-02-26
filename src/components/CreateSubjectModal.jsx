@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Image as ImageIcon, Check, AlertCircle } from 'lucide-react';
-import { subjectAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import './CreateSubjectModal.css';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Image as ImageIcon, Check, AlertCircle } from "lucide-react";
+import { subjectAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import "./CreateSubjectModal.css";
 
 const CreateSubjectModal = ({ isOpen, onClose, onSubjectCreated }) => {
   const user = useAuthStore((state) => state.user);
-  const [subjectName, setSubjectName] = useState('');
+  const [subjectName, setSubjectName] = useState("");
   const [subjectImage, setSubjectImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const imageInputRef = useRef(null);
 
   useEffect(() => {
     if (!isOpen) {
       // Reset form on close
-      setSubjectName('');
+      setSubjectName("");
       setSubjectImage(null);
       setImagePreview(null);
       setError(null);
@@ -45,15 +45,18 @@ const CreateSubjectModal = ({ isOpen, onClose, onSubjectCreated }) => {
 
     try {
       const formData = new FormData();
-      formData.append('name', subjectName);
-      formData.append('user_id', user._id);
-      formData.append('image', subjectImage);
+      formData.append("name", subjectName);
+      formData.append("user_id", user._id);
+      formData.append("image", subjectImage);
 
       await subjectAPI.create(formData);
       onSubjectCreated();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to create subject. Please try again.");
+      setError(
+        err.response?.data?.error ||
+          "Failed to create subject. Please try again.",
+      );
     } finally {
       setCreating(false);
     }
@@ -64,7 +67,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onSubjectCreated }) => {
   return (
     <AnimatePresence>
       <div className="modal-overlay">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -99,7 +102,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onSubjectCreated }) => {
 
             <div className="form-group">
               <label>Cover Image *</label>
-              <div 
+              <div
                 className="image-upload-area"
                 onClick={() => imageInputRef.current?.click()}
               >
@@ -124,21 +127,21 @@ const CreateSubjectModal = ({ isOpen, onClose, onSubjectCreated }) => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
 
             <div className="modal-footer">
-              <button 
-                type="button" 
-                className="btn-secondary" 
+              <button
+                type="button"
+                className="btn-secondary"
                 onClick={onClose}
                 disabled={creating}
               >
                 Cancel
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn-primary"
                 disabled={creating || !subjectName || !subjectImage}
               >

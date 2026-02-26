@@ -1,22 +1,22 @@
 // Permission definitions and utilities
 export const PERMISSIONS = {
   // User management
-  USER_CREATE: 'user.create',
-  USER_READ: 'user.read',
-  USER_UPDATE: 'user.update',
-  USER_DELETE: 'user.delete',
+  USER_CREATE: "user.create",
+  USER_READ: "user.read",
+  USER_UPDATE: "user.update",
+  USER_DELETE: "user.delete",
 
   // Study management
-  STUDY_CREATE: 'study.create',
-  STUDY_READ: 'study.read',
-  STUDY_UPDATE: 'study.update',
-  STUDY_DELETE: 'study.delete',
+  STUDY_CREATE: "study.create",
+  STUDY_READ: "study.read",
+  STUDY_UPDATE: "study.update",
+  STUDY_DELETE: "study.delete",
 
   // Analytics
-  ANALYTICS_READ: 'analytics.read',
+  ANALYTICS_READ: "analytics.read",
 
   // System admin
-  SYSTEM_ADMIN: 'system.admin',
+  SYSTEM_ADMIN: "system.admin",
 };
 
 // Role-based permission mappings
@@ -58,17 +58,19 @@ export const checkPermission = (userRole, permission) => {
 export const checkAnyPermission = (userRole, permissions) => {
   if (!userRole || !permissions || permissions.length === 0) return false;
   const userPermissions = ROLE_PERMISSIONS[userRole] || [];
-  return permissions.some(permission => userPermissions.includes(permission));
+  return permissions.some((permission) => userPermissions.includes(permission));
 };
 
 export const checkAllPermissions = (userRole, permissions) => {
   if (!userRole || !permissions || permissions.length === 0) return false;
   const userPermissions = ROLE_PERMISSIONS[userRole] || [];
-  return permissions.every(permission => userPermissions.includes(permission));
+  return permissions.every((permission) =>
+    userPermissions.includes(permission),
+  );
 };
 
 // Resource-based permission checking
-export const canAccessResource = (userRole, resource, action = 'read') => {
+export const canAccessResource = (userRole, resource, action = "read") => {
   return checkPermission(userRole, `${resource}.${action}`);
 };
 
@@ -94,13 +96,13 @@ export const canManageStudyContent = (userRole) => {
 };
 
 export const isAdmin = (userRole) => {
-  return userRole === 'admin';
+  return userRole === "admin";
 };
 
 export const isTeacher = (userRole) => {
-  return userRole === 'teacher';
+  return userRole === "teacher";
 };
 
 export const isStudent = (userRole) => {
-  return userRole === 'student';
+  return userRole === "student";
 };

@@ -142,7 +142,8 @@
   transition: all 0.2s;
 }
 
-.file-drop-zone:hover, .file-drop-zone.active {
+.file-drop-zone:hover,
+.file-drop-zone.active {
   border-color: var(--primary);
   background: hsl(var(--primary) / 0.05);
   color: var(--primary);

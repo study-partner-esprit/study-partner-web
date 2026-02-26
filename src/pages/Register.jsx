@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { authAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { authAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
 
 const Register = () => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -21,21 +21,21 @@ const Register = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError("Password must be at least 8 characters");
       return;
     }
 
@@ -50,9 +50,11 @@ const Register = () => {
       login(user, token, refreshToken);
 
       // Redirect to dashboard
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      setError(
+        err.response?.data?.error || "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -79,7 +81,10 @@ const Register = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -96,7 +101,10 @@ const Register = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -113,7 +121,10 @@ const Register = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Password
               </label>
               <input
@@ -126,12 +137,17 @@ const Register = () => {
                 className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 placeholder="••••••••"
               />
-              <p className="text-xs text-muted-foreground mt-1">Minimum 8 characters</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Minimum 8 characters
+              </p>
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
                 Confirm Password
               </label>
               <input
@@ -163,15 +179,18 @@ const Register = () => {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+              {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
             </button>
           </form>
 
           {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:text-primary transition-colors">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-primary hover:text-primary transition-colors"
+              >
                 Sign in
               </Link>
             </p>
@@ -180,7 +199,10 @@ const Register = () => {
 
         {/* Back to Home */}
         <div className="text-center mt-6">
-          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            to="/"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
             ← Back to Home
           </Link>
         </div>

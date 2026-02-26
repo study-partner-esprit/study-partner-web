@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { profileAPI, tasksAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import QuestPanel from '../components/QuestPanel';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { profileAPI, tasksAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import QuestPanel from "../components/QuestPanel";
 
 const Dashboard = () => {
   const { user, logout } = useAuthStore();
@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchDashboardData();
@@ -22,15 +22,15 @@ const Dashboard = () => {
       setLoading(true);
       const [profileRes, tasksRes] = await Promise.all([
         profileAPI.get(),
-        tasksAPI.getAll({ status: 'todo' })
+        tasksAPI.getAll({ status: "todo" }),
       ]);
 
       setProfile(profileRes.data.profile);
       setTasks(tasksRes.data.tasks || []);
-      setError('');
+      setError("");
     } catch (err) {
-      console.error('Failed to fetch dashboard data:', err);
-      setError('Failed to load dashboard data');
+      console.error("Failed to fetch dashboard data:", err);
+      setError("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   if (loading) {
@@ -52,7 +52,9 @@ const Dashboard = () => {
           <div className="relative w-32 h-32 mx-auto mb-4">
             <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <p className="text-foreground text-xl font-bold tracking-wider">LOADING...</p>
+          <p className="text-foreground text-xl font-bold tracking-wider">
+            LOADING...
+          </p>
         </motion.div>
       </div>
     );
@@ -75,7 +77,10 @@ const Dashboard = () => {
                     <span className="text-primary">//</span> DASHBOARD
                   </h1>
                   <p className="text-muted-foreground mt-2 text-lg">
-                    Welcome back, <span className="text-primary font-semibold">{user?.name}</span>
+                    Welcome back,{" "}
+                    <span className="text-primary font-semibold">
+                      {user?.name}
+                    </span>
                   </p>
                 </div>
                 <button
@@ -141,7 +146,7 @@ const Dashboard = () => {
                 <div className="card-inner-sheen" />
                 {/* Valorant corner accent */}
                 <div className="absolute top-0 right-0 w-24 h-24 border-t-4 border-r-4 border-primary opacity-50"></div>
-                
+
                 <div className="flex items-center justify-between mb-6 relative z-10">
                   <h2 className="text-2xl font-bold tracking-wider text-foreground">
                     <span className="text-primary">//</span> PENDING TASKS
@@ -180,15 +185,21 @@ const Dashboard = () => {
                               {task.title}
                             </h3>
                             {task.description && (
-                              <p className="text-muted-foreground text-sm mb-2">{task.description}</p>
+                              <p className="text-muted-foreground text-sm mb-2">
+                                {task.description}
+                              </p>
                             )}
                             <div className="flex items-center gap-4 text-xs">
-                              <span className={`px-2 py-1 rounded ${
-                                task.priority === 'high' ? 'bg-destructive/10 text-destructive' :
-                                task.priority === 'medium' ? 'bg-orange-500/10 text-orange-500' :
-                                'bg-green-500/10 text-green-500'
-                              }`}>
-                                {task.priority?.toUpperCase() || 'NORMAL'}
+                              <span
+                                className={`px-2 py-1 rounded ${
+                                  task.priority === "high"
+                                    ? "bg-destructive/10 text-destructive"
+                                    : task.priority === "medium"
+                                      ? "bg-orange-500/10 text-orange-500"
+                                      : "bg-green-500/10 text-green-500"
+                                }`}
+                              >
+                                {task.priority?.toUpperCase() || "NORMAL"}
                               </span>
                               {task.estimatedTime && (
                                 <span className="text-muted-foreground">
@@ -216,29 +227,38 @@ const Dashboard = () => {
               <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md">
                 <div className="card-inner-sheen" />
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
-                
+
                 <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
                   <span className="text-primary">//</span> PROFILE
                 </h2>
-                
+
                 <div className="space-y-3 text-sm relative z-10">
                   <div className="flex justify-between items-center py-2 border-b border-border/50">
                     <span className="text-muted-foreground">EMAIL</span>
-                    <span className="font-semibold text-xs text-foreground">{user?.email}</span>
+                    <span className="font-semibold text-xs text-foreground">
+                      {user?.email}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-border/50">
                     <span className="text-muted-foreground">ROLE</span>
-                    <span className={`font-bold ${user?.role === 'admin' ? 'text-primary' : 'text-green-500'}`}>
+                    <span
+                      className={`font-bold ${user?.role === "admin" ? "text-primary" : "text-green-500"}`}
+                    >
                       {user?.role?.toUpperCase()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-border/50">
                     <span className="text-muted-foreground">THEME</span>
-                    <span className="font-semibold text-foreground">{profile?.preferences?.theme?.toUpperCase() || 'DARK'}</span>
+                    <span className="font-semibold text-foreground">
+                      {profile?.preferences?.theme?.toUpperCase() || "DARK"}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center py-2">
                     <span className="text-muted-foreground">STUDY TIME</span>
-                    <span className="font-semibold text-foreground">{profile?.preferences?.studyTime?.toUpperCase() || 'EVENING'}</span>
+                    <span className="font-semibold text-foreground">
+                      {profile?.preferences?.studyTime?.toUpperCase() ||
+                        "EVENING"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -247,29 +267,38 @@ const Dashboard = () => {
               <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md">
                 <div className="card-inner-sheen" />
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
-                
+
                 <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
                   <span className="text-primary">//</span> QUICK ACTIONS
                 </h2>
-                
+
                 <div className="space-y-3 relative z-10">
                   <Link
                     to="/tasks"
                     className="block px-4 py-3 bg-muted/30 hover:bg-primary transition-all duration-300 font-bold tracking-wider text-center border border-border hover:border-primary text-foreground hover:text-white group"
                   >
-                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">➕</span> CREATE TASK
+                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">
+                      ➕
+                    </span>{" "}
+                    CREATE TASK
                   </Link>
                   <Link
                     to="/sessions"
                     className="block px-4 py-3 bg-muted/30 hover:bg-primary transition-all duration-300 font-bold tracking-wider text-center border border-border hover:border-primary text-foreground hover:text-white group"
                   >
-                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">📚</span> RESUME SESSION
+                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">
+                      📚
+                    </span>{" "}
+                    RESUME SESSION
                   </Link>
                   <Link
                     to="/lobby"
                     className="block px-4 py-3 bg-[#ff4655] text-white hover:brightness-110 transition-all duration-300 font-bold tracking-wider text-center shadow-lg group"
                   >
-                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">🚀</span> PLAY (STUDY)
+                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">
+                      🚀
+                    </span>{" "}
+                    PLAY (STUDY)
                   </Link>
                 </div>
               </div>
@@ -296,12 +325,12 @@ const StatCard = ({ title, value, subtitle, icon }) => {
       <div className="card-inner-sheen" />
       {/* Corner accent */}
       <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-border group-hover:border-primary transition-colors"></div>
-      
+
       {/* Icon */}
       <div className="text-4xl mb-2 opacity-50 group-hover:opacity-100 transition-opacity text-foreground">
         {icon}
       </div>
-      
+
       {/* Stats */}
       <div className="text-3xl font-bold text-foreground mb-1 tracking-wider relative z-10">
         {value}
@@ -309,12 +338,12 @@ const StatCard = ({ title, value, subtitle, icon }) => {
       <div className="text-sm text-muted-foreground font-semibold tracking-wider relative z-10">
         {subtitle || title}
       </div>
-      
+
       {/* Title */}
       <div className="absolute top-3 right-3 text-xs text-muted-foreground font-bold tracking-wider">
         {title}
       </div>
-      
+
       {/* Hover accent line */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
     </motion.div>

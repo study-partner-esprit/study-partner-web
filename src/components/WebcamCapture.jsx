@@ -1,7 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import './WebcamCapture.css';
+import React, { useRef, useEffect, useState } from "react";
+import "./WebcamCapture.css";
 
-const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true }) => {
+const WebcamCapture = ({
+  onFrameCapture,
+  captureInterval = 2000,
+  enabled = true,
+}) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -38,8 +42,8 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
         video: {
           width: { ideal: 640 },
           height: { ideal: 480 },
-          facingMode: 'user'
-        }
+          facingMode: "user",
+        },
       });
 
       if (videoRef.current) {
@@ -49,8 +53,8 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
         setError(null);
       }
     } catch (err) {
-      console.error('Error accessing webcam:', err);
-      setError('Unable to access webcam. Please grant camera permissions.');
+      console.error("Error accessing webcam:", err);
+      setError("Unable to access webcam. Please grant camera permissions.");
       setIsStreaming(false);
     }
   };
@@ -58,7 +62,7 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
   const stopWebcam = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
+      tracks.forEach((track) => track.stop());
       videoRef.current.srcObject = null;
     }
     setIsStreaming(false);
@@ -86,7 +90,7 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
 
     // Set canvas dimensions to match video
     canvas.width = video.videoWidth;
@@ -96,11 +100,15 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Convert canvas to blob
-    canvas.toBlob((blob) => {
-      if (blob && onFrameCapture) {
-        onFrameCapture(blob);
-      }
-    }, 'image/jpeg', 0.8);
+    canvas.toBlob(
+      (blob) => {
+        if (blob && onFrameCapture) {
+          onFrameCapture(blob);
+        }
+      },
+      "image/jpeg",
+      0.8,
+    );
   };
 
   return (
@@ -112,7 +120,7 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
         </div>
       )}
 
-      <div className={`webcam-container ${isStreaming ? 'streaming' : ''}`}>
+      <div className={`webcam-container ${isStreaming ? "streaming" : ""}`}>
         <video
           ref={videoRef}
           autoPlay
@@ -120,8 +128,8 @@ const WebcamCapture = ({ onFrameCapture, captureInterval = 2000, enabled = true 
           muted
           className="webcam-video"
         />
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
-        
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+
         {isStreaming && (
           <div className="webcam-indicator">
             <div className="recording-dot"></div>

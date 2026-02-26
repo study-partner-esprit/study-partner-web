@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { X, CheckCheck } from 'lucide-react';
-import useNotificationStore from '../store/notificationStore';
-import { useAuthStore } from '../store/authStore';
-import NotificationItem from './NotificationItem';
+import React, { useEffect, useRef } from "react";
+import { X, CheckCheck } from "lucide-react";
+import useNotificationStore from "../store/notificationStore";
+import { useAuthStore } from "../store/authStore";
+import NotificationItem from "./NotificationItem";
 
 const NotificationCenter = () => {
   const {
@@ -13,7 +13,7 @@ const NotificationCenter = () => {
     isOpen,
     closeNotificationCenter,
     markAllAsRead,
-    fetchNotifications
+    fetchNotifications,
   } = useNotificationStore();
 
   const { user } = useAuthStore();
@@ -28,11 +28,11 @@ const NotificationCenter = () => {
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, closeNotificationCenter]);
 
@@ -112,7 +112,9 @@ const NotificationCenter = () => {
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
               <div className="text-4xl mb-2">🔔</div>
               <p>No notifications yet</p>
-              <p className="text-sm mt-1">We'll notify you when something important happens!</p>
+              <p className="text-sm mt-1">
+                We'll notify you when something important happens!
+              </p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -130,7 +132,8 @@ const NotificationCenter = () => {
         {notifications.length > 0 && (
           <div className="p-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
             <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-              Showing {notifications.length} notification{notifications.length !== 1 ? 's' : ''}
+              Showing {notifications.length} notification
+              {notifications.length !== 1 ? "s" : ""}
             </p>
           </div>
         )}

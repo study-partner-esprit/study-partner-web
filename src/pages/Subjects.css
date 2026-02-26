@@ -104,8 +104,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Card Styles - Epic Games Inspired */
@@ -135,7 +141,9 @@
 }
 
 .subject-card:hover .card-image-wrapper {
-  box-shadow: 0 12px 30px hsl(var(--primary) / 0.15), 0 0 20px hsl(var(--primary) / 0.1);
+  box-shadow:
+    0 12px 30px hsl(var(--primary) / 0.15),
+    0 0 20px hsl(var(--primary) / 0.1);
   border-color: var(--primary);
 }
 
@@ -231,7 +239,8 @@
 }
 
 /* Loading & Empty States */
-.loading-state, .empty-state {
+.loading-state,
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,20 +285,20 @@
   .subjects-container {
     padding: 80px 20px 20px;
   }
-  
+
   .subjects-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
   }
-  
+
   .header-left {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
     gap: 16px;
   }
-  
+
   .search-bar {
     width: 100%;
   }
@@ -303,7 +312,7 @@
     z-index: 50;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
-  
+
   .subjects-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -311,7 +320,7 @@
 }
 
 @media (max-width: 480px) {
-    .subjects-grid {
+  .subjects-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }

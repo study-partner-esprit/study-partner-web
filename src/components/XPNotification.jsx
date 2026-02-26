@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import './XPNotification.css';
+import React, { useEffect, useState } from "react";
+import "./XPNotification.css";
 
 const XPNotification = ({ xpAwarded, visible, onComplete }) => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -7,7 +7,7 @@ const XPNotification = ({ xpAwarded, visible, onComplete }) => {
   useEffect(() => {
     if (visible) {
       setIsAnimating(true);
-      
+
       // Auto-hide after 3 seconds
       const timer = setTimeout(() => {
         setIsAnimating(false);
@@ -23,7 +23,7 @@ const XPNotification = ({ xpAwarded, visible, onComplete }) => {
   if (!visible && !isAnimating) return null;
 
   return (
-    <div className={`xp-notification ${isAnimating ? 'show' : 'hide'}`}>
+    <div className={`xp-notification ${isAnimating ? "show" : "hide"}`}>
       <div className="xp-icon">✨</div>
       <div className="xp-content">
         <div className="xp-amount">+{xpAwarded} XP</div>

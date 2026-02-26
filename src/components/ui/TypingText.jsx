@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const TypingText = ({ text, className, speed = 40, delay = 0 }) => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const TypingText = ({ text, className, speed = 40, delay = 0 }) => {
   }, [text, speed, started]);
 
   return (
-    <motion.span 
+    <motion.span
       className={className}
       initial={{ opacity: 1 }} // Ensure it's visible, the text content grows
     >

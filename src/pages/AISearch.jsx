@@ -1,12 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { aiAPI } from '../services/api';
-import { useAuthStore } from '../store/authStore';
-import { Search, Send, Globe, Clock, ExternalLink, Loader2, Sparkles, BookOpen, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { aiAPI } from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import {
+  Search,
+  Send,
+  Globe,
+  Clock,
+  ExternalLink,
+  Loader2,
+  Sparkles,
+  BookOpen,
+  X,
+} from "lucide-react";
 
 const AISearch = () => {
   const { user } = useAuthStore();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState(null);
   const [searching, setSearching] = useState(false);
   const [history, setHistory] = useState([]);
@@ -15,8 +25,9 @@ const AISearch = () => {
 
   useEffect(() => {
     if (user?._id) {
-      aiAPI.searchHistory(user._id, 10)
-        .then(res => {
+      aiAPI
+        .searchHistory(user._id, 10)
+        .then((res) => {
           const data = res.data?.searches || res.data || [];
           setHistory(Array.isArray(data) ? data : []);
         })
@@ -35,12 +46,12 @@ const AISearch = () => {
     try {
       const res = await aiAPI.search({
         query: query.trim(),
-        userId: user._id
+        userId: user._id,
       });
       setResults(res.data);
     } catch (err) {
-      console.error('Search failed:', err);
-      setResults({ error: 'Search failed. Please try again.' });
+      console.error("Search failed:", err);
+      setResults({ error: "Search failed. Please try again." });
     } finally {
       setSearching(false);
     }
@@ -55,12 +66,18 @@ const AISearch = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-10"
+      >
         <div className="inline-flex items-center gap-3 mb-3">
           <Sparkles className="w-8 h-8 text-primary" />
           <h1 className="text-3xl font-bold text-foreground">AI Search</h1>
         </div>
-        <p className="text-muted-foreground">Search the web with AI-powered answers tailored to your studies</p>
+        <p className="text-muted-foreground">
+          Search the web with AI-powered answers tailored to your studies
+        </p>
       </motion.div>
 
       {/* Search Bar */}
@@ -89,7 +106,11 @@ const AISearch = () => {
             whileTap={{ scale: 0.95 }}
             className="absolute right-3 p-2 rounded-xl bg-primary text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {searching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+            {searching ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
           </motion.button>
         </div>
 
@@ -106,7 +127,10 @@ const AISearch = () => {
                 <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                   <Clock className="w-3 h-3" /> Recent Searches
                 </span>
-                <button onClick={() => setShowHistory(false)} className="text-muted-foreground hover:text-foreground">
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -133,13 +157,19 @@ const AISearch = () => {
           className="text-center py-12"
         >
           <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Searching the web and generating your answer...</p>
+          <p className="text-muted-foreground">
+            Searching the web and generating your answer...
+          </p>
         </motion.div>
       )}
 
       {/* Results */}
       {results && !searching && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
           {results.error ? (
             <div className="p-6 rounded-2xl border border-red-500/30 bg-red-500/5 text-center">
               <p className="text-red-400">{results.error}</p>
@@ -185,9 +215,13 @@ const AISearch = () => {
                             {source.title || source.url}
                           </p>
                           {source.snippet && (
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{source.snippet}</p>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {source.snippet}
+                            </p>
                           )}
-                          <p className="text-xs text-muted-foreground mt-1 truncate">{source.url}</p>
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {source.url}
+                          </p>
                         </div>
                         <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary flex-shrink-0 mt-1" />
                       </motion.a>
@@ -206,7 +240,10 @@ const AISearch = () => {
                     {results.relatedTopics.map((topic, idx) => (
                       <button
                         key={idx}
-                        onClick={() => { setQuery(topic); handleSearch(); }}
+                        onClick={() => {
+                          setQuery(topic);
+                          handleSearch();
+                        }}
                         className="px-4 py-2 rounded-full border border-border text-sm text-foreground hover:bg-primary/10 hover:border-primary/50 transition-colors"
                       >
                         {topic}
@@ -229,8 +266,12 @@ const AISearch = () => {
           className="text-center py-16"
         >
           <Globe className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-muted-foreground mb-2">Ready to search</h3>
-          <p className="text-sm text-muted-foreground/70">Ask a question to get AI-powered answers from the web</p>
+          <h3 className="text-lg font-medium text-muted-foreground mb-2">
+            Ready to search
+          </h3>
+          <p className="text-sm text-muted-foreground/70">
+            Ask a question to get AI-powered answers from the web
+          </p>
         </motion.div>
       )}
     </div>
