@@ -334,27 +334,3 @@ jobs:
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.API_URL }}
-
-  # Staging deployment removed: CI ends after containerization unless configured.
-
-  # Production deployment removed: CI ends after containerization unless configured.
-
-  # Smoke tests removed: no post-deploy verification runs in this workflow.
-
-  # ==========================================================================
-  # Mark production as succeeded (no actual deploy)
-  # ==========================================================================
-  mark-production:
-    name: ✅ Mark Production Succeeded (log)
-    runs-on: ubuntu-latest
-    needs: containerize
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Ready for production message
-        run: |
-          echo "READY FOR PRODUCTION"
-
-      - name: Set workflow output (ready)
-        id: set_ready
-        run: echo "ready=true" >> $GITHUB_OUTPUT
