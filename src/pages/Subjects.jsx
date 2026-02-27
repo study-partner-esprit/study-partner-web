@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { subjectAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
-import { BookOpen, Plus, ChevronRight, Search } from "lucide-react";
+import { BookOpen, Plus, Search } from "lucide-react";
+import { useCallback } from "react";
 import CreateSubjectModal from "../components/CreateSubjectModal";
 import "./Subjects.css";
 
@@ -14,13 +15,8 @@ const Subjects = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    if (user) {
-      loadSubjects();
-    }
-  }, [user]);
-
-  const loadSubjects = async () => {
+  const loadSubjects = useCallback(async () => {
+    if (!user?._id) return;
     if (!user?._id) return;
     try {
       const response = await subjectAPI.list();
@@ -30,7 +26,11 @@ const Subjects = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) loadSubjects();
+  }, [user, loadSubjects]);
 
   const handleSubjectClick = (subjectId) => {
     navigate(`/subjects/${subjectId}`);

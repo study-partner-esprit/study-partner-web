@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { tasksAPI, courseAPI } from "../services/api";
+import { tasksAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
-import { Sparkles, BookOpen, Loader2 } from "lucide-react";
 
 const Tasks = () => {
   const { user } = useAuthStore();

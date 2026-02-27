@@ -68,7 +68,14 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "globals": {
+      "vi": "readonly",
+      "describe": "readonly",
+      "it": "readonly",
+      "test": "readonly",
+      "expect": "readonly"
+    }
   },
   "browserslist": {
     "production": [

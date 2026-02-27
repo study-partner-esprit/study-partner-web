@@ -1,3 +1,4 @@
+/* global globalThis, vi */
 import '@testing-library/jest-dom';
 
 // Provide a `jest` alias for tests written against Jest APIs
