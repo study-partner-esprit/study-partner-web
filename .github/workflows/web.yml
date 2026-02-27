@@ -367,7 +367,9 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${owner_repo}/deployments \
             -d "$payload")
-          echo "resp=${resp}" >> $GITHUB_OUTPUT
+          # Don't write raw JSON to $GITHUB_OUTPUT (invalid format); log to stdout instead
+          echo "deployment response:" >&2
+          echo "$resp" >&2
           id=$(echo "$resp" | jq -r '.id')
           if [ "$id" = "null" ] || [ -z "$id" ]; then
             echo "Failed to create deployment: $resp"
