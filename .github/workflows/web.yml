@@ -264,12 +264,42 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       # Generate image metadata (tags, labels)
-      - name: 📋 Extract metadata for Docker
-        id: meta
+      # Generate image metadata for GHCR (always)
+      - name: 📋 Extract metadata for GHCR
+        id: meta-ghcr
         uses: docker/metadata-action@v5
         with:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
+
+      # Build and push Docker image to GHCR
+      - name: 🐳 Build and push Docker image (GHCR)
+        id: build-push-ghcr
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta-ghcr.outputs.tags }}
+          labels: ${{ steps.meta-ghcr.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            NEXT_PUBLIC_API_URL=${{ secrets.API_URL }}
+
+      # If Docker Hub credentials are provided, build and push to Docker Hub as well
+      - name: 📋 Extract metadata for Docker Hub
+        id: meta-dockerhub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_PASSWORD != '' }}
+        uses: docker/metadata-action@v5
+        with:
+          images: |
             docker.io/vanistas/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
@@ -277,16 +307,25 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
 
-      # Build and push Docker image
-      - name: 🐳 Build and push Docker image
-        id: build-push
+      # Login to Docker Hub (conditional)
+      - name: 🔐 Login to Docker Hub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_PASSWORD != '' }}
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # Build and push Docker image to Docker Hub (conditional)
+      - name: 🐳 Build and push Docker image (Docker Hub)
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_PASSWORD != '' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-dockerhub.outputs.tags }}
+          labels: ${{ steps.meta-dockerhub.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
