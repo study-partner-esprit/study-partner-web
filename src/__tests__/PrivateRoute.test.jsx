@@ -6,7 +6,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import "@testing-library/jest-dom";
+// jest-dom is loaded via src/setupTests.js
 
 // Mock the auth store
 const mockStore = {
@@ -14,12 +14,13 @@ const mockStore = {
   user: null,
 };
 
-jest.mock("../../store/authStore", () => ({
+vi.mock("../store/authStore", () => ({
   __esModule: true,
-  default: (selector) => selector(mockStore),
+  useAuthStore: (selector) =>
+    typeof selector === "function" ? selector(mockStore) : mockStore,
 }));
 
-import PrivateRoute from "../../components/PrivateRoute";
+import PrivateRoute from "../components/PrivateRoute.jsx";
 
 const renderWithRouter = (ui, { route = "/" } = {}) => {
   return render(

@@ -7,32 +7,35 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
+// jest-dom is loaded via src/setupTests.js
 
-const mockLogin = jest.fn();
-const mockNavigate = jest.fn();
+const mockLogin = vi.fn();
+const mockNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
-jest.mock("../../services/api", () => ({
+vi.mock("../services/api", () => ({
   authAPI: {
-    register: jest.fn(),
+    register: vi.fn(),
   },
 }));
 
-jest.mock("../../store/authStore", () => ({
+vi.mock("../store/authStore", () => ({
   __esModule: true,
-  default: () => ({
+  useAuthStore: () => ({
     login: mockLogin,
     isAuthenticated: false,
   }),
 }));
 
-import Register from "../../pages/Register";
-import { authAPI } from "../../services/api";
+import Register from "../pages/Register.jsx";
+import { authAPI } from "../services/api";
 
 const renderRegister = () => {
   return render(
@@ -43,24 +46,24 @@ const renderRegister = () => {
 };
 
 describe("Register Page", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   it("should render registration form fields", () => {
     renderRegister();
 
-    expect(screen.getByPlaceholderText(/name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     // Should have at least two password fields (password + confirm)
-    const passwordFields = screen.getAllByPlaceholderText(/password/i);
+    const passwordFields = screen.getAllByLabelText(/password/i);
     expect(passwordFields.length).toBeGreaterThanOrEqual(2);
   });
 
   it("should validate password match", async () => {
     renderRegister();
 
-    const nameInput = screen.getByPlaceholderText(/name/i);
-    const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordFields = screen.getAllByPlaceholderText(/password/i);
+    const nameInput = screen.getByLabelText(/name/i);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordFields = screen.getAllByLabelText(/password/i);
 
     await userEvent.type(nameInput, "Test User");
     await userEvent.type(emailInput, "test@example.com");
@@ -89,9 +92,9 @@ describe("Register Page", () => {
 
     renderRegister();
 
-    const nameInput = screen.getByPlaceholderText(/name/i);
-    const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordFields = screen.getAllByPlaceholderText(/password/i);
+    const nameInput = screen.getByLabelText(/name/i);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordFields = screen.getAllByLabelText(/password/i);
 
     await userEvent.type(nameInput, "Test User");
     await userEvent.type(emailInput, "test@example.com");

@@ -6,13 +6,21 @@ import { act } from "@testing-library/react";
 
 // Reset modules between tests to get fresh store
 let useAuthStore;
+// Mock services/api so the store can import without network/axios
+vi.mock("../services/api", () => ({
+  __esModule: true,
+  authAPI: {
+    refresh: vi.fn().mockResolvedValue({ data: {} }),
+    login: vi.fn(),
+  },
+}));
 
-beforeEach(() => {
-  jest.resetModules();
+beforeEach(async () => {
+  vi.resetModules();
   localStorage.clear();
 
-  // Re-import to get a fresh store
-  const mod = require("../../store/authStore");
+  // Re-import to get a fresh store (use ESM import to play nicely with vitest mocks)
+  const mod = await import("../store/authStore");
   useAuthStore = mod.default || mod.useAuthStore;
 });
 
@@ -28,16 +36,16 @@ describe("Auth Store", () => {
     const { login } = useAuthStore.getState();
 
     act(() => {
-      login({
-        user: {
+      login(
+        {
           _id: "u1",
           name: "Test",
           email: "test@test.com",
           role: "student",
         },
-        token: "jwt-token",
-        refreshToken: "refresh-token",
-      });
+        "jwt-token",
+        "refresh-token",
+      );
     });
 
     const state = useAuthStore.getState();
@@ -50,16 +58,16 @@ describe("Auth Store", () => {
     const { login, logout } = useAuthStore.getState();
 
     act(() => {
-      login({
-        user: {
+      login(
+        {
           _id: "u1",
           name: "Test",
           email: "test@test.com",
           role: "student",
         },
-        token: "jwt-token",
-        refreshToken: "refresh-token",
-      });
+        "jwt-token",
+        "refresh-token",
+      );
     });
 
     act(() => {
@@ -76,16 +84,16 @@ describe("Auth Store", () => {
     const { login } = useAuthStore.getState();
 
     act(() => {
-      login({
-        user: {
+      login(
+        {
           _id: "u1",
           name: "Admin",
           email: "admin@test.com",
           role: "admin",
         },
-        token: "jwt-token",
-        refreshToken: "refresh-token",
-      });
+        "jwt-token",
+        "refresh-token",
+      );
     });
 
     const state = useAuthStore.getState();

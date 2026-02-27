@@ -7,33 +7,36 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
+// jest-dom is loaded via src/setupTests.js
 
 // Mock auth API and store
-const mockLogin = jest.fn();
-const mockNavigate = jest.fn();
+const mockLogin = vi.fn();
+const mockNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
-jest.mock("../../services/api", () => ({
+vi.mock("../services/api", () => ({
   authAPI: {
-    login: jest.fn(),
+    login: vi.fn(),
   },
 }));
 
-jest.mock("../../store/authStore", () => ({
+vi.mock("../store/authStore", () => ({
   __esModule: true,
-  default: () => ({
+  useAuthStore: () => ({
     login: mockLogin,
     isAuthenticated: false,
   }),
 }));
 
-import Login from "../../pages/Login";
-import { authAPI } from "../../services/api";
+import Login from "../pages/Login.jsx";
+import { authAPI } from "../services/api";
 
 const renderLogin = () => {
   return render(
@@ -45,14 +48,14 @@ const renderLogin = () => {
 
 describe("Login Page", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should render login form", () => {
     renderLogin();
 
     expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
   });
 
   it("should have a submit button", () => {
@@ -73,7 +76,7 @@ describe("Login Page", () => {
     renderLogin();
 
     const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/password/i);
+    const passwordInput = screen.getByLabelText(/password/i);
 
     await userEvent.type(emailInput, "test@example.com");
     await userEvent.type(passwordInput, "Password123");
@@ -96,7 +99,7 @@ describe("Login Page", () => {
     renderLogin();
 
     const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/password/i);
+    const passwordInput = screen.getByLabelText(/password/i);
 
     await userEvent.type(emailInput, "wrong@example.com");
     await userEvent.type(passwordInput, "WrongPass");
