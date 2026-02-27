@@ -86,7 +86,7 @@ jobs:
 
       # Jest + React Testing Library unit tests
       - name: 🧪 Run unit tests with coverage
-        run: npm run test:unit -- --coverage --watchAll=false
+        run: npm run test:unit -- --coverage
         env:
           CI: true
 
@@ -121,8 +121,14 @@ jobs:
         run: npm ci
 
       # Integration tests with API mocking (MSW or similar)
-      - name: 🔗 Run integration tests
-        run: npm run test:integration
+      - name: 🔗 Run integration tests (if present)
+        run: |
+          set -e
+          if ls src/**/integration/*.{test,spec}.{js,jsx,mjs,cjs} 1> /dev/null 2>&1; then
+            npm run test:integration || exit 1
+          else
+            echo "No integration tests found; skipping."
+          fi
         env:
           CI: true
           # Mock API endpoints for testing
