@@ -357,34 +357,19 @@ jobs:
 
     steps:
       - name: Create GitHub deployment (production)
-        id: create_deploy
-        run: |
-          set -euo pipefail
-          owner_repo="${GITHUB_REPOSITORY}"
-          payload=$(jq -n --arg ref "${GITHUB_SHA}" --arg env "production" '{ref:$ref,environment:$env,auto_merge:false,required_contexts:[] }')
-          resp=$(curl -s -X POST \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${owner_repo}/deployments \
-            -d "$payload")
-          # Don't write raw JSON to $GITHUB_OUTPUT (invalid format); log to stdout instead
-          echo "deployment response:" >&2
-          echo "$resp" >&2
-          id=$(echo "$resp" | jq -r '.id')
-          if [ "$id" = "null" ] || [ -z "$id" ]; then
-            echo "Failed to create deployment: $resp"
-            exit 1
-          fi
-          echo "deployment_id=$id" >> $GITHUB_OUTPUT
+        id: create_deployment
+        uses: peter-evans/create-deployment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.sha }}
+          environment: production
+          auto_merge: false
+          required_contexts: '[]'
 
       - name: Mark deployment status as success
-        run: |
-          set -euo pipefail
-          owner_repo="${GITHUB_REPOSITORY}"
-          id=${{ steps.create_deploy.outputs.deployment_id }}
-          status_payload=$(jq -n --arg state "success" --arg desc "Workflow marked production success" '{state:$state,description:$desc,environment:"production"}')
-          curl -s -X POST \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${owner_repo}/deployments/${id}/statuses \
-            -d "$status_payload"
+        uses: peter-evans/create-deployment-status@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          deployment_id: ${{ steps.create_deployment.outputs.deployment_id }}
+          state: success
+          description: Workflow marked production success
