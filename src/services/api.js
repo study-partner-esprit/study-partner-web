@@ -56,6 +56,17 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle tier-based access denial (403)
+    if (error.response?.status === 403) {
+      const { code, requiredTier, currentTier } = error.response.data || {};
+      if (code === 'TIER_REQUIRED' || code === 'TRIAL_EXPIRED') {
+        // Dispatch a custom event so UI components can react
+        window.dispatchEvent(new CustomEvent('tier-upgrade-required', {
+          detail: { code, requiredTier, currentTier, url: error.config?.url }
+        }));
+      }
+    }
+
     // If 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -101,6 +112,11 @@ export const authAPI = {
   login: (data) => api.post("/api/v1/auth/login", data),
   refresh: (refreshToken) => api.post("/api/v1/auth/refresh", { refreshToken }),
   getMe: () => api.get("/api/v1/auth/me"),
+  updateTier: (tier) => api.put("/api/v1/auth/tier", { tier }),
+  verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
+  resendVerification: (email) => api.post("/api/v1/auth/resend-verification", { email }),
+  forgotPassword: (email) => api.post("/api/v1/auth/forgot-password", { email }),
+  resetPassword: (token, newPassword) => api.post("/api/v1/auth/reset-password", { token, newPassword }),
 };
 
 // Profile API
@@ -133,6 +149,7 @@ export const courseAPI = {
     api.post("/api/v1/study/courses", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  createManual: (data) => api.post("/api/v1/study/courses/manual", data),
   get: (courseId) => api.get(`/api/v1/study/courses/${courseId}`),
   addFiles: (courseId, formData) =>
     api.post(`/api/v1/study/courses/${courseId}/files`, formData, {
@@ -313,6 +330,35 @@ export const questAPI = {
     api
       .post("/api/v1/users/quests/progress", { action })
       .then((res) => res.data),
+};
+
+// Friends API
+export const friendsAPI = {
+  getAll: () => api.get("/api/v1/users/friends").then((r) => r.data),
+  getIncoming: () => api.get("/api/v1/users/friends/requests/incoming").then((r) => r.data),
+  getOutgoing: () => api.get("/api/v1/users/friends/requests/outgoing").then((r) => r.data),
+  sendRequest: (data) => api.post("/api/v1/users/friends/request", data).then((r) => r.data),
+  acceptRequest: (id) => api.put(`/api/v1/users/friends/request/${id}/accept`).then((r) => r.data),
+  rejectRequest: (id) => api.put(`/api/v1/users/friends/request/${id}/reject`).then((r) => r.data),
+  cancelRequest: (id) => api.delete(`/api/v1/users/friends/request/${id}`).then((r) => r.data),
+  removeFriend: (friendId) => api.delete(`/api/v1/users/friends/${friendId}`).then((r) => r.data),
+  blockUser: (userId) => api.post(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
+  unblockUser: (userId) => api.delete(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
+  getBlocked: () => api.get("/api/v1/users/friends/blocked").then((r) => r.data),
+  search: (query) => api.get("/api/v1/users/friends/search", { params: { q: query } }).then((r) => r.data),
+  getProfile: (friendId) => api.get(`/api/v1/users/friends/${friendId}/profile`).then((r) => r.data),
+  getOnline: () => api.get("/api/v1/users/friends/online").then((r) => r.data),
+  getCount: () => api.get("/api/v1/users/friends/count").then((r) => r.data),
+};
+
+// Team Sessions API
+export const teamSessionsAPI = {
+  create: (data) => api.post("/api/v1/study/sessions/team", data).then((r) => r.data),
+  join: (sessionId, inviteCode) => api.post(`/api/v1/study/sessions/team/${sessionId}/join`, { inviteCode }).then((r) => r.data),
+  leave: (sessionId) => api.post(`/api/v1/study/sessions/team/${sessionId}/leave`).then((r) => r.data),
+  invite: (sessionId, friendId) => api.post(`/api/v1/study/sessions/team/${sessionId}/invite`, { friendId }).then((r) => r.data),
+  getParticipants: (sessionId) => api.get(`/api/v1/study/sessions/team/${sessionId}/participants`).then((r) => r.data),
+  end: (sessionId) => api.put(`/api/v1/study/sessions/team/${sessionId}/end`).then((r) => r.data),
 };
 
 // Legacy support - maintain backward compatibility

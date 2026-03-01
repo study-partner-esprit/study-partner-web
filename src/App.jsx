@@ -20,8 +20,16 @@ import Calendar from "./pages/Calendar";
 import Leaderboard from "./pages/Leaderboard";
 import ReviewCenter from "./pages/ReviewCenter";
 import AISearch from "./pages/AISearch";
+import Friends from "./pages/Friends";
+import Pricing from "./pages/Pricing";
+import VerifyEmail from "./pages/VerifyEmail";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import SessionManager from "./components/SessionManager";
 import NotificationCenter from "./components/NotificationCenter";
+import UpgradePrompt from "./components/UpgradePrompt";
+import TrialBanner from "./components/TrialBanner";
+import { ErrorBoundary } from "./components/shared";
 import useNotificationStore from "./store/notificationStore";
 
 function App() {
@@ -45,15 +53,21 @@ function App() {
   }, [user?._id, startPolling, stopPolling]);
 
   return (
-    <>
+    <ErrorBoundary>
       <SessionManager />
       <NotificationCenter />
+      <UpgradePrompt />
+      <TrialBanner />
       <Navbar minimal={minimalNav} />
       <div className="relative z-10 w-full min-h-screen pt-20">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route
             path="/dashboard"
             element={
@@ -166,9 +180,17 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/friends"
+            element={
+              <PrivateRoute>
+                <Friends />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
-    </>
+    </ErrorBoundary>
   );
 }
 

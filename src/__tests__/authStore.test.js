@@ -101,4 +101,102 @@ describe("Auth Store", () => {
     expect(state.isStudent()).toBe(false);
     expect(state.hasRole("admin")).toBe(true);
   });
+
+  // --- Tier permission tests ---
+  it("should return tier from user object", () => {
+    const { login } = useAuthStore.getState();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "VIP", email: "vip@test.com", role: "student", tier: "vip" },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.getTier()).toBe("vip");
+  });
+
+  it("should default tier to normal if missing", () => {
+    const { login } = useAuthStore.getState();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "Basic", email: "basic@test.com", role: "student" },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.getTier()).toBe("normal");
+  });
+
+  it("should check trial expiry correctly (not expired)", () => {
+    const { login } = useAuthStore.getState();
+    const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "Trial", email: "trial@test.com", tier: "trial", trialExpiresAt: future },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.isTrialExpired()).toBe(false);
+    expect(state.getTrialDaysRemaining()).toBeGreaterThan(0);
+  });
+
+  it("should check trial expiry correctly (expired)", () => {
+    const { login } = useAuthStore.getState();
+    const past = new Date(Date.now() - 1000).toISOString();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "Expired", email: "exp@test.com", tier: "trial", trialExpiresAt: past },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.isTrialExpired()).toBe(true);
+  });
+
+  it("should return tier permissions for vip_plus", () => {
+    const { login } = useAuthStore.getState();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "VIP+", email: "vipplus@test.com", tier: "vip_plus" },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    const perms = state.getTierPermissions();
+    expect(perms).toBeTruthy();
+    expect(state.hasTierPermission("ai_coach")).toBe(true);
+    expect(state.hasTierPermission("ai_search")).toBe(true);
+  });
+
+  it("should deny AI permissions for normal tier", () => {
+    const { login } = useAuthStore.getState();
+
+    act(() => {
+      login(
+        { _id: "u1", name: "Free", email: "free@test.com", tier: "normal" },
+        "jwt-token",
+        "refresh-token",
+      );
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.hasTierPermission("ai_coach")).toBe(false);
+    expect(state.hasTierPermission("ai_search")).toBe(false);
+  });
 });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { gamificationAPI } from "../services/api";
+import { gamificationAPI, friendsAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import {
   Trophy,
@@ -11,6 +11,7 @@ import {
   TrendingUp,
   Award,
   Loader2,
+  Users,
 } from "lucide-react";
 
 const RANK_COLORS = ["text-yellow-400", "text-gray-300", "text-amber-600"];
@@ -21,6 +22,8 @@ const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [friendsOnly, setFriendsOnly] = useState(false);
+  const [friendIds, setFriendIds] = useState(new Set());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +34,20 @@ const Leaderboard = () => {
         ]);
         setLeaderboard(lb);
         setMyProfile(profile);
+
+        // Fetch friend IDs for filtering
+        try {
+          const friendsData = await friendsAPI.getAll();
+          const ids = new Set(
+            (friendsData.friends || friendsData || []).map(
+              (f) => f.friendId || f._id
+            )
+          );
+          if (user?._id) ids.add(user._id);
+          setFriendIds(ids);
+        } catch {
+          // Friends API may not be available
+        }
       } catch (err) {
         console.error("Failed to load leaderboard:", err);
       } finally {
@@ -40,7 +57,12 @@ const Leaderboard = () => {
     fetchData();
   }, []);
 
-  const myRank = leaderboard.findIndex((e) => e.userId === user?._id) + 1;
+  const displayedLeaderboard = friendsOnly
+    ? leaderboard.filter((e) => friendIds.has(e.userId))
+    : leaderboard;
+
+  const myRank =
+    displayedLeaderboard.findIndex((e) => e.userId === user?._id) + 1;
 
   if (loading) {
     return (
@@ -65,6 +87,19 @@ const Leaderboard = () => {
         <p className="text-muted-foreground">
           See how you stack up against other students
         </p>
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setFriendsOnly(!friendsOnly)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+              friendsOnly
+                ? "bg-purple-600/20 text-purple-400 border-purple-500/30"
+                : "bg-muted/50 text-muted-foreground border-border hover:border-primary/30"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            {friendsOnly ? "Friends Only" : "All Users"}
+          </button>
+        </div>
       </motion.div>
 
       {/* My Stats Card */}
@@ -185,7 +220,7 @@ const Leaderboard = () => {
               </tr>
             </thead>
             <tbody>
-              {leaderboard.map((entry, idx) => {
+              {displayedLeaderboard.map((entry, idx) => {
                 const isMe = entry.userId === user?._id;
                 const RankIcon = RANK_ICONS[idx] || TrendingUp;
                 const rankColor = RANK_COLORS[idx] || "text-muted-foreground";

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { profileAPI, gamificationAPI } from "../services/api";
+import { profileAPI, gamificationAPI, friendsAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
-import { Camera, Edit2, Zap, Trophy, Share2, Award } from "lucide-react";
+import { Camera, Edit2, Zap, Trophy, Share2, Award, Copy, Users, Eye, EyeOff, Shield } from "lucide-react";
 
 // Helper to determine avatar src
 const getAvatarSrc = (avatarPath, userName) => {
@@ -27,10 +27,13 @@ const Profile = () => {
     avatar: "",
     avatarFile: null,
   });
+  const [friendCount, setFriendCount] = useState(0);
+  const [codeCopied, setCodeCopied] = useState(false);
 
   useEffect(() => {
     fetchProfile();
     fetchGamification();
+    fetchFriendCount();
   }, []);
 
   const fetchProfile = async () => {
@@ -55,12 +58,29 @@ const Profile = () => {
       setGamification(data);
     } catch (error) {
       console.error("Failed to fetch gamification data:", error);
-      // Set default values if API fails
       setGamification({
         total_xp: 0,
         level: 1,
         achievements: [],
       });
+    }
+  };
+
+  const fetchFriendCount = async () => {
+    try {
+      const data = await friendsAPI.getCount();
+      setFriendCount(data.count || 0);
+    } catch (error) {
+      console.error("Failed to fetch friend count:", error);
+    }
+  };
+
+  const copyFriendCode = () => {
+    const code = profile?.friendCode;
+    if (code) {
+      navigator.clipboard.writeText(code);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2000);
     }
   };
 
@@ -206,9 +226,9 @@ const Profile = () => {
                   </div>
                   <div className="bg-muted/50 p-3 rounded-xl border border-border text-center">
                     <div className="text-cyan-500 mb-1 flex justify-center">
-                      <Share2 className="w-5 h-5" />
+                      <Users className="w-5 h-5" />
                     </div>
-                    <div className="text-xl font-bold">0</div>
+                    <div className="text-xl font-bold">{friendCount}</div>
                     <div className="text-[10px] text-muted-foreground uppercase tracking-widest">
                       Friends
                     </div>
@@ -216,6 +236,24 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+
+            {/* Friend Code Card */}
+            {profile?.friendCode && (
+              <div className="mt-6 bg-muted/30 border border-border rounded-xl p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Your Friend Code</p>
+                  <p className="font-mono font-bold text-primary text-lg tracking-wider">{profile.friendCode}</p>
+                </div>
+                <button
+                  onClick={copyFriendCode}
+                  className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-2 text-sm font-medium"
+                >
+                  <Copy className="w-4 h-4" />
+                  {codeCopied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+            )}
+
             {/* Editing Form */}
             {editing && (
               <motion.form
