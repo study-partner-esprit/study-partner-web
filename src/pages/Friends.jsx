@@ -325,7 +325,7 @@ function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contex
     <div className="grid gap-3">
       {friends.map((friend) => (
         <div
-          key={friend.friendId || friend._id}
+          key={friend.userId || friend._id}
           className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4 hover:border-purple-500/30 transition-colors"
         >
           <div className="flex items-center gap-3">
@@ -355,31 +355,31 @@ function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contex
             <button
               onClick={() =>
                 setContextMenu(
-                  contextMenu === (friend.friendId || friend._id)
+                  contextMenu === (friend.userId || friend._id)
                     ? null
-                    : friend.friendId || friend._id
+                    : friend.userId || friend._id
                 )
               }
               className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
             >
               <MoreVertical size={16} />
             </button>
-            {contextMenu === (friend.friendId || friend._id) && (
+            {contextMenu === (friend.userId || friend._id) && (
               <div className="absolute right-0 top-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-10 w-48">
                 <button
-                  onClick={() => onViewProfile(friend.friendId || friend._id)}
+                  onClick={() => onViewProfile(friend.userId || friend._id)}
                   className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 rounded-t-lg flex items-center gap-2"
                 >
                   <Users size={14} /> View Profile
                 </button>
                 <button
-                  onClick={() => onRemove(friend.friendId || friend._id)}
+                  onClick={() => onRemove(friend.userId || friend._id)}
                   className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 flex items-center gap-2"
                 >
                   <UserMinus size={14} /> Remove Friend
                 </button>
                 <button
-                  onClick={() => onBlock(friend.friendId || friend._id)}
+                  onClick={() => onBlock(friend.userId || friend._id)}
                   className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 rounded-b-lg flex items-center gap-2"
                 >
                   <Shield size={14} /> Block User
@@ -429,14 +429,14 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => onAccept(req._id)}
+                    onClick={() => onAccept(req.friendshipId)}
                     className="p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors"
                     title="Accept"
                   >
                     <Check size={16} />
                   </button>
                   <button
-                    onClick={() => onReject(req._id)}
+                    onClick={() => onReject(req.friendshipId)}
                     className="p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors"
                     title="Reject"
                   >
@@ -473,7 +473,7 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                   </div>
                 </div>
                 <button
-                  onClick={() => onCancel(req._id)}
+                  onClick={() => onCancel(req.friendshipId)}
                   className="px-3 py-1.5 text-sm bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors"
                 >
                   Cancel

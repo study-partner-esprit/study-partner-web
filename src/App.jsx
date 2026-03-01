@@ -39,6 +39,11 @@ function App() {
   const isLandingPage = location.pathname === "/";
   const isLobby = location.pathname === "/lobby";
 
+  // Initialize authentication on app start
+  useEffect(() => {
+    useAuthStore.getState().initializeAuth();
+  }, []);
+
   // Show full navbar on landing page if user is logged in
   const minimalNav = (isLandingPage || isLobby) && !user;
 

@@ -60,6 +60,22 @@ const useAuthStore = create(
       sessionExpiry: null,
       isRefreshing: false,
 
+      // Initialize authentication state from persisted data
+      initializeAuth: () => {
+        const { token, user, sessionExpiry } = get();
+        if (token && user && sessionExpiry) {
+          const now = new Date().getTime();
+          if (sessionExpiry > now) {
+            set({ isAuthenticated: true });
+            console.log("[Auth] Initialized from persisted session");
+          } else {
+            // Session expired, clear it
+            get().logout();
+            console.log("[Auth] Persisted session expired, logged out");
+          }
+        }
+      },
+
       login: (userData, token, refreshToken) => {
         const expiry = new Date();
         expiry.setHours(expiry.getHours() + 1); // Token expires in 1 hour

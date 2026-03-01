@@ -70,7 +70,7 @@ function FriendProfileModal({ onClose }) {
           {profile.level && (
             <div className="flex items-center justify-center gap-2 mt-2">
               <Trophy size={14} className="text-yellow-500" />
-              <span className="text-sm text-gray-400">Level {profile.level}</span>
+              <span className="text-sm text-gray-400">Level {profile.level.current || profile.level}</span>
               {profile.streak > 0 && (
                 <>
                   <Flame size={14} className="text-orange-500 ml-2" />
