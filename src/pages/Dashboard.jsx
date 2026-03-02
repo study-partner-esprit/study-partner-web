@@ -61,9 +61,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden transition-colors duration-300">
       {/* Content wrapper */}
-      <div className="relative z-10 pt-24 pb-12">
+      <div className="relative z-10 pt-4 pb-12">
         {/* Header with theme-aware design */}
         <div className="mb-8 border-b border-border/40 bg-background/50 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 py-8">

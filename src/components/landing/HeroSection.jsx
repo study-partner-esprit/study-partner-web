@@ -44,7 +44,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <section className="relative min-h-screen w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden">
+    <section className="relative min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden pt-0 mt-0">
       {/* Background Typography "GAMEDAY" style */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
         <span className="text-[20vw] leading-none font-bold font-valorant text-outline-lg opacity-20 dark:opacity-10 scale-150 tracking-tighter transform rotate-[-5deg]">
@@ -52,14 +52,14 @@ const HeroSection = () => {
         </span>
       </div>
 
-      <div className="relative w-full z-10">
-        <TiltCard className="rect-card w-full h-screen p-0">
-          <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full">
+      <div className="relative w-full z-10 h-full flex items-center">
+        <TiltCard className="w-full min-h-[80vh] p-0 !bg-transparent !border-transparent !shadow-none !backdrop-blur-none">
+          <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full min-h-[80vh]">
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-red-900/20 border border-primary/30 text-primary text-sm font-medium mb-6 shadow-lg"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-background/40 backdrop-blur-md border border-primary/20 text-primary text-sm font-semibold mb-6 shadow-[0_4px_20px_rgba(255,70,85,0.15)] ring-1 ring-white/10"
             >
               <Sparkles className="w-4 h-4 animate-pulse" />
               <span>🎮 Gamified Learning Experience</span>
@@ -109,7 +109,7 @@ const HeroSection = () => {
                     boxShadow: "0 20px 40px rgba(255, 70, 85, 0.4)",
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="valo-btn inline-flex items-center bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25"
+                  className="valo-btn inline-flex items-center bg-primary/90 backdrop-blur-md border border-white/20 hover:bg-primary text-white shadow-xl shadow-primary/20 rounded-xl"
                 >
                   Start Your Journey <ChevronRight className="ml-3 w-6 h-10" />
                 </motion.button>
@@ -117,7 +117,7 @@ const HeroSection = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="valo-btn inline-flex items-center border-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-white/10 bg-transparent text-gray-900 dark:text-white"
+                className="valo-btn inline-flex items-center border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 text-foreground shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-xl"
               >
                 <Target className="mr-2 w-6 h-10" />
                 View Demo
@@ -136,7 +136,7 @@ const HeroSection = () => {
                 return (
                   <motion.div
                     key={index}
-                    className="text-center p-4 valo-card-sm backdrop-blur-sm"
+                    className="text-center p-5 valo-card-sm !bg-background/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] ring-1 ring-white/5"
                     whileHover={{ scale: 1.05, y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >

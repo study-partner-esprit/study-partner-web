@@ -55,7 +55,7 @@ const NotificationCenter = () => {
     <div className="fixed inset-0 z-50 flex items-start justify-end p-4 pointer-events-none">
       <div
         ref={dropdownRef}
-        className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 pointer-events-auto max-h-[80vh] overflow-hidden"
+        className="w-full max-w-sm bg-background/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] border border-white/10 dark:border-white/5 pointer-events-auto max-h-[80vh] overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">

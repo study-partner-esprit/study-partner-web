@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import Landing from "./pages/Landing";
@@ -29,6 +29,7 @@ import SessionManager from "./components/SessionManager";
 import NotificationCenter from "./components/NotificationCenter";
 import UpgradePrompt from "./components/UpgradePrompt";
 import TrialBanner from "./components/TrialBanner";
+import Sidebar from "./components/Sidebar";
 import { ErrorBoundary } from "./components/shared";
 import useNotificationStore from "./store/notificationStore";
 
@@ -38,6 +39,15 @@ function App() {
   const { startPolling, stopPolling } = useNotificationStore();
   const isLandingPage = location.pathname === "/";
   const isLobby = location.pathname === "/lobby";
+  
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const tier = useAuthStore((s) => s.getTier());
+  const trialVisible = tier === "trial";
+  // heights in px: trial banner = 40, navbar = 80
+  const TRIAL_BANNER_HEIGHT = trialVisible ? 40 : 0;
+  const NAVBAR_HEIGHT = 80;
+  const topOffsetPx = NAVBAR_HEIGHT + TRIAL_BANNER_HEIGHT;
 
   // Initialize authentication on app start
   useEffect(() => {
@@ -57,14 +67,25 @@ function App() {
     }
   }, [user?._id, startPolling, stopPolling]);
 
+  // Show sidebar for any authenticated user on all pages except the lobby
+  const showSidebar = user && !isLobby;
+
   return (
     <ErrorBoundary>
       <SessionManager />
       <NotificationCenter />
       <UpgradePrompt />
       <TrialBanner />
-      <Navbar minimal={minimalNav} />
-      <div className="relative z-10 w-full min-h-screen pt-20">
+      <Navbar minimal={minimalNav} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} topOffset={topOffsetPx} />
+      
+      {showSidebar && (
+        <Sidebar topOffset={topOffsetPx} />
+      )}
+
+      <div
+        className={`relative z-10 w-full min-h-screen transition-all duration-300 ${showSidebar ? 'min-[800px]:pl-[72px]' : ''}`}
+        style={{ paddingTop: isLandingPage ? topOffsetPx : topOffsetPx }}
+      >
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

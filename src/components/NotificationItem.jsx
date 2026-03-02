@@ -66,7 +66,7 @@ const NotificationItem = ({ notification }) => {
       className={`p-4 border-l-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
         notification.status === "unread"
           ? `${getPriorityColor(notification.priority)} border-r-2 border-r-current`
-          : "bg-white dark:bg-gray-800 border-l-gray-300 dark:border-l-gray-600"
+          : "bg-background/40 dark:bg-gray-800/40 backdrop-blur-md border-l-gray-300/50 dark:border-l-gray-600/50"
       }`}
       onClick={handleClick}
     >

@@ -81,7 +81,7 @@
 }
 
 /* Mobile responsive */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .webcam-container {
     max-width: 100%;
   }

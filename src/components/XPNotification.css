@@ -80,7 +80,7 @@
 }
 
 /* Mobile responsive */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .xp-notification {
     top: 80px;
     right: 15px;

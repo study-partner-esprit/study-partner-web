@@ -1,14 +1,14 @@
 .subject-detail-container {
   display: flex;
-  min-height: calc(100vh - 80px);
-  padding-top: 80px;
+  min-height: calc(100vh - var(--navbar-offset, 80px));
 }
 
 /* Sidebar */
 .subject-sidebar {
   width: 280px;
-  background: var(--card);
-  border-right: 1px solid var(--border);
+  background: hsl(var(--card) / 0.3);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 4px 0 24px -12px
     hsl(var(--display-shadow, var(--foreground)) / 0.05);
   padding: 32px 24px;
@@ -16,7 +16,7 @@
   flex-direction: column;
   gap: 32px;
   position: fixed;
-  top: 80px;
+  top: var(--navbar-offset, 80px);
   bottom: 0;
   left: 0;
   overflow-y: auto;
@@ -148,8 +148,9 @@
 }
 
 .course-card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 24px;
   transition: all 0.3s ease;
@@ -368,7 +369,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .subject-sidebar {
     display: none;
   }
@@ -399,7 +400,9 @@
 }
 
 .modal-container {
-  background: var(--card);
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   width: 100%;
   max-width: 500px;

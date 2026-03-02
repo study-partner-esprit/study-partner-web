@@ -1,25 +1,28 @@
 .course-upload-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 100px 2rem 2rem 2rem; /* Adjusted for floating navbar */
+  min-height: 100vh;
 }
 
 .course-upload-container h1 {
   font-size: 2rem;
-  color: #1a1a1a;
+  color: var(--foreground);
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--muted-foreground);
   margin-bottom: 2rem;
 }
 
 .upload-section {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
 }
 
@@ -31,30 +34,39 @@
   display: block;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: var(--foreground);
 }
 
 .upload-form input[type="text"] {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background: hsl(var(--background) / 0.5);
+  color: var(--foreground);
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
   font-size: 1rem;
 }
 
 .upload-form input[type="file"] {
   width: 100%;
   padding: 0.5rem;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
+  background: hsl(var(--background) / 0.3);
+  color: var(--foreground);
+  border: 2px dashed hsl(var(--border) / 0.8);
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-form input[type="file"]:hover {
+  border-color: var(--primary);
 }
 
 .file-list {
   margin-top: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 4px;
+  background: hsl(var(--background) / 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
 .file-list ul {
@@ -65,48 +77,53 @@
 
 .file-list li {
   padding: 0.5rem 0;
-  color: #555;
+  color: var(--muted-foreground);
 }
 
 .upload-btn {
-  background: #4caf50;
+  background: var(--primary);
   color: white;
   border: none;
   padding: 1rem 2rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
   width: 100%;
+  box-shadow: 0 4px 14px rgba(255, 70, 85, 0.3);
 }
 
 .upload-btn:hover:not(:disabled) {
-  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.4);
 }
 
 .upload-btn:disabled {
-  background: #ccc;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .upload-status {
   margin-top: 1.5rem;
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 500;
 }
 
 .upload-status.success {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.2);
 }
 
 .upload-status.error {
-  background: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.2);
 }
 
 .courses-section {
@@ -116,47 +133,49 @@
 .courses-section h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #1a1a1a;
+  color: var(--foreground);
 }
 
 .no-courses {
-  color: #666;
+  color: var(--muted-foreground);
   text-align: center;
   padding: 2rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
 }
 
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
 .course-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 1.5rem;
-  transition:
-    box-shadow 0.3s,
-    transform 0.3s;
+  transition: all 0.3s;
   cursor: pointer;
 }
 
 .course-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .course-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   margin: 0 0 0.5rem 0;
-  color: #1a1a1a;
+  color: var(--foreground);
 }
 
 .course-date {
-  color: #666;
+  color: var(--muted-foreground);
   font-size: 0.875rem;
   margin: 0;
 }

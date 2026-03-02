@@ -1,26 +1,29 @@
 .study-session-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 100px 2rem 2rem 2rem;
+  min-height: 100vh;
 }
 
 .study-session-container h1 {
   font-size: 2rem;
-  color: #1a1a1a;
+  color: var(--foreground);
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--muted-foreground);
   margin-bottom: 2rem;
 }
 
 /* Session Controls */
 .session-controls {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
@@ -32,40 +35,43 @@
   font-size: 1.25rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
-  background: #4caf50;
+  background: var(--primary);
   color: white;
+  box-shadow: 0 4px 14px rgba(255, 70, 85, 0.3);
 }
 
 .session-btn:hover {
-  background: #45a049;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.4);
 }
 
 .session-btn.session-active {
-  background: #f44336;
+  background: hsl(var(--destructive));
+  box-shadow: 0 4px 14px rgba(220, 53, 69, 0.3);
 }
 
 .session-btn.session-active:hover {
-  background: #da190b;
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
 
 /* Webcam Section */
 .webcam-section {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .webcam-section h3 {
   font-size: 1.25rem;
-  color: #1a1a1a;
+  color: var(--foreground);
   margin-bottom: 1rem;
 }
 
@@ -77,13 +83,9 @@
 
 .webcam-note {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--muted-foreground);
   font-style: italic;
   margin-top: 1rem;
-}
-
-.session-btn.session-active:hover {
-  background: #d32f2f;
 }
 
 .session-stats {
@@ -91,7 +93,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stat {
@@ -102,13 +104,13 @@
 
 .stat-label {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--muted-foreground);
 }
 
 .stat-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #2196f3;
+  color: var(--primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -118,6 +120,7 @@
   gap: 0.5rem;
   cursor: pointer;
   font-weight: 500;
+  color: var(--foreground);
 }
 
 .dnd-toggle input[type="checkbox"] {
@@ -133,16 +136,18 @@
 }
 
 .signal-card {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .signal-card h3 {
   font-size: 1.1rem;
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--foreground);
 }
 
 .signal-content {
@@ -154,7 +159,7 @@
 .signal-gauge {
   width: 100%;
   height: 20px;
-  background: #e0e0e0;
+  background: hsl(var(--background) / 0.5);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -166,11 +171,11 @@
 }
 
 .focus-gauge {
-  background: linear-gradient(90deg, #ff6b6b 0%, #ffa500 50%, #4caf50 100%);
+  background: linear-gradient(90deg, #ff6b6b 0%, #ffa500 50%, var(--primary) 100%);
 }
 
 .fatigue-gauge {
-  background: linear-gradient(90deg, #4caf50 0%, #ffa500 50%, #ff6b6b 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, #ffa500 50%, #ff6b6b 100%);
 }
 
 .signal-details {
@@ -187,49 +192,51 @@
 }
 
 .badge-success {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
 }
 
 .badge-warning {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
 }
 
 .badge-danger {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
 }
 
 .badge-info {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: rgba(23, 162, 184, 0.1);
+  color: #17a2b8;
 }
 
 .signal-score {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2196f3;
+  color: var(--primary);
 }
 
 .signal-confidence {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--muted-foreground);
 }
 
 /* Signal History */
 .signal-history {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
 .signal-history h3 {
   font-size: 1.1rem;
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--foreground);
 }
 
 .history-chart {
@@ -239,7 +246,7 @@
   height: 150px;
   gap: 2px;
   padding: 1rem 0;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .chart-bar {
@@ -259,7 +266,7 @@
 }
 
 .bar-focus {
-  background: #2196f3;
+  background: var(--primary);
 }
 
 .bar-fatigue {
@@ -271,6 +278,7 @@
   gap: 2rem;
   margin-top: 1rem;
   font-size: 0.875rem;
+  color: var(--foreground);
 }
 
 .legend-item {
@@ -286,7 +294,7 @@
 }
 
 .focus-color {
-  background: #2196f3;
+  background: var(--primary);
 }
 
 .fatigue-color {
@@ -301,6 +309,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -318,11 +327,12 @@
 }
 
 .coach-popup {
-  background: white;
-  border-radius: 12px;
+  background: hsl(var(--card));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.3s ease;
 }
 
@@ -342,20 +352,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .coach-header h3 {
   margin: 0;
   font-size: 1.25rem;
-  color: #1a1a1a;
+  color: var(--foreground);
 }
 
 .close-btn {
   background: none;
   border: none;
   font-size: 2rem;
-  color: #999;
+  color: var(--muted-foreground);
   cursor: pointer;
   line-height: 1;
   padding: 0;
@@ -364,7 +374,7 @@
 }
 
 .close-btn:hover {
-  color: #333;
+  color: var(--foreground);
 }
 
 .coach-body {
@@ -373,10 +383,10 @@
 
 .coach-action-type {
   display: inline-block;
-  background: #2196f3;
-  color: white;
+  background: hsl(var(--primary) / 0.1);
+  color: var(--primary);
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 0.875rem;
   margin-bottom: 1rem;
@@ -384,18 +394,18 @@
 
 .coach-message {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--foreground);
   margin: 1rem 0;
   line-height: 1.6;
 }
 
 .coach-reasoning {
-  background: #f8f9fa;
+  background: hsl(var(--background) / 0.5);
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 0.9rem;
-  color: #555;
-  border-left: 3px solid #2196f3;
+  color: var(--muted-foreground);
+  border-left: 3px solid var(--primary);
 }
 
 .coach-actions {
@@ -403,35 +413,36 @@
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .accept-btn,
 .ignore-btn {
   padding: 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .accept-btn {
-  background: #4caf50;
+  background: var(--primary);
   color: white;
 }
 
 .accept-btn:hover {
-  background: #45a049;
+  box-shadow: 0 4px 14px rgba(255, 70, 85, 0.3);
+  transform: translateY(-2px);
 }
 
 .ignore-btn {
-  background: #f5f5f5;
-  color: #666;
+  background: hsl(var(--muted));
+  color: var(--foreground);
 }
 
 .ignore-btn:hover {
-  background: #e0e0e0;
+  background: hsl(var(--muted) / 0.8);
 }
 
 .ignored-count {
@@ -443,16 +454,18 @@
 
 /* Session Info */
 .session-info {
-  background: white;
-  border-radius: 8px;
+  background: hsl(var(--card) / 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .session-info h2 {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  color: #1a1a1a;
+  color: var(--foreground);
 }
 
 .info-grid {
@@ -463,8 +476,9 @@
 
 .info-card {
   padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: hsl(var(--background) / 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   text-align: center;
 }
 
@@ -476,19 +490,19 @@
 
 .info-card h4 {
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: var(--foreground);
   font-size: 1.1rem;
 }
 
 .info-card p {
   margin: 0;
-  color: #666;
+  color: var(--muted-foreground);
   font-size: 0.9rem;
   line-height: 1.5;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .signals-dashboard {
     grid-template-columns: 1fr;
   }

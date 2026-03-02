@@ -19,7 +19,7 @@ export default function TrialBanner() {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-[90] flex items-center justify-center gap-3 px-4 py-2 text-sm font-medium ${
+      className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-3 px-4 py-2 text-sm font-medium h-10 ${
         isExpired
           ? "bg-red-600/90 text-white"
           : urgent

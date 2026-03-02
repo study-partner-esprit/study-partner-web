@@ -129,14 +129,10 @@ export const profileAPI = {
 export const subjectAPI = {
   list: () => api.get("/api/v1/study/subjects"),
   create: (formData) =>
-    api.post("/api/v1/study/subjects", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    api.post("/api/v1/study/subjects", formData),
   get: (subjectId) => api.get(`/api/v1/study/subjects/${subjectId}`),
   update: (subjectId, formData) =>
-    api.put(`/api/v1/study/subjects/${subjectId}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    api.put(`/api/v1/study/subjects/${subjectId}`, formData),
   delete: (subjectId) => api.delete(`/api/v1/study/subjects/${subjectId}`),
 };
 
@@ -146,15 +142,11 @@ export const courseAPI = {
       params: subjectId ? { subject_id: subjectId } : {},
     }),
   create: (formData) =>
-    api.post("/api/v1/study/courses", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    api.post("/api/v1/study/courses", formData),
   createManual: (data) => api.post("/api/v1/study/courses/manual", data),
   get: (courseId) => api.get(`/api/v1/study/courses/${courseId}`),
   addFiles: (courseId, formData) =>
-    api.post(`/api/v1/study/courses/${courseId}/files`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    api.post(`/api/v1/study/courses/${courseId}/files`, formData),
   delete: (courseId) => api.delete(`/api/v1/study/courses/${courseId}`),
 };
 
@@ -178,7 +170,6 @@ export const aiAPI = {
     api.post("/api/v1/ai/signals/process", { user_id: userId }),
   analyzeFrame: (formData) =>
     api.post("/api/v1/ai/signals/analyze-frame", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
       timeout: 30000,
     }),
   getLatestSignals: (userId, limit = 10) =>
