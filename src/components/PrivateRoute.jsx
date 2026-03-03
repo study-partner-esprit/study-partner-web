@@ -3,9 +3,13 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 const PrivateRoute = ({ children, requireAdmin = false }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, token, sessionExpiry, user } = useAuthStore();
 
-  if (!isAuthenticated) {
+  // Consider session valid if persisted token exists and hasn't expired yet.
+  const now = Date.now();
+  const persistedSessionValid = token && sessionExpiry && sessionExpiry > now;
+
+  if (!isAuthenticated && !persistedSessionValid) {
     return <Navigate to="/login" replace />;
   }
 

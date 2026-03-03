@@ -13,7 +13,6 @@ import {
 import { Link } from "react-router-dom";
 import TiltCard from "@/components/ui/TiltCard";
 import DecryptedText from "@/components/ui/DecryptedText";
-// import LightRays from '@/components/ui/LightRays'; // Moved to App.jsx global
 
 const HeroSection = () => {
   const stats = [
@@ -45,12 +44,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden pt-0 mt-0">
-      {/* Background Typography "GAMEDAY" style */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
-        <span className="text-[20vw] leading-none font-bold font-valorant text-outline-lg opacity-20 dark:opacity-10 scale-150 tracking-tighter transform rotate-[-5deg]">
-          GAMEDAY
-        </span>
-      </div>
+      
 
       <div className="relative w-full z-10 h-full flex items-center">
         <TiltCard className="w-full min-h-[80vh] p-0 !bg-transparent !border-transparent !shadow-none !backdrop-blur-none">

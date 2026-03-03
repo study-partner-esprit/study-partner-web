@@ -52,9 +52,7 @@ const CTASection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <TiltCard className="relative overflow-hidden group p-0 md:p-0 text-center w-full rect-card min-h-[80vh] flex items-center">
-            {/* Glossy sheen overlay (CTA) */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-40 pointer-events-none cta-inner-sheen" />
+          <TiltCard className="relative overflow-hidden group p-0 md:p-0 text-center w-full rect-card min-h-[80vh] flex items-center !bg-transparent !border-transparent !shadow-none !backdrop-blur-none">
             <motion.div
               initial={{ scale: 0.98, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
