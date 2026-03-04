@@ -13,6 +13,8 @@ const useNotificationStore = create((set, get) => ({
   isOpen: false,
   ws: null,
   pollingInterval: null,
+  pendingInvites: [],
+  sessionStartSignal: null, // { sessionId, inviteCode } when leader fires start
 
   // Actions
   fetchNotifications: async (userId) => {
@@ -79,7 +81,16 @@ const useNotificationStore = create((set, get) => ({
         ? get().unreadCount + 1
         : get().unreadCount;
 
-    set({ notifications, unreadCount });
+    // Add to pendingInvites if it's a team_invite
+    let pendingInvites = get().pendingInvites;
+    if (notification.type === "team_invite" && notification.status === "unread") {
+      const alreadyQueued = pendingInvites.some((inv) => inv._id === notification._id);
+      if (!alreadyQueued) {
+        pendingInvites = [...pendingInvites, notification];
+      }
+    }
+
+    set({ notifications, unreadCount, pendingInvites });
   },
 
   toggleNotificationCenter: () => {
@@ -88,6 +99,14 @@ const useNotificationStore = create((set, get) => ({
 
   closeNotificationCenter: () => {
     set({ isOpen: false });
+  },
+
+  dismissInvite: async (notificationId) => {
+    await get().markAsRead(notificationId);
+    const pendingInvites = get().pendingInvites.filter(
+      (inv) => inv._id !== notificationId
+    );
+    set({ pendingInvites });
   },
 
   // Connect WebSocket with polling fallback
@@ -113,8 +132,11 @@ const useNotificationStore = create((set, get) => ({
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === "new_notification" && data.notification) {
+          if (data.type === 'new_notification' && data.notification) {
             get().addNotification(data.notification);
+          } else if (data.type === 'session_start') {
+            // Leader triggered start — push all members to study session
+            set({ sessionStartSignal: { sessionId: data.sessionId, inviteCode: data.inviteCode } });
           }
         } catch (err) {
           console.warn("[Notifications] Failed to parse WS message:", err);
@@ -178,6 +200,8 @@ const useNotificationStore = create((set, get) => ({
       set({ pollingInterval: null });
     }
   },
+
+  clearSessionStartSignal: () => set({ sessionStartSignal: null }),
 }));
 
 export default useNotificationStore;

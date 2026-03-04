@@ -65,34 +65,7 @@ const Dashboard = () => {
       {/* Content wrapper */}
       <div className="relative z-10 pt-4 pb-12">
         {/* Header with theme-aware design */}
-        <div className="mb-8 border-b border-border/40 bg-background/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <h1 className="text-5xl font-bold tracking-wider text-foreground uppercase">
-                    <span className="text-primary">//</span> DASHBOARD
-                  </h1>
-                  <p className="text-muted-foreground mt-2 text-lg">
-                    Welcome back,{" "}
-                    <span className="text-primary font-semibold">
-                      {user?.name}
-                    </span>
-                  </p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="px-6 py-3 bg-primary text-primary-foreground hover:brightness-110 transition-all duration-300 font-bold tracking-wider transform hover:scale-105 shadow-lg shadow-primary/20"
-                >
-                  LOGOUT
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+        
 
         <div className="max-w-7xl mx-auto px-6">
           {error && (
@@ -292,7 +265,7 @@ const Dashboard = () => {
                     RESUME SESSION
                   </Link>
                   <Link
-                    to="/lobby"
+                    to="/session-setup"
                     className="block px-4 py-3 bg-[#ff4655] text-white hover:brightness-110 transition-all duration-300 font-bold tracking-wider text-center shadow-lg group"
                   >
                     <span className="group-hover:scale-110 inline-block transition-transform mr-2">

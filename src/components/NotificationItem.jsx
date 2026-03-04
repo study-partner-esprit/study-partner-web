@@ -9,6 +9,7 @@ import {
   Zap,
   Trophy,
   Calendar,
+  Swords,
 } from "lucide-react";
 import useNotificationStore from "../store/notificationStore";
 
@@ -37,6 +38,10 @@ const NotificationItem = ({ notification }) => {
         return <Trophy {...iconProps} className="text-yellow-500" />;
       case "schedule_change":
         return <Calendar {...iconProps} className="text-blue-500" />;
+      case "team_invite":
+        return <Swords {...iconProps} className="text-cyan-500" />;
+      case "team_join":
+        return <Swords {...iconProps} className="text-green-500" />;
       default:
         return <Bell {...iconProps} className="text-gray-500" />;
     }

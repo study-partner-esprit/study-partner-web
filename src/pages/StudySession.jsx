@@ -1,4 +1,18 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  CheckCircle2,
+  SkipForward,
+  Trophy,
+  Zap,
+  Clock,
+  BookOpen,
+  ArrowLeft,
+  Play,
+  Target,
+  RotateCcw,
+} from "lucide-react";
 import {
   aiAPI,
   notificationAPI,
@@ -7,11 +21,143 @@ import {
   gamificationAPI,
 } from "../services/api";
 import { useAuthStore } from "../store/authStore";
+import useSessionStore from "../store/sessionStore";
 import WebcamCapture from "../components/WebcamCapture";
 import "./StudySession.css";
 
+// ─── Task Progress Bar ───────────────────────────────────────────────
+const TaskProgressBar = ({ taskProgress }) => {
+  if (!taskProgress?.tasks?.length) return null;
+  const { tasks, completedTasks, totalTasks } = taskProgress;
+  const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+  return (
+    <div className="mb-6">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-bold tracking-wider text-gray-400 uppercase">
+          Progress
+        </span>
+        <span className="text-sm font-bold text-white">
+          {completedTasks}/{totalTasks} Tasks
+        </span>
+      </div>
+      <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden border border-[#ffffff10]">
+        <motion.div
+          className="h-full bg-gradient-to-r from-[#ff4655] to-[#ff4655]/70 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${progressPercent}%` }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        />
+      </div>
+      {/* Mini task indicators */}
+      <div className="flex gap-1 mt-2">
+        {tasks.map((task, idx) => (
+          <div
+            key={idx}
+            className={`flex-1 h-1.5 rounded-full transition-colors ${
+              task.status === "completed"
+                ? "bg-green-500"
+                : task.status === "skipped"
+                  ? "bg-yellow-500"
+                  : task.status === "in-progress"
+                    ? "bg-[#ff4655] animate-pulse"
+                    : "bg-[#1a2633]"
+            }`}
+            title={`${task.title} (${task.status})`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Session Summary Screen ──────────────────────────────────────────
+const SessionSummary = ({ summary, onRestart, onGoHome }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden"
+  >
+    <div className="absolute inset-0 z-0 opacity-15">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff4655] rounded-full blur-[200px]" />
+    </div>
+
+    <div className="relative z-10 max-w-lg w-full p-8">
+      <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="text-center mb-8">
+        <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
+        <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
+          SESSION COMPLETE
+        </h1>
+        <p className="text-gray-400 text-lg">{summary.courseTitle}</p>
+      </motion.div>
+
+      <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 space-y-4 mb-8">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center p-4 bg-[#0f1923] rounded-xl">
+            <CheckCircle2 size={24} className="mx-auto text-green-500 mb-2" />
+            <p className="text-2xl font-black text-white">{summary.completedTasks}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">Completed</p>
+          </div>
+          <div className="text-center p-4 bg-[#0f1923] rounded-xl">
+            <SkipForward size={24} className="mx-auto text-yellow-500 mb-2" />
+            <p className="text-2xl font-black text-white">{summary.skippedTasks}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">Skipped</p>
+          </div>
+        </div>
+
+        <div className="border-t border-[#ffffff10] pt-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-gray-400">Total XP Earned</span>
+            <span className="text-2xl font-black text-[#ff4655] flex items-center gap-1">
+              <Zap size={20} />+{summary.totalXP}
+            </span>
+          </div>
+          {summary.xpMultiplier > 1 && (
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-gray-400">Team Multiplier</span>
+              <span className="text-lg font-bold text-[#0fb8ce]">{summary.xpMultiplier}x</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="text-gray-400">Total Tasks</span>
+            <span className="text-lg font-bold text-white">{summary.totalTasks}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-4">
+        <button
+          onClick={onRestart}
+          className="flex-1 px-6 py-3 bg-[#1a2633] border border-[#ffffff10] text-white font-bold tracking-wider uppercase hover:bg-[#ffffff10] transition-all rounded-lg flex items-center justify-center gap-2"
+        >
+          <RotateCcw size={18} /> STUDY AGAIN
+        </button>
+        <button
+          onClick={onGoHome}
+          className="flex-1 px-6 py-3 bg-[#ff4655] text-white font-bold tracking-wider uppercase hover:bg-[#ff2a3a] transition-all rounded-lg flex items-center justify-center gap-2"
+        >
+          DASHBOARD
+        </button>
+      </div>
+    </div>
+  </motion.div>
+);
+
 const StudySession = () => {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const {
+    step,
+    activeSession,
+    taskProgress,
+    sessionSummary,
+    selectedCourse,
+    completeTask,
+    skipTask,
+    finishSession,
+    resetSession,
+    loading: taskLoading,
+  } = useSessionStore();
 
   // Session state
   const [sessionActive, setSessionActive] = useState(false);
@@ -41,6 +187,34 @@ const StudySession = () => {
   const sessionTimerRef = useRef(null);
   const signalPollingRef = useRef(null);
   const coachPollingRef = useRef(null);
+
+  // ── Task-progression mode flag ──
+  const hasTaskProgression = activeSession && taskProgress?.tasks?.length > 0;
+
+  // Auto-start session when coming from setup flow
+  useEffect(() => {
+    if (hasTaskProgression && !sessionActive) {
+      studySessionIdRef.current = activeSession._id;
+      autoStartSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasTaskProgression]);
+
+  const autoStartSession = async () => {
+    setSessionActive(true);
+    setSessionDuration(0);
+    try {
+      const focusRes = await focusAPI.startSession({ studySessionId: activeSession._id });
+      focusSessionIdRef.current = focusRes.data?.sessionId;
+    } catch (err) {
+      console.error("[StudySession] Failed to start focus tracking:", err);
+    }
+    sessionTimerRef.current = setInterval(() => setSessionDuration((p) => p + 1), 1000);
+    signalPollingRef.current = setInterval(() => fetchSignals(), 10000);
+    coachPollingRef.current = setInterval(() => requestCoachDecision(), 30000);
+    fetchSignals();
+    setTimeout(() => requestCoachDecision(), 5000);
+  };
 
   // Handle frame capture from webcam
   const handleFrameCapture = async (frameBlob) => {
@@ -276,6 +450,11 @@ const StudySession = () => {
     // Clean up refs
     studySessionIdRef.current = null;
     focusSessionIdRef.current = null;
+
+    // If task-progression mode, transition to summary screen
+    if (hasTaskProgression) {
+      finishSession();
+    }
   };
 
   // Fetch current signals (focus/fatigue)
@@ -305,6 +484,10 @@ const StudySession = () => {
         user_id: user._id,
         ignored_count: ignoredCount,
         do_not_disturb: doNotDisturb,
+        focus_score: signals?.focus?.score,
+        focus_state: signals?.focus?.state,
+        fatigue_score: signals?.fatigue?.score,
+        fatigue_state: signals?.fatigue?.state,
       });
 
       const decision = response.data.coach_action;
@@ -366,6 +549,213 @@ const StudySession = () => {
     return stateMap[state] || "badge-default";
   };
 
+  // ─── Summary Screen ────────────────────────────────────────────────
+  if (step === "summary" && sessionSummary) {
+    return (
+      <SessionSummary
+        summary={sessionSummary}
+        onRestart={() => { resetSession(); navigate("/session-setup"); }}
+        onGoHome={() => { resetSession(); navigate("/dashboard"); }}
+      />
+    );
+  }
+
+  // ─── Task-by-Task Progression Mode ─────────────────────────────────
+  if (hasTaskProgression) {
+    const currentIdx = taskProgress.currentTaskIndex || 0;
+    const current = taskProgress.tasks[currentIdx];
+    const allDone = taskProgress.completedTasks >= taskProgress.totalTasks;
+
+    return (
+      <div className="min-h-screen bg-[#0f1923] text-white relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2633] via-[#0f1923] to-[#0f1923] z-0" />
+
+        <div className="relative z-10">
+          {/* Top header */}
+          <div className="h-16 px-6 flex items-center justify-between border-b border-[#ffffff10] bg-[#0f1923]/80 backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { stopSession(); resetSession(); navigate("/session-setup"); }}
+                className="p-2 hover:bg-[#ffffff10] rounded-lg transition-colors"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <BookOpen size={18} className="text-[#ff4655]" />
+              <span className="font-bold tracking-wider uppercase text-sm">
+                {selectedCourse?.title || "Study Session"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-gray-400">
+                <Clock size={16} />
+                <span className="font-mono font-bold text-lg">{formatDuration(sessionDuration)}</span>
+              </div>
+              {activeSession?.xpMultiplier > 1 && (
+                <div className="flex items-center gap-1 text-[#0fb8ce]">
+                  <Zap size={14} />
+                  <span className="font-bold text-sm">{activeSession.xpMultiplier}x XP</span>
+                </div>
+              )}
+              <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+                <input type="checkbox" checked={doNotDisturb} onChange={(e) => setDoNotDisturb(e.target.checked)} className="rounded" />
+                DND
+              </label>
+              <button
+                onClick={() => stopSession()}
+                className="px-4 py-2 bg-[#ff4655] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[#ff2a3a] transition-colors"
+              >
+                END SESSION
+              </button>
+            </div>
+          </div>
+
+          {/* Main content */}
+          <div className="max-w-5xl mx-auto p-6">
+            <TaskProgressBar taskProgress={taskProgress} />
+
+            {!allDone && current && (
+              <motion.div key={currentIdx} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Task Content */}
+                <div className="lg:col-span-2">
+                  <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ff4655] to-transparent" />
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="px-3 py-1 bg-[#ff4655]/10 text-[#ff4655] text-xs font-bold rounded-full uppercase tracking-wider">
+                        Task {currentIdx + 1} of {taskProgress.totalTasks}
+                      </span>
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        <Target size={12} /> In Progress
+                      </span>
+                    </div>
+
+                    <h2 className="text-2xl font-black tracking-tight mb-3">{current.title}</h2>
+                    {current.description && (
+                      <p className="text-gray-400 leading-relaxed mb-6 whitespace-pre-wrap">{current.description}</p>
+                    )}
+
+                    <div className="flex gap-3 mt-6 pt-4 border-t border-[#ffffff10]">
+                      <button
+                        onClick={completeTask}
+                        disabled={taskLoading}
+                        className="flex-1 px-6 py-3 bg-green-600 text-white font-bold tracking-wider uppercase rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        <CheckCircle2 size={18} /> {taskLoading ? "..." : "MARK COMPLETE"}
+                      </button>
+                      <button
+                        onClick={skipTask}
+                        disabled={taskLoading}
+                        className="px-6 py-3 bg-[#1a2633] border border-[#ffffff10] text-gray-400 font-bold tracking-wider uppercase rounded-lg hover:bg-[#ffffff10] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        <SkipForward size={18} /> SKIP
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-4">
+                  {sessionActive && (
+                    <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
+                      <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">Focus Monitoring</h3>
+                      <WebcamCapture onFrameCapture={handleFrameCapture} captureInterval={3000} enabled={sessionActive} />
+                    </div>
+                  )}
+
+                  {signals && (
+                    <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4 space-y-3">
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-gray-500">Focus</span>
+                          <span className={`font-bold ${signals.focus.score > 0.6 ? "text-green-400" : signals.focus.score > 0.3 ? "text-yellow-400" : "text-red-400"}`}>
+                            {(signals.focus.score * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
+                          <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${signals.focus.score * 100}%` }} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-gray-500">Fatigue</span>
+                          <span className={`font-bold ${signals.fatigue.score < 0.3 ? "text-green-400" : signals.fatigue.score < 0.6 ? "text-yellow-400" : "text-red-400"}`}>
+                            {(signals.fatigue.score * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
+                          <div className="h-full bg-orange-500 rounded-full transition-all duration-500" style={{ width: `${signals.fatigue.score * 100}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Task list sidebar */}
+                  <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
+                    <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">Task List</h3>
+                    <div className="space-y-1.5 max-h-60 overflow-y-auto">
+                      {taskProgress.tasks.map((task, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex items-center gap-2 px-2 py-1.5 rounded text-xs ${
+                            idx === currentIdx ? "bg-[#ff4655]/10 text-white"
+                              : task.status === "completed" ? "text-green-500"
+                              : task.status === "skipped" ? "text-yellow-500"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          {task.status === "completed" ? <CheckCircle2 size={12} />
+                            : task.status === "skipped" ? <SkipForward size={12} />
+                            : idx === currentIdx ? <Play size={12} className="text-[#ff4655]" />
+                            : <div className="w-3 h-3 rounded-full border border-gray-600" />}
+                          <span className="truncate">{task.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* All tasks complete prompt */}
+            {allDone && (
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-20">
+                <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
+                <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">ALL TASKS COMPLETE!</h2>
+                <p className="text-gray-400 mb-8">Amazing work! End the session to view your results.</p>
+                <button
+                  onClick={() => stopSession()}
+                  className="px-12 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]"
+                >
+                  VIEW RESULTS
+                </button>
+              </motion.div>
+            )}
+          </div>
+        </div>
+
+        {/* Coach Popup (task mode) */}
+        {coachVisible && coachDecision && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold mb-2 flex items-center gap-2">AI Coach</h3>
+              <div className="bg-[#0f1923] rounded-lg px-3 py-1.5 text-xs font-bold text-[#ff4655] uppercase tracking-wider inline-block mb-3">
+                {coachDecision.action_type.replace("_", " ")}
+              </div>
+              {coachDecision.message && <p className="text-gray-300 mb-3">{coachDecision.message}</p>}
+              <p className="text-gray-500 text-sm mb-4">{coachDecision.reasoning}</p>
+              <div className="flex gap-3">
+                <button onClick={acceptCoachSuggestion} className="flex-1 px-4 py-2 bg-[#ff4655] text-white rounded-lg font-bold">Accept</button>
+                <button onClick={ignoreCoachSuggestion} className="flex-1 px-4 py-2 bg-[#1a2633] border border-[#ffffff10] text-gray-400 rounded-lg font-bold">Ignore</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ─── Original Mode (no task progression — direct session start) ────
   return (
     <div className="study-session-container">
       <h1>Live Study Session</h1>

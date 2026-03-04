@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { profileAPI, gamificationAPI, friendsAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
-import { Camera, Edit2, Zap, Trophy, Share2, Award, Copy, Users, Eye, EyeOff, Shield } from "lucide-react";
+import useGamificationStore from "../store/gamificationStore";
+import { Camera, Edit2, Zap, Trophy, Award, Copy, Users, Palette, Lock } from "lucide-react";
 
 // Helper to determine avatar src
 const getAvatarSrc = (avatarPath, userName) => {
@@ -17,6 +19,8 @@ const getAvatarSrc = (avatarPath, userName) => {
 
 const Profile = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const { level: userLevel, fetchLevelInfo } = useGamificationStore();
   const [profile, setProfile] = useState(null);
   const [gamification, setGamification] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +38,8 @@ const Profile = () => {
     fetchProfile();
     fetchGamification();
     fetchFriendCount();
+    fetchLevelInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProfile = async () => {
@@ -87,8 +93,6 @@ const Profile = () => {
   const calculateProgress = () => {
     if (!gamification) return 0;
     const xp = gamification.total_xp || 0;
-    const currentLevel = gamification.level || 1;
-    const nextLevelXP = 100 * currentLevel;
     const progress = ((xp % 100) / 100) * 100;
     return Math.min(progress, 100);
   };
@@ -254,6 +258,29 @@ const Profile = () => {
               </div>
             )}
 
+            {/* Appearance Section (MC-3) */}
+            <div className="mt-8 pt-8 border-t border-border">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                <Palette className="w-4 h-4" /> Appearance
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <AppearanceCard
+                  title="Custom Wallpaper"
+                  description="Choose a static background image"
+                  requiredLevel={10}
+                  currentLevel={userLevel ?? 1}
+                  onClick={() => navigate("/customize/wallpaper")}
+                />
+                <AppearanceCard
+                  title="Animated Background"
+                  description="Unlock animated particle effects"
+                  requiredLevel={20}
+                  currentLevel={userLevel ?? 1}
+                  onClick={() => navigate("/customize/animated")}
+                />
+              </div>
+            </div>
+
             {/* Editing Form */}
             {editing && (
               <motion.form
@@ -331,6 +358,30 @@ const Profile = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+/* ── Helper: Appearance Card ─────────────────────────────────── */
+const AppearanceCard = ({ title, description, requiredLevel, currentLevel, onClick }) => {
+  const locked = currentLevel < requiredLevel;
+  return (
+    <button
+      disabled={locked}
+      onClick={onClick}
+      className={`relative text-left p-4 rounded-xl border transition-all ${
+        locked
+          ? "border-border bg-muted/20 opacity-60 cursor-not-allowed"
+          : "border-primary/30 bg-primary/5 hover:bg-primary/10 cursor-pointer"
+      }`}
+    >
+      <p className="font-semibold text-sm">{title}</p>
+      <p className="text-xs text-muted-foreground mt-1">{description}</p>
+      {locked && (
+        <span className="absolute top-3 right-3 flex items-center gap-1 text-[10px] text-muted-foreground">
+          <Lock className="w-3 h-3" /> Lvl {requiredLevel}
+        </span>
+      )}
+    </button>
   );
 };
 

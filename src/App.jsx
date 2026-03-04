@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { extractDominantColor, extractColorFromVideo } from "@/utils/colorExtractor";
+import "@/styles/dynamicAccent.css";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -22,6 +24,13 @@ import ReviewCenter from "./pages/ReviewCenter";
 import AISearch from "./pages/AISearch";
 import Friends from "./pages/Friends";
 import Pricing from "./pages/Pricing";
+import StudySessionSetup from "./pages/StudySessionSetup";
+import TeamLobby from "./pages/TeamLobby";
+import BackgroundCustomizer from "./pages/BackgroundCustomizer";
+import AnimatedBackgroundCustomizer from "./pages/AnimatedBackgroundCustomizer";
+import LevelUpNotification from "./components/LevelUpNotification";
+import SessionInvitePopup from "./components/SessionInvitePopup";
+import useGamificationStore from "./store/gamificationStore";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -39,8 +48,11 @@ function App() {
   const { startPolling, stopPolling } = useNotificationStore();
   const isLandingPage = location.pathname === "/";
   const isLobby = location.pathname === "/lobby";
+  const isFullscreenPage = ["/team-lobby"].includes(location.pathname);
+  const { fetchLevelInfo, fetchBackgroundSettings, backgroundSettings, animatedBackgroundSettings } = useGamificationStore();
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [accentColor, setAccentColor] = useState("#4fb8ce");
 
   const tier = useAuthStore((s) => s.getTier());
   const trialVisible = tier === "trial";
@@ -53,6 +65,34 @@ function App() {
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
   }, []);
+
+  // Fetch gamification data when authenticated
+  useEffect(() => {
+    if (user?._id) {
+      fetchLevelInfo();
+      fetchBackgroundSettings();
+    }
+  }, [user?._id]);
+
+  // Extract and apply dominant color from background
+  useEffect(() => {
+    const extractColor = async () => {
+      try {
+        let color = "#4fb8ce"; // default
+        if (animatedBackgroundSettings?.enabled && animatedBackgroundSettings?.videoUrl) {
+          color = await extractColorFromVideo(animatedBackgroundSettings.videoUrl);
+        } else if (backgroundSettings?.enabled && backgroundSettings?.imageUrl) {
+          color = await extractDominantColor(backgroundSettings.imageUrl);
+        }
+        setAccentColor(color);
+        // Apply to document
+        document.documentElement.style.setProperty("--accent-color-dynamic", color);
+      } catch (err) {
+        console.error("Error extracting background color:", err);
+      }
+    };
+    extractColor();
+  }, [backgroundSettings?.imageUrl, animatedBackgroundSettings?.videoUrl, backgroundSettings?.enabled, animatedBackgroundSettings?.enabled]);
 
   // Show full navbar on landing page if user is logged in
   const minimalNav = (isLandingPage || isLobby) && !user;
@@ -67,13 +107,59 @@ function App() {
     }
   }, [user?._id, startPolling, stopPolling]);
 
-  // Show sidebar for any authenticated user on all pages except the lobby
-  const showSidebar = user && !isLobby;
+  // Show sidebar for any authenticated user on all pages except the lobby / fullscreen pages
+  const showSidebar = user && !isLobby && !isFullscreenPage;
 
   return (
     <ErrorBoundary>
+      {/* Background layers */}
+      {!isLandingPage && backgroundSettings?.enabled && backgroundSettings?.imageUrl && (
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${backgroundSettings.imageUrl})`,
+            backgroundSize: backgroundSettings.position === 'repeat' ? 'auto' : (backgroundSettings.position || 'cover'),
+            backgroundPosition: 'center',
+            backgroundRepeat: backgroundSettings.position === 'repeat' ? 'repeat' : 'no-repeat',
+            opacity: backgroundSettings.opacity || 0.15,
+            filter: `blur(${backgroundSettings.blur || 2}px)`,
+          }}
+        />
+      )}
+      {!isLandingPage && animatedBackgroundSettings?.enabled && animatedBackgroundSettings?.videoUrl && (
+        <video
+          autoPlay
+          muted
+          loop={animatedBackgroundSettings.loop !== false}
+          playsInline
+          className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+          style={{
+            opacity: animatedBackgroundSettings.opacity || 0.12,
+            filter: `brightness(${100 + (animatedBackgroundSettings.brightness || 0)}%) saturate(${animatedBackgroundSettings.saturation || 80}%)`,
+          }}
+        >
+          <source src={animatedBackgroundSettings.videoUrl} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Ambient glow layer — adapts to extracted background color */}
+      {!isLandingPage && (backgroundSettings?.enabled || animatedBackgroundSettings?.enabled) && (
+        <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+          <div
+            className="absolute top-[-10%] left-[-5%] w-[60vw] h-[60vh] rounded-full blur-[150px] opacity-20"
+            style={{ backgroundColor: accentColor }}
+          />
+          <div
+            className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vh] rounded-full blur-[150px] opacity-15"
+            style={{ backgroundColor: accentColor }}
+          />
+        </div>
+      )}
+
       <SessionManager />
       <NotificationCenter />
+      <LevelUpNotification />
+      <SessionInvitePopup />
       <UpgradePrompt />
       <TrialBanner />
       <Navbar minimal={minimalNav} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} topOffset={topOffsetPx} />
@@ -211,6 +297,38 @@ function App() {
             element={
               <PrivateRoute>
                 <Friends />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/session-setup"
+            element={
+              <PrivateRoute>
+                <StudySessionSetup />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/team-lobby"
+            element={
+              <PrivateRoute>
+                <TeamLobby />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/customize/wallpaper"
+            element={
+              <PrivateRoute>
+                <BackgroundCustomizer />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/customize/animated"
+            element={
+              <PrivateRoute>
+                <AnimatedBackgroundCustomizer />
               </PrivateRoute>
             }
           />

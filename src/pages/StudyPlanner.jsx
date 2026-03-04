@@ -246,8 +246,8 @@ const StudyPlanner = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-foreground text-xl font-bold tracking-wider">
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-white text-xl font-bold tracking-wider">
           LOADING SCHEDULE...
         </div>
       </div>
@@ -255,16 +255,16 @@ const StudyPlanner = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-r from-background via-muted/20 to-background border-b-4 border-primary">
+      <div className="bg-black/40 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold tracking-wider uppercase">
                 <span className="text-primary">//</span> STUDY SCHEDULE
               </h1>
-              <p className="text-muted-foreground mt-2">
+              <p className="text-white/60 mt-2">
                 {tasks.length > 0 ? (
                   `Schedule your ${tasks.length} pending task${tasks.length !== 1 ? "s" : ""} with AI`
                 ) : (
@@ -309,30 +309,30 @@ const StudyPlanner = () => {
 
       {/* Calendar Section */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-6 p-6 bg-card border-2 border-border">
-          <h2 className="text-xl font-bold tracking-wider mb-2 text-foreground">
+        <div className="mb-6 p-6 bg-[#1a2633]/50 backdrop-blur-md border border-white/10 rounded-xl">
+          <h2 className="text-xl font-bold tracking-wider mb-2 text-white">
             📋 HOW IT WORKS
           </h2>
-          <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+          <ol className="list-decimal list-inside space-y-2 text-white/60">
             <li>
-              <strong className="text-foreground">Block your busy times</strong>{" "}
+              <strong className="text-white">Block your busy times</strong>{" "}
               - Click calendar slots to mark when you're unavailable (classes,
               work, etc.)
             </li>
             <li>
-              <strong className="text-foreground">
+              <strong className="text-white">
                 Click "Generate Schedule"
               </strong>{" "}
               - AI analyzes your tasks and availability
             </li>
             <li>
-              <strong className="text-foreground">
+              <strong className="text-white">
                 View scheduled sessions
               </strong>{" "}
               - Blue slots show your optimally scheduled study times
             </li>
             <li>
-              <strong className="text-foreground">Go to Tasks page</strong> -
+              <strong className="text-white">Go to Tasks page</strong> -
               Create or manage tasks to schedule
             </li>
           </ol>
@@ -340,7 +340,7 @@ const StudyPlanner = () => {
 
         <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
           <button
-            className="px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent hover:text-accent-foreground font-medium transition-colors"
+            className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/20 text-white font-medium transition-colors"
             onClick={goToPreviousWeek}
           >
             ⬅️ Previous
@@ -352,33 +352,33 @@ const StudyPlanner = () => {
             📅 Current Week
           </button>
           <button
-            className="px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent hover:text-accent-foreground font-medium transition-colors"
+            className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/20 text-white font-medium transition-colors"
             onClick={goToNextWeek}
           >
             Next ➡️
           </button>
-          <div className="px-4 py-2 bg-muted rounded-lg font-semibold min-w-[200px] text-center">
+          <div className="px-4 py-2 bg-black/30 backdrop-blur-sm border border-white/10 rounded-lg font-semibold min-w-[200px] text-center text-white">
             {formatWeekRange()}
           </div>
 
           <div className="flex items-center gap-2 ml-4">
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-sm font-medium text-white/60">
               View:
             </span>
             <button
-              className={`px-3 py-1 rounded ${weeksView === 1 ? "bg-primary text-primary-foreground" : "bg-card border border-border"}`}
+              className={`px-3 py-1 rounded ${weeksView === 1 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
               onClick={() => setWeeksView(1)}
             >
               1
             </button>
             <button
-              className={`px-3 py-1 rounded ${weeksView === 2 ? "bg-primary text-primary-foreground" : "bg-card border border-border"}`}
+              className={`px-3 py-1 rounded ${weeksView === 2 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
               onClick={() => setWeeksView(2)}
             >
               2
             </button>
             <button
-              className={`px-3 py-1 rounded ${weeksView === 4 ? "bg-primary text-primary-foreground" : "bg-card border border-border"}`}
+              className={`px-3 py-1 rounded ${weeksView === 4 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
               onClick={() => setWeeksView(4)}
             >
               4

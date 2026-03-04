@@ -346,10 +346,31 @@ export const friendsAPI = {
 export const teamSessionsAPI = {
   create: (data) => api.post("/api/v1/study/sessions/team", data).then((r) => r.data),
   join: (sessionId, inviteCode) => api.post(`/api/v1/study/sessions/team/${sessionId}/join`, { inviteCode }).then((r) => r.data),
+  joinByCode: (inviteCode) => api.post("/api/v1/study/sessions/team/join-by-code", { inviteCode }).then((r) => r.data),
+  start: (sessionId) => api.put(`/api/v1/study/sessions/team/${sessionId}/start`).then((r) => r.data),
   leave: (sessionId) => api.post(`/api/v1/study/sessions/team/${sessionId}/leave`).then((r) => r.data),
   invite: (sessionId, friendId) => api.post(`/api/v1/study/sessions/team/${sessionId}/invite`, { friendId }).then((r) => r.data),
   getParticipants: (sessionId) => api.get(`/api/v1/study/sessions/team/${sessionId}/participants`).then((r) => r.data),
   end: (sessionId) => api.put(`/api/v1/study/sessions/team/${sessionId}/end`).then((r) => r.data),
+};
+
+// Session Setup & Task Progression API
+export const sessionSetupAPI = {
+  setup: (data) => api.post("/api/v1/study/sessions/setup", data).then((r) => r.data),
+  completeTask: (sessionId) => api.post(`/api/v1/study/sessions/${sessionId}/task/complete`).then((r) => r.data),
+  skipTask: (sessionId) => api.post(`/api/v1/study/sessions/${sessionId}/task/skip`).then((r) => r.data),
+};
+
+// Background Customization API
+export const backgroundAPI = {
+  getSettings: () => api.get("/api/v1/users/profile/background").then((r) => r.data),
+  applyBackground: (data) => api.post("/api/v1/users/profile/background/apply", data).then((r) => r.data),
+  uploadBackground: (formData) => api.post("/api/v1/users/profile/background/upload", formData).then((r) => r.data),
+  uploadAnimatedBackground: (formData) => api.post("/api/v1/users/profile/animated-background/upload", formData).then((r) => r.data),
+  getPresets: () => api.get("/api/v1/users/profile/background/presets").then((r) => r.data),
+  applyAnimatedBackground: (data) => api.post("/api/v1/users/profile/animated-background/apply", data).then((r) => r.data),
+  getAnimatedPresets: () => api.get("/api/v1/users/profile/animated-background/presets").then((r) => r.data),
+  getLevelInfo: () => api.get("/api/v1/users/profile/level").then((r) => r.data),
 };
 
 // Legacy support - maintain backward compatibility

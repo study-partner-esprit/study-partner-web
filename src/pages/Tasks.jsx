@@ -114,8 +114,8 @@ const Tasks = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-foreground text-xl font-bold tracking-wider">
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-white text-xl font-bold tracking-wider">
           LOADING TASKS...
         </div>
       </div>
@@ -123,15 +123,15 @@ const Tasks = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-background via-muted/20 to-background border-b-4 border-primary">
+    <div className="min-h-screen">
+      <div className="bg-black/40 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold tracking-wider uppercase">
                 <span className="text-primary">//</span> TASKS
               </h1>
-              <p className="text-muted-foreground mt-2">
+              <p className="text-white/60 mt-2">
                 Manage your study tasks
               </p>
             </div>
@@ -154,10 +154,10 @@ const Tasks = () => {
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-6 py-2 font-bold tracking-wider transition-all border-2 ${
+              className={`px-6 py-2 font-bold tracking-wider transition-all border ${
                 filter === status
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : "bg-card border-border text-muted-foreground hover:border-primary"
+                  ? "bg-primary border-primary text-white"
+                  : "bg-white/5 backdrop-blur-sm border-white/10 text-white/60 hover:border-primary hover:bg-white/10"
               }`}
             >
               {status.toUpperCase().replace("-", " ")}
@@ -202,14 +202,14 @@ const Tasks = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             onClick={(e) => e.target === e.currentTarget && resetForm()}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card border-2 border-primary p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-[#0f1923]/85 backdrop-blur-xl border-2 border-primary p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-xl"
             >
               <h2 className="text-3xl font-bold mb-6">
                 <span className="text-primary">//</span>{" "}
@@ -218,7 +218,7 @@ const Tasks = () => {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">
+                  <label className="block text-sm font-bold mb-2 text-white/80">
                     TITLE
                   </label>
                   <input
@@ -228,13 +228,13 @@ const Tasks = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
-                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
+                    className="w-full px-4 py-3 bg-black/30 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none rounded"
                     placeholder="Task title..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">
+                  <label className="block text-sm font-bold mb-2 text-white/80">
                     DESCRIPTION
                   </label>
                   <textarea
@@ -242,14 +242,14 @@ const Tasks = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, description: e.target.value })
                     }
-                    className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none h-24"
+                    className="w-full px-4 py-3 bg-black/30 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none h-24 rounded"
                     placeholder="Task description..."
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-foreground">
+                    <label className="block text-sm font-bold mb-2 text-white/80">
                       PRIORITY
                     </label>
                     <select
@@ -257,7 +257,7 @@ const Tasks = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, priority: e.target.value })
                       }
-                      className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
+                      className="w-full px-4 py-3 bg-[#0f1923]/80 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none rounded"
                     >
                       <option value="low">LOW</option>
                       <option value="medium">MEDIUM</option>
@@ -266,7 +266,7 @@ const Tasks = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold mb-2 text-foreground">
+                    <label className="block text-sm font-bold mb-2 text-white/80">
                       ESTIMATED TIME (min)
                     </label>
                     <input
@@ -278,14 +278,14 @@ const Tasks = () => {
                           estimatedTime: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 bg-background border-2 border-border focus:border-primary text-foreground outline-none"
+                      className="w-full px-4 py-3 bg-black/30 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none rounded"
                       placeholder="60"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">
+                  <label className="block text-sm font-bold mb-2 text-white/80">
                     DUE DATE
                   </label>
                   <input
@@ -294,12 +294,12 @@ const Tasks = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, dueDate: e.target.value })
                     }
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                    className="w-full px-4 py-3 bg-black/30 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none rounded"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold mb-2 text-foreground">
+                  <label className="block text-sm font-bold mb-2 text-white/80">
                     TAGS (comma separated)
                   </label>
                   <input
@@ -308,7 +308,7 @@ const Tasks = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, tags: e.target.value })
                     }
-                    className="w-full px-4 py-3 bg-[#0f1923] border-2 border-[#2e3a4a] focus:border-[#ff4655] text-white outline-none"
+                    className="w-full px-4 py-3 bg-black/30 backdrop-blur-sm border border-white/10 focus:border-primary text-white outline-none rounded"
                     placeholder="math, homework, urgent"
                   />
                 </div>
@@ -323,7 +323,7 @@ const Tasks = () => {
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="px-6 py-3 bg-[#2e3a4a] hover:bg-[#3e4a5a] font-bold tracking-wider transition-all"
+                    className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 font-bold tracking-wider transition-all rounded"
                   >
                     CANCEL
                   </button>
@@ -345,7 +345,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="bg-[#1a2633] border-2 border-[#2e3a4a] p-6 relative overflow-hidden group hover:border-[#ff4655] transition-all"
+      className="bg-[#1a2633]/50 backdrop-blur-md border border-white/10 p-6 relative overflow-hidden group hover:border-[#ff4655] hover:bg-[#1a2633]/70 transition-all rounded-xl"
     >
       {/* Priority indicator */}
       <div
@@ -373,9 +373,9 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
 
       {/* Content */}
       <div className="mt-2">
-        <h3 className="text-xl font-bold mb-2 text-foreground">{task.title}</h3>
+        <h3 className="text-xl font-bold mb-2 text-white">{task.title}</h3>
         {task.description && (
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+          <p className="text-white/60 text-sm mb-4 line-clamp-3">
             {task.description}
           </p>
         )}
@@ -393,7 +393,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
           {task.tags?.map((tag, i) => (
             <span
               key={i}
-              className="px-2 py-1 bg-muted text-xs text-muted-foreground"
+              className="px-2 py-1 bg-white/10 text-xs text-white/60 rounded"
             >
               #{tag}
             </span>
@@ -401,7 +401,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
         </div>
 
         {task.estimatedTime && (
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-white/50 mb-4">
             ⏱ {task.estimatedTime} minutes
           </div>
         )}
@@ -423,7 +423,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
           )}
           <button
             onClick={() => onEdit(task)}
-            className="px-3 py-2 bg-[#2e3a4a] hover:bg-[#3e4a5a] text-sm font-bold transition-all"
+            className="px-3 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 text-white text-sm font-bold transition-all rounded"
           >
             EDIT
           </button>
