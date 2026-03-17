@@ -535,6 +535,13 @@ const StudySession = () => {
     return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const formatShortDuration = (seconds) => {
+    const safe = Math.max(0, Math.floor(seconds));
+    const mins = Math.floor(safe / 60);
+    const secs = safe % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   // Get state badge class
   const getStateBadgeClass = (state) => {
     const stateMap = {
@@ -565,6 +572,15 @@ const StudySession = () => {
     const currentIdx = taskProgress.currentTaskIndex || 0;
     const current = taskProgress.tasks[currentIdx];
     const allDone = taskProgress.completedTasks >= taskProgress.totalTasks;
+    const estimatedMinutes = Number(current?.estimatedMinutes) > 0 ? Number(current.estimatedMinutes) : 30;
+    const minRequiredSeconds = Math.floor(estimatedMinutes * 60 * 0.8);
+    const taskStartedAtMs = current?.startedAt ? new Date(current.startedAt).getTime() : null;
+    const elapsedTaskSeconds = taskStartedAtMs
+      ? Math.max(0, Math.floor((Date.now() - taskStartedAtMs) / 1000))
+      : 0;
+    const canAdvanceTask = elapsedTaskSeconds >= minRequiredSeconds;
+    const remainingAdvanceSeconds = Math.max(0, minRequiredSeconds - elapsedTaskSeconds);
+    const advanceProgressPct = Math.min(100, Math.round((elapsedTaskSeconds / Math.max(minRequiredSeconds, 1)) * 100));
 
     return (
       <div className="min-h-screen bg-[#0f1923] text-white relative">
@@ -635,17 +651,35 @@ const StudySession = () => {
                       <p className="text-gray-400 leading-relaxed mb-6 whitespace-pre-wrap">{current.description}</p>
                     )}
 
+                    <div className="rounded-xl border border-[#ffffff10] bg-[#0f1923] p-4">
+                      <div className="flex items-center justify-between text-xs mb-2">
+                        <span className="text-gray-500 uppercase tracking-wider">Task time gate</span>
+                        <span className="font-bold text-gray-300">{advanceProgressPct}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-[#1a2633] rounded-full overflow-hidden mb-2">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${canAdvanceTask ? "bg-green-500" : "bg-[#ff4655]"}`}
+                          style={{ width: `${advanceProgressPct}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        {canAdvanceTask
+                          ? "You can now complete or skip this task."
+                          : `You can complete/skip after ${formatShortDuration(remainingAdvanceSeconds)} (80% of ${estimatedMinutes} min).`}
+                      </p>
+                    </div>
+
                     <div className="flex gap-3 mt-6 pt-4 border-t border-[#ffffff10]">
                       <button
                         onClick={completeTask}
-                        disabled={taskLoading}
+                        disabled={taskLoading || !canAdvanceTask}
                         className="flex-1 px-6 py-3 bg-green-600 text-white font-bold tracking-wider uppercase rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         <CheckCircle2 size={18} /> {taskLoading ? "..." : "MARK COMPLETE"}
                       </button>
                       <button
                         onClick={skipTask}
-                        disabled={taskLoading}
+                        disabled={taskLoading || !canAdvanceTask}
                         className="px-6 py-3 bg-[#1a2633] border border-[#ffffff10] text-gray-400 font-bold tracking-wider uppercase rounded-lg hover:bg-[#ffffff10] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         <SkipForward size={18} /> SKIP

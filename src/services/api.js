@@ -176,7 +176,23 @@ export const aiAPI = {
     api.get(`/api/v1/ai/signals/latest/${userId}`, { params: { limit } }),
 
   // AI Search
-  search: (data) => api.post("/api/v1/ai/search/ask", data),
+  search: (data = {}) => {
+    const normalizedPayload = {
+      question: data.question ?? data.query ?? "",
+    };
+
+    const resolvedUserId = data.user_id ?? data.userId;
+    if (resolvedUserId != null && resolvedUserId !== "") {
+      normalizedPayload.user_id = resolvedUserId;
+    }
+
+    const resolvedSessionId = data.session_id ?? data.sessionId;
+    if (resolvedSessionId != null && resolvedSessionId !== "") {
+      normalizedPayload.session_id = resolvedSessionId;
+    }
+
+    return api.post("/api/v1/ai/search/ask", normalizedPayload);
+  },
   searchHistory: (userId, limit = 20) =>
     api.get(`/api/v1/ai/search/history/${userId}`, { params: { limit } }),
 
