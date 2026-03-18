@@ -317,17 +317,28 @@ export const reviewAPI = {
 // Notification API
 export const notificationAPI = {
   getAll: (params) =>
-    api.get("/api/v1/notifications", { params }).then((res) => res.data),
+    api
+      .get("/api/v1/notifications", { params, timeout: 15000 })
+      .then((res) => res.data),
   create: (data) =>
-    api.post("/api/v1/notifications", data).then((res) => res.data),
+    api
+      .post("/api/v1/notifications", data, { timeout: 15000 })
+      .then((res) => res.data),
   markRead: (id) =>
-    api.patch(`/api/v1/notifications/${id}/read`).then((res) => res.data),
+    api
+      .patch(`/api/v1/notifications/${id}/read`, null, { timeout: 15000 })
+      .then((res) => res.data),
   markAllRead: (userId) =>
     api
-      .patch("/api/v1/notifications/read-all", null, { params: { userId } })
+      .patch("/api/v1/notifications/read-all", null, {
+        params: { userId },
+        timeout: 15000,
+      })
       .then((res) => res.data),
   delete: (id) =>
-    api.delete(`/api/v1/notifications/${id}`).then((res) => res.data),
+    api
+      .delete(`/api/v1/notifications/${id}`, { timeout: 15000 })
+      .then((res) => res.data),
 };
 
 // Quest API
