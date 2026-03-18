@@ -51,7 +51,12 @@ describe("Subjects Page", () => {
     subjectAPI.list.mockResolvedValue({
       data: {
         subjects: [
-          { _id: "s1", name: "Mathematics", description: "Numbers", image: null },
+          {
+            _id: "s1",
+            name: "Mathematics",
+            description: "Numbers",
+            image: null,
+          },
           { _id: "s2", name: "Physics", description: "Forces", image: null },
         ],
       },

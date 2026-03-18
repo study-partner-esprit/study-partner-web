@@ -27,7 +27,12 @@ vi.mock("../store/authStore", () => ({
       };
       return selector ? selector(state) : state;
     },
-    { getState: () => ({ user: { _id: "u1", name: "Test User" }, logout: mockLogout }) },
+    {
+      getState: () => ({
+        user: { _id: "u1", name: "Test User" },
+        logout: mockLogout,
+      }),
+    },
   ),
 }));
 
@@ -44,7 +49,16 @@ vi.mock("framer-motion", async () => {
       get: (target, prop) => {
         if (typeof prop === "string" && /^[a-z]/.test(prop)) {
           return React.forwardRef((props, ref) => {
-            const { initial, animate, exit, whileHover, whileTap, variants, transition, ...rest } = props;
+            const {
+              initial,
+              animate,
+              exit,
+              whileHover,
+              whileTap,
+              variants,
+              transition,
+              ...rest
+            } = props;
             const Tag = prop;
             return <Tag ref={ref} {...rest} />;
           });
@@ -80,7 +94,11 @@ describe("Dashboard Page", () => {
       },
     });
     tasksAPI.getAll.mockResolvedValue({
-      data: { tasks: [{ _id: "t1", title: "Read Ch.1", status: "todo", priority: "high" }] },
+      data: {
+        tasks: [
+          { _id: "t1", title: "Read Ch.1", status: "todo", priority: "high" },
+        ],
+      },
     });
   });
 
@@ -115,7 +133,9 @@ describe("Dashboard Page", () => {
     tasksAPI.getAll.mockRejectedValue(new Error("Network error"));
     renderDashboard();
     await waitFor(() => {
-      expect(screen.getByText(/Failed to load dashboard data/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Failed to load dashboard data/),
+      ).toBeInTheDocument();
     });
   });
 

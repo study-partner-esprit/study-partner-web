@@ -92,8 +92,7 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
               </p>
               <p className="text-xs text-gray-500 flex items-center gap-1">
                 <Clock size={10} />
-                {p.durationMinutes || 0}m
-                {p.leftAt && " (left)"}
+                {p.durationMinutes || 0}m{p.leftAt && " (left)"}
               </p>
             </div>
           </div>

@@ -42,7 +42,9 @@ function ConfirmDialog({
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-foreground text-lg">{title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{description}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {description}
+              </p>
             </div>
             <button
               onClick={onClose}

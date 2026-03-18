@@ -31,8 +31,34 @@ vi.mock("../components/UploadModal", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            button: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <button ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    button: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <button ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -52,7 +78,13 @@ describe("SubjectDetail Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     subjectAPI.get.mockResolvedValue({
-      data: { subject: { _id: "s1", name: "Mathematics", description: "Numbers and equations" } },
+      data: {
+        subject: {
+          _id: "s1",
+          name: "Mathematics",
+          description: "Numbers and equations",
+        },
+      },
     });
     courseAPI.getBySubject.mockResolvedValue({
       data: { courses: [{ _id: "c1", title: "Algebra 101", files: [] }] },

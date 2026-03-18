@@ -40,8 +40,8 @@ const Leaderboard = () => {
           const friendsData = await friendsAPI.getAll();
           const ids = new Set(
             (friendsData.friends || friendsData || []).map(
-              (f) => f.userId || f.friendId || f._id
-            )
+              (f) => f.userId || f.friendId || f._id,
+            ),
           );
           if (user?._id) ids.add(user._id);
           setFriendIds(ids);
@@ -246,12 +246,16 @@ const Leaderboard = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
-                          {(entry.nickname || `P${idx + 1}`).charAt(0).toUpperCase()}
+                          {(entry.nickname || `P${idx + 1}`)
+                            .charAt(0)
+                            .toUpperCase()}
                         </div>
                         <span
                           className={`font-medium ${isMe ? "text-primary" : "text-foreground"}`}
                         >
-                          {isMe ? "You" : (entry.nickname || `Player #${idx + 1}`)}
+                          {isMe
+                            ? "You"
+                            : entry.nickname || `Player #${idx + 1}`}
                         </span>
                         {isMe && <Zap className="w-4 h-4 text-primary" />}
                       </div>

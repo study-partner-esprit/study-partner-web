@@ -10,10 +10,13 @@
 
 /* Dynamic glow effect using the extracted background color */
 .dynamic-glow {
-  box-shadow: 0 0 20px var(--accent-color-dynamic),
-              0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.3));
+  box-shadow:
+    0 0 20px var(--accent-color-dynamic),
+    0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.3));
   border-color: var(--accent-color-dynamic);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Dynamic border and text using background color */
@@ -29,9 +32,11 @@
 
 /* Dynamic background tint */
 .dynamic-bg-tint {
-  background: linear-gradient(135deg, 
-    var(--accent-color-dynamic, #4fb8ce) 0%, 
-    var(--accent-color-dynamic, rgba(79, 184, 206, 0.5)) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic, #4fb8ce) 0%,
+    var(--accent-color-dynamic, rgba(79, 184, 206, 0.5)) 100%
+  );
   opacity: 0.1;
   transition: opacity 0.3s ease;
 }
@@ -51,13 +56,15 @@
   }
 
   .shadow-dynamic {
-    box-shadow: 0 0 15px var(--accent-color-dynamic, rgb(79, 184, 206)),
-                0 0 30px var(--accent-color-dynamic, rgba(79, 184, 206, 0.3));
+    box-shadow:
+      0 0 15px var(--accent-color-dynamic, rgb(79, 184, 206)),
+      0 0 30px var(--accent-color-dynamic, rgba(79, 184, 206, 0.3));
   }
 
   .hover\:shadow-dynamic:hover {
-    box-shadow: 0 0 20px var(--accent-color-dynamic),
-                0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.4));
+    box-shadow:
+      0 0 20px var(--accent-color-dynamic),
+      0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.4));
   }
 }
 

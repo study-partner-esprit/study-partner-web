@@ -120,11 +120,14 @@ const TeamLobby = () => {
     inviteToSession,
     teamParticipants,
   } = useFriendsStore();
-  const { sessionStartSignal, clearSessionStartSignal } = useNotificationStore();
+  const { sessionStartSignal, clearSessionStartSignal } =
+    useNotificationStore();
 
   // The session owner is the leader
-  const isLeader = !!(teamSession?.userId &&
-    (teamSession.userId === user?._id || teamSession.userId === user?.userId));
+  const isLeader = !!(
+    teamSession?.userId &&
+    (teamSession.userId === user?._id || teamSession.userId === user?.userId)
+  );
 
   const [profile, setProfile] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -135,7 +138,10 @@ const TeamLobby = () => {
   const [startError, setStartError] = useState("");
 
   useEffect(() => {
-    profileAPI.get().then((r) => setProfile(r.data.profile)).catch(() => {});
+    profileAPI
+      .get()
+      .then((r) => setProfile(r.data.profile))
+      .catch(() => {});
     fetchFriends();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -146,7 +152,7 @@ const TeamLobby = () => {
       fetchParticipants(teamSession._id);
       const interval = setInterval(
         () => fetchParticipants(teamSession._id),
-        5000
+        5000,
       );
       return () => clearInterval(interval);
     }
@@ -156,10 +162,10 @@ const TeamLobby = () => {
   const activeParticipants = teamParticipants.filter((p) => !p.leftAt);
   // Separate host from members for correct slot rendering
   const hostParticipant = activeParticipants.find(
-    (p) => p.role === 'host' || p.userId === teamSession?.userId
+    (p) => p.role === "host" || p.userId === teamSession?.userId,
   );
   const memberParticipants = activeParticipants.filter(
-    (p) => p.role !== 'host' && p.userId !== teamSession?.userId
+    (p) => p.role !== "host" && p.userId !== teamSession?.userId,
   );
   const teamSize = Math.max(activeParticipants.length, 1);
   const currentMultiplier =
@@ -191,7 +197,7 @@ const TeamLobby = () => {
       startTeamSession();
       triggerCountdown();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStartSignal]);
 
   const triggerCountdown = () => {
@@ -254,7 +260,7 @@ const TeamLobby = () => {
   const filteredFriends = friends.filter((f) =>
     (f.name || f.displayName || "")
       .toLowerCase()
-      .includes(friendFilter.toLowerCase())
+      .includes(friendFilter.toLowerCase()),
   );
 
   return (
@@ -320,10 +326,14 @@ const TeamLobby = () => {
             <div className="grid grid-cols-4 gap-4">
               {/* Slot 1: Always the session leader */}
               <TeamLobbyCard
-                player={hostParticipant || {
-                  name: isLeader ? (profile?.nickname || user?.name || "You") : "Leader",
-                  avatar: isLeader ? profile?.avatar : null,
-                }}
+                player={
+                  hostParticipant || {
+                    name: isLeader
+                      ? profile?.nickname || user?.name || "You"
+                      : "Leader",
+                    avatar: isLeader ? profile?.avatar : null,
+                  }
+                }
                 isLeader={true}
                 slotIndex={0}
               />
@@ -424,7 +434,9 @@ const TeamLobby = () => {
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#ffffff05] transition-colors"
                   >
                     <div className="w-8 h-8 bg-[#0fb8ce]/20 rounded-full flex items-center justify-center text-[#0fb8ce] text-sm font-bold">
-                      {(friend.name || friend.displayName || "?")[0].toUpperCase()}
+                      {(friend.name ||
+                        friend.displayName ||
+                        "?")[0].toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">
@@ -454,7 +466,9 @@ const TeamLobby = () => {
       {/* Bottom action bar */}
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-[#0f1923] border-t border-[#ffffff10] flex flex-col items-center justify-center px-8 gap-1 py-3">
         {startError && (
-          <p className="text-xs text-red-400 font-bold tracking-wider">{startError}</p>
+          <p className="text-xs text-red-400 font-bold tracking-wider">
+            {startError}
+          </p>
         )}
         <div className="flex items-center gap-6">
           <button
@@ -478,7 +492,10 @@ const TeamLobby = () => {
             <button
               onClick={handleStartSession}
               className="px-16 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]"
-              style={{ clipPath: "polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%)" }}
+              style={{
+                clipPath:
+                  "polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%)",
+              }}
             >
               <span className="flex items-center gap-3">
                 <Play size={20} />
@@ -580,7 +597,9 @@ const TeamLobby = () => {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-[#0fb8ce]/20 rounded-full flex items-center justify-center text-[#0fb8ce] font-bold">
-                            {(friend.name || friend.displayName || "?")[0].toUpperCase()}
+                            {(friend.name ||
+                              friend.displayName ||
+                              "?")[0].toUpperCase()}
                           </div>
                           <span className="font-medium">
                             {friend.name || friend.displayName}

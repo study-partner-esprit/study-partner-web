@@ -9,7 +9,10 @@ import { Lock, Sparkles, X } from "lucide-react";
  * Listens for the custom 'tier-upgrade-required' event dispatched from the API interceptor.
  * Can also be triggered manually via the `show` prop.
  */
-export default function UpgradePrompt({ show: showProp, onClose: onCloseProp }) {
+export default function UpgradePrompt({
+  show: showProp,
+  onClose: onCloseProp,
+}) {
   const [visible, setVisible] = useState(false);
   const [detail, setDetail] = useState(null);
   const navigate = useNavigate();
@@ -80,14 +83,19 @@ export default function UpgradePrompt({ show: showProp, onClose: onCloseProp }) 
 
             <p className="text-gray-400 mb-6">
               {detail?.code === "TRIAL_EXPIRED" ? (
-                <>Your 15-day free trial has ended. Upgrade to continue using AI-powered features.</>
+                <>
+                  Your 15-day free trial has ended. Upgrade to continue using
+                  AI-powered features.
+                </>
               ) : (
                 <>
                   This feature requires{" "}
                   <span className="text-purple-300 font-semibold">
                     {detail?.requiredTier
                       ? Array.isArray(detail.requiredTier)
-                        ? detail.requiredTier.map((t) => tierLabel[t] || t).join(" or ")
+                        ? detail.requiredTier
+                            .map((t) => tierLabel[t] || t)
+                            .join(" or ")
                         : tierLabel[detail.requiredTier] || detail.requiredTier
                       : "a higher plan"}
                   </span>

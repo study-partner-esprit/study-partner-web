@@ -2,7 +2,9 @@ import React from "react";
 
 function StatCard({ icon, label, value, trend, className = "" }) {
   return (
-    <div className={`bg-card/80 backdrop-blur-sm border border-border rounded-xl p-4 ${className}`}>
+    <div
+      className={`bg-card/80 backdrop-blur-sm border border-border rounded-xl p-4 ${className}`}
+    >
       <div className="flex items-center justify-between mb-2">
         {icon && <div className="text-primary">{icon}</div>}
         {trend !== undefined && (
@@ -11,8 +13,8 @@ function StatCard({ icon, label, value, trend, className = "" }) {
               trend > 0
                 ? "bg-green-500/10 text-green-500"
                 : trend < 0
-                ? "bg-red-500/10 text-red-500"
-                : "bg-muted text-muted-foreground"
+                  ? "bg-red-500/10 text-red-500"
+                  : "bg-muted text-muted-foreground"
             }`}
           >
             {trend > 0 ? "+" : ""}

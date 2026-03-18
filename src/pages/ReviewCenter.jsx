@@ -93,7 +93,12 @@ const ReviewCenter = () => {
     const current = pendingReviews[currentIndex];
     if (!current) return;
 
-    const reviewId = current.review_id || current.reviewId || current._id || current.id || current.topicId;
+    const reviewId =
+      current.review_id ||
+      current.reviewId ||
+      current._id ||
+      current.id ||
+      current.topicId;
 
     try {
       await reviewAPI.recordResult({

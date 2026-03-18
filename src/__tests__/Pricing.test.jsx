@@ -12,7 +12,10 @@ vi.mock("@/store/authStore", () => ({
   __esModule: true,
   useAuthStore: Object.assign(
     (sel) => {
-      const s = { user: { _id: "u1", tier: "normal" }, getTier: () => "normal" };
+      const s = {
+        user: { _id: "u1", tier: "normal" },
+        getTier: () => "normal",
+      };
       return sel ? sel(s) : s;
     },
     { getState: () => ({ user: { _id: "u1", tier: "normal" } }) },
@@ -20,7 +23,21 @@ vi.mock("@/store/authStore", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 

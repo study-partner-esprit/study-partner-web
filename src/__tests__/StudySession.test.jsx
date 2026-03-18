@@ -12,7 +12,11 @@ vi.mock("react-router-dom", async () => {
 });
 
 vi.mock("../services/api", () => ({
-  aiAPI: { analyzeFrame: vi.fn(), getCoachDecision: vi.fn(), createFocusSession: vi.fn() },
+  aiAPI: {
+    analyzeFrame: vi.fn(),
+    getCoachDecision: vi.fn(),
+    createFocusSession: vi.fn(),
+  },
   notificationAPI: {},
   focusAPI: { createSession: vi.fn(), endSession: vi.fn() },
   sessionsAPI: { create: vi.fn(), end: vi.fn() },
@@ -34,7 +38,10 @@ vi.mock("../components/WebcamCapture", () => ({
   __esModule: true,
   default: ({ onFrame }) => (
     <div data-testid="webcam-capture">
-      <button data-testid="mock-capture" onClick={() => onFrame?.("data:image/jpeg;base64,mock")}>
+      <button
+        data-testid="mock-capture"
+        onClick={() => onFrame?.("data:image/jpeg;base64,mock")}
+      >
         Capture
       </button>
     </div>
@@ -42,8 +49,34 @@ vi.mock("../components/WebcamCapture", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            button: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <button ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    button: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <button ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -60,8 +93,12 @@ const renderSession = () =>
 describe("StudySession Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sessionsAPI.create.mockResolvedValue({ data: { session: { _id: "sess1" } } });
-    focusAPI.createSession.mockResolvedValue({ data: { session: { _id: "focus1" } } });
+    sessionsAPI.create.mockResolvedValue({
+      data: { session: { _id: "sess1" } },
+    });
+    focusAPI.createSession.mockResolvedValue({
+      data: { session: { _id: "focus1" } },
+    });
   });
 
   it("renders session page with start button", () => {

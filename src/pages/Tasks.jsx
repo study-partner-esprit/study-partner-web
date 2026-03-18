@@ -131,9 +131,7 @@ const Tasks = () => {
               <h1 className="text-4xl font-bold tracking-wider uppercase">
                 <span className="text-primary">//</span> TASKS
               </h1>
-              <p className="text-white/60 mt-2">
-                Manage your study tasks
-              </p>
+              <p className="text-white/60 mt-2">Manage your study tasks</p>
             </div>
             <div className="flex gap-3 flex-wrap">
               <button

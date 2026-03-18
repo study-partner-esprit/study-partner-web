@@ -248,19 +248,19 @@ const useAuthStore = create(
       // --- Tier-based access control ---
       getTier: () => {
         const { user } = get();
-        return user?.tier || 'normal';
+        return user?.tier || "normal";
       },
 
       isTrialExpired: () => {
         const { user } = get();
-        if (user?.tier !== 'trial') return false;
+        if (user?.tier !== "trial") return false;
         if (!user?.trialExpiresAt) return false;
         return new Date(user.trialExpiresAt) < new Date();
       },
 
       getTrialDaysRemaining: () => {
         const { user } = get();
-        if (user?.tier !== 'trial' || !user?.trialExpiresAt) return 0;
+        if (user?.tier !== "trial" || !user?.trialExpiresAt) return 0;
         const diff = new Date(user.trialExpiresAt) - new Date();
         return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
       },

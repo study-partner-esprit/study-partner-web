@@ -8,7 +8,21 @@ vi.mock("../../services/api", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -29,7 +43,15 @@ describe("QuestPanel Component", () => {
 
   it("renders quest heading after loading", async () => {
     questAPI.getAll.mockResolvedValue({
-      daily: [{ _id: "q1", title: "Study 30 min", status: "active", progress: 15, target: 30 }],
+      daily: [
+        {
+          _id: "q1",
+          title: "Study 30 min",
+          status: "active",
+          progress: 15,
+          target: 30,
+        },
+      ],
       weekly: [],
       recentCompleted: [],
     });
@@ -42,8 +64,20 @@ describe("QuestPanel Component", () => {
   it("shows active quest count", async () => {
     questAPI.getAll.mockResolvedValue({
       daily: [
-        { _id: "q1", title: "Study 30 min", status: "active", progress: 15, target: 30 },
-        { _id: "q2", title: "Complete 3 tasks", status: "active", progress: 1, target: 3 },
+        {
+          _id: "q1",
+          title: "Study 30 min",
+          status: "active",
+          progress: 15,
+          target: 30,
+        },
+        {
+          _id: "q2",
+          title: "Complete 3 tasks",
+          status: "active",
+          progress: 1,
+          target: 3,
+        },
       ],
       weekly: [],
       recentCompleted: [],
@@ -56,7 +90,15 @@ describe("QuestPanel Component", () => {
 
   it("toggles expand/collapse", async () => {
     questAPI.getAll.mockResolvedValue({
-      daily: [{ _id: "q1", title: "Study 30 min", status: "active", progress: 15, target: 30 }],
+      daily: [
+        {
+          _id: "q1",
+          title: "Study 30 min",
+          status: "active",
+          progress: 15,
+          target: 30,
+        },
+      ],
       weekly: [],
       recentCompleted: [],
     });

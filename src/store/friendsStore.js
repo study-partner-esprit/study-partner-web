@@ -28,10 +28,17 @@ const useFriendsStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const data = await friendsAPI.getAll();
-      const friendsArray = Array.isArray(data.friends) ? data.friends : Array.isArray(data) ? data : [];
+      const friendsArray = Array.isArray(data.friends)
+        ? data.friends
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ friends: friendsArray, loading: false });
     } catch (err) {
-      set({ error: err.response?.data?.error || "Failed to load friends", loading: false });
+      set({
+        error: err.response?.data?.error || "Failed to load friends",
+        loading: false,
+      });
     }
   },
 
@@ -39,7 +46,11 @@ const useFriendsStore = create((set, get) => ({
   fetchIncomingRequests: async () => {
     try {
       const data = await friendsAPI.getIncoming();
-      const requestsArray = Array.isArray(data.requests) ? data.requests : Array.isArray(data) ? data : [];
+      const requestsArray = Array.isArray(data.requests)
+        ? data.requests
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ incomingRequests: requestsArray });
     } catch (err) {
       console.error("Failed to fetch incoming requests:", err);
@@ -51,7 +62,11 @@ const useFriendsStore = create((set, get) => ({
   fetchOutgoingRequests: async () => {
     try {
       const data = await friendsAPI.getOutgoing();
-      const requestsArray = Array.isArray(data.requests) ? data.requests : Array.isArray(data) ? data : [];
+      const requestsArray = Array.isArray(data.requests)
+        ? data.requests
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ outgoingRequests: requestsArray });
     } catch (err) {
       console.error("Failed to fetch outgoing requests:", err);
@@ -63,7 +78,11 @@ const useFriendsStore = create((set, get) => ({
   fetchBlocked: async () => {
     try {
       const data = await friendsAPI.getBlocked();
-      const blockedArray = Array.isArray(data.blocked) ? data.blocked : Array.isArray(data) ? data : [];
+      const blockedArray = Array.isArray(data.blocked)
+        ? data.blocked
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ blockedUsers: blockedArray });
     } catch (err) {
       console.error("Failed to fetch blocked users:", err);
@@ -75,7 +94,11 @@ const useFriendsStore = create((set, get) => ({
   fetchOnlineFriends: async () => {
     try {
       const data = await friendsAPI.getOnline();
-      const onlineArray = Array.isArray(data.friends) ? data.friends : Array.isArray(data) ? data : [];
+      const onlineArray = Array.isArray(data.friends)
+        ? data.friends
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ onlineFriends: onlineArray });
     } catch (err) {
       console.error("Failed to fetch online friends:", err);
@@ -101,7 +124,11 @@ const useFriendsStore = create((set, get) => ({
     }
     try {
       const data = await friendsAPI.search(query);
-      const resultsArray = Array.isArray(data.users) ? data.users : Array.isArray(data) ? data : [];
+      const resultsArray = Array.isArray(data.users)
+        ? data.users
+        : Array.isArray(data)
+          ? data
+          : [];
       set({ searchResults: resultsArray });
     } catch (err) {
       console.error("Search failed:", err);
@@ -164,7 +191,9 @@ const useFriendsStore = create((set, get) => ({
     try {
       await friendsAPI.removeFriend(friendId);
       set((s) => ({
-        friends: s.friends.filter((f) => f.friendId !== friendId && f._id !== friendId),
+        friends: s.friends.filter(
+          (f) => f.friendId !== friendId && f._id !== friendId,
+        ),
         friendCount: Math.max(0, s.friendCount - 1),
       }));
     } catch (err) {
@@ -189,7 +218,9 @@ const useFriendsStore = create((set, get) => ({
     try {
       await friendsAPI.unblockUser(userId);
       set((s) => ({
-        blockedUsers: s.blockedUsers.filter((b) => b.userId !== userId && b._id !== userId),
+        blockedUsers: s.blockedUsers.filter(
+          (b) => b.userId !== userId && b._id !== userId,
+        ),
       }));
     } catch (err) {
       set({ error: err.response?.data?.error || "Failed to unblock user" });
@@ -214,7 +245,9 @@ const useFriendsStore = create((set, get) => ({
       set({ activeTeamSession: result.session || result });
       return result;
     } catch (err) {
-      set({ error: err.response?.data?.error || "Failed to create team session" });
+      set({
+        error: err.response?.data?.error || "Failed to create team session",
+      });
       throw err;
     }
   },

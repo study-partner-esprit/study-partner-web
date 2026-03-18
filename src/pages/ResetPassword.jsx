@@ -48,7 +48,9 @@ export default function ResetPassword() {
         {status === "success" ? (
           <div className="text-center">
             <CheckCircle className="mx-auto text-green-400 mb-4" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">Password Reset!</h2>
+            <h2 className="text-xl font-bold text-white mb-2">
+              Password Reset!
+            </h2>
             <p className="text-gray-400 mb-6">
               Your password has been updated. You can now log in.
             </p>

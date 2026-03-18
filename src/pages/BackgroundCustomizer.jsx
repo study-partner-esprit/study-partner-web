@@ -128,11 +128,13 @@ const BackgroundCustomizer = () => {
             LOCKED
           </h1>
           <p className="text-gray-400 mb-4">
-            Custom wallpapers unlock at <span className="text-[#ff4655] font-bold">Level 10</span>.
+            Custom wallpapers unlock at{" "}
+            <span className="text-[#ff4655] font-bold">Level 10</span>.
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            You are currently <span className="text-white font-bold">Level {level}</span>.
-            Keep studying to unlock this feature!
+            You are currently{" "}
+            <span className="text-white font-bold">Level {level}</span>. Keep
+            studying to unlock this feature!
           </p>
           <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden mb-4">
             <div

@@ -24,8 +24,12 @@ export const extractDominantColor = (imageUrl) => {
         const imageData = ctx.getImageData(0, 0, MAX_SIZE, MAX_SIZE);
         const data = imageData.data;
 
-        let r = 0, g = 0, b = 0, count = 0;
-        for (let i = 0; i < data.length; i += 16) { // Sample every 4th pixel
+        let r = 0,
+          g = 0,
+          b = 0,
+          count = 0;
+        for (let i = 0; i < data.length; i += 16) {
+          // Sample every 4th pixel
           r += data[i];
           g += data[i + 1];
           b += data[i + 2];
@@ -41,7 +45,9 @@ export const extractDominantColor = (imageUrl) => {
         const boostedL = Math.min(0.7, Math.max(0.4, l));
         const [br, bg, bb] = hslToRgb(h, boostedS, boostedL);
 
-        const hex = "#" + [br, bg, bb].map((x) => x.toString(16).padStart(2, "0")).join("");
+        const hex =
+          "#" +
+          [br, bg, bb].map((x) => x.toString(16).padStart(2, "0")).join("");
         resolve(hex);
       } catch (err) {
         console.warn("Error extracting color from image canvas:", err);
@@ -49,7 +55,10 @@ export const extractDominantColor = (imageUrl) => {
       }
     };
     img.onerror = () => {
-      console.warn("Error loading image for color extraction, using hash fallback:", imageUrl);
+      console.warn(
+        "Error loading image for color extraction, using hash fallback:",
+        imageUrl,
+      );
       resolve(hashStringToColor(imageUrl));
     };
     img.src = imageUrl;
@@ -83,7 +92,10 @@ export const extractColorFromVideo = (videoUrl) => {
         const imageData = ctx.getImageData(0, 0, MAX_SIZE, MAX_SIZE);
         const data = imageData.data;
 
-        let r = 0, g = 0, b = 0, count = 0;
+        let r = 0,
+          g = 0,
+          b = 0,
+          count = 0;
         for (let i = 0; i < data.length; i += 16) {
           r += data[i];
           g += data[i + 1];
@@ -99,7 +111,9 @@ export const extractColorFromVideo = (videoUrl) => {
         const boostedL = Math.min(0.7, Math.max(0.4, l));
         const [br, bg, bb] = hslToRgb(h, boostedS, boostedL);
 
-        const hex = "#" + [br, bg, bb].map((x) => x.toString(16).padStart(2, "0")).join("");
+        const hex =
+          "#" +
+          [br, bg, bb].map((x) => x.toString(16).padStart(2, "0")).join("");
         resolve(hex);
       } catch (err) {
         console.warn("Error extracting color from video canvas:", err);
@@ -118,8 +132,11 @@ export const extractColorFromVideo = (videoUrl) => {
  * Color helpers
  */
 function rgbToHsl(r, g, b) {
-  r /= 255; g /= 255; b /= 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
   let h, s;
   const l = (max + min) / 2;
   if (max === min) {
@@ -128,10 +145,18 @@ function rgbToHsl(r, g, b) {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
-      default: h = 0; break;
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
+      default:
+        h = 0;
+        break;
     }
   }
   return [h, s, l];
@@ -145,16 +170,16 @@ function hslToRgb(h, s, l) {
     const hue2rgb = (p, q, t) => {
       if (t < 0) t += 1;
       if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
       return p;
     };
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;
-    r = hue2rgb(p, q, h + 1/3);
+    r = hue2rgb(p, q, h + 1 / 3);
     g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1/3);
+    b = hue2rgb(p, q, h - 1 / 3);
   }
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }

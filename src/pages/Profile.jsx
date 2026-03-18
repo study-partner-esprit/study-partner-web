@@ -4,7 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { profileAPI, gamificationAPI, friendsAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import useGamificationStore from "../store/gamificationStore";
-import { Camera, Edit2, Zap, Trophy, Award, Copy, Users, Palette, Lock } from "lucide-react";
+import {
+  Camera,
+  Edit2,
+  Zap,
+  Trophy,
+  Award,
+  Copy,
+  Users,
+  Palette,
+  Lock,
+} from "lucide-react";
 
 // Helper to determine avatar src
 const getAvatarSrc = (avatarPath, userName) => {
@@ -240,13 +250,16 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-
             {/* Friend Code Card */}
             {profile?.friendCode && (
               <div className="mt-6 bg-muted/30 border border-border rounded-xl p-4 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Your Friend Code</p>
-                  <p className="font-mono font-bold text-primary text-lg tracking-wider">{profile.friendCode}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
+                    Your Friend Code
+                  </p>
+                  <p className="font-mono font-bold text-primary text-lg tracking-wider">
+                    {profile.friendCode}
+                  </p>
                 </div>
                 <button
                   onClick={copyFriendCode}
@@ -257,7 +270,6 @@ const Profile = () => {
                 </button>
               </div>
             )}
-
             {/* Appearance Section (MC-3) */}
             <div className="mt-8 pt-8 border-t border-border">
               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -280,7 +292,6 @@ const Profile = () => {
                 />
               </div>
             </div>
-
             {/* Editing Form */}
             {editing && (
               <motion.form
@@ -362,7 +373,13 @@ const Profile = () => {
 };
 
 /* ── Helper: Appearance Card ─────────────────────────────────── */
-const AppearanceCard = ({ title, description, requiredLevel, currentLevel, onClick }) => {
+const AppearanceCard = ({
+  title,
+  description,
+  requiredLevel,
+  currentLevel,
+  onClick,
+}) => {
   const locked = currentLevel < requiredLevel;
   return (
     <button

@@ -12,7 +12,7 @@ import {
   Brain,
   Users,
   Search,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -23,7 +23,11 @@ const Sidebar = ({ topOffset = 80 }) => {
 
   // DEBUG: log auth + positioning
   // eslint-disable-next-line no-console
-  console.log('[Sidebar] render', { userPresent: !!user, isHovered, topOffset });
+  console.log("[Sidebar] render", {
+    userPresent: !!user,
+    isHovered,
+    topOffset,
+  });
 
   const activeToggle = isHovered;
 
@@ -65,7 +69,7 @@ const Sidebar = ({ topOffset = 80 }) => {
       className="max-[800px]:hidden flex flex-col fixed left-0 bottom-0 border-r border-border shadow-2xl overflow-hidden bg-background/95 backdrop-blur-2xl transition-all"
       style={{
         top: topOffset,
-        width: activeToggle ? '240px' : '72px',
+        width: activeToggle ? "240px" : "72px",
         height: `calc(100vh - ${topOffset}px)`,
         zIndex: 90,
       }}
@@ -75,9 +79,9 @@ const Sidebar = ({ topOffset = 80 }) => {
           <div key={groupIdx} className="px-3">
             <AnimatePresence>
               {activeToggle && (
-                <motion.h3 
+                <motion.h3
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="text-xs font-bold text-muted-foreground/70 uppercase tracking-widest mb-3 px-3"
                 >
@@ -100,12 +104,18 @@ const Sidebar = ({ topOffset = 80 }) => {
                           : "text-muted-foreground hover:bg-muted/60 hover:text-foreground border border-transparent"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-primary" : ""}`} />
+                      <Icon
+                        className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-primary" : ""}`}
+                      />
                       <AnimatePresence>
                         {activeToggle && (
                           <motion.span
                             initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                            animate={{ opacity: 1, width: 'auto', marginLeft: 4 }}
+                            animate={{
+                              opacity: 1,
+                              width: "auto",
+                              marginLeft: 4,
+                            }}
                             exit={{ opacity: 0, width: 0, marginLeft: 0 }}
                             className="whitespace-nowrap overflow-hidden text-[15px]"
                           >

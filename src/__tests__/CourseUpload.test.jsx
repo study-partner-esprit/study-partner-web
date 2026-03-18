@@ -38,11 +38,73 @@ vi.mock("../components/LevelUpModal", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            button: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <button ref={r} {...rest} />; }),
-            h1: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <h1 ref={r} {...rest} />; }),
-            span: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <span ref={r} {...rest} />; }),
-            p: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <p ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    button: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <button ref={r} {...rest} />;
+    }),
+    h1: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <h1 ref={r} {...rest} />;
+    }),
+    span: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <span ref={r} {...rest} />;
+    }),
+    p: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <p ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -59,7 +121,9 @@ const renderUpload = () =>
 describe("CourseUpload Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    subjectAPI.list.mockResolvedValue({ data: { subjects: [{ _id: "s1", name: "Math" }] } });
+    subjectAPI.list.mockResolvedValue({
+      data: { subjects: [{ _id: "s1", name: "Math" }] },
+    });
   });
 
   it("loads existing subjects on mount", async () => {

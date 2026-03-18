@@ -315,25 +315,21 @@ const StudyPlanner = () => {
           </h2>
           <ol className="list-decimal list-inside space-y-2 text-white/60">
             <li>
-              <strong className="text-white">Block your busy times</strong>{" "}
-              - Click calendar slots to mark when you're unavailable (classes,
+              <strong className="text-white">Block your busy times</strong> -
+              Click calendar slots to mark when you're unavailable (classes,
               work, etc.)
             </li>
             <li>
-              <strong className="text-white">
-                Click "Generate Schedule"
-              </strong>{" "}
+              <strong className="text-white">Click "Generate Schedule"</strong>{" "}
               - AI analyzes your tasks and availability
             </li>
             <li>
-              <strong className="text-white">
-                View scheduled sessions
-              </strong>{" "}
-              - Blue slots show your optimally scheduled study times
+              <strong className="text-white">View scheduled sessions</strong> -
+              Blue slots show your optimally scheduled study times
             </li>
             <li>
-              <strong className="text-white">Go to Tasks page</strong> -
-              Create or manage tasks to schedule
+              <strong className="text-white">Go to Tasks page</strong> - Create
+              or manage tasks to schedule
             </li>
           </ol>
         </div>
@@ -362,9 +358,7 @@ const StudyPlanner = () => {
           </div>
 
           <div className="flex items-center gap-2 ml-4">
-            <span className="text-sm font-medium text-white/60">
-              View:
-            </span>
+            <span className="text-sm font-medium text-white/60">View:</span>
             <button
               className={`px-3 py-1 rounded ${weeksView === 1 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
               onClick={() => setWeeksView(1)}

@@ -59,11 +59,13 @@ api.interceptors.response.use(
     // Handle tier-based access denial (403)
     if (error.response?.status === 403) {
       const { code, requiredTier, currentTier } = error.response.data || {};
-      if (code === 'TIER_REQUIRED' || code === 'TRIAL_EXPIRED') {
+      if (code === "TIER_REQUIRED" || code === "TRIAL_EXPIRED") {
         // Dispatch a custom event so UI components can react
-        window.dispatchEvent(new CustomEvent('tier-upgrade-required', {
-          detail: { code, requiredTier, currentTier, url: error.config?.url }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("tier-upgrade-required", {
+            detail: { code, requiredTier, currentTier, url: error.config?.url },
+          }),
+        );
       }
     }
 
@@ -114,9 +116,12 @@ export const authAPI = {
   getMe: () => api.get("/api/v1/auth/me"),
   updateTier: (tier) => api.put("/api/v1/auth/tier", { tier }),
   verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
-  resendVerification: (email) => api.post("/api/v1/auth/resend-verification", { email }),
-  forgotPassword: (email) => api.post("/api/v1/auth/forgot-password", { email }),
-  resetPassword: (token, newPassword) => api.post("/api/v1/auth/reset-password", { token, newPassword }),
+  resendVerification: (email) =>
+    api.post("/api/v1/auth/resend-verification", { email }),
+  forgotPassword: (email) =>
+    api.post("/api/v1/auth/forgot-password", { email }),
+  resetPassword: (token, newPassword) =>
+    api.post("/api/v1/auth/reset-password", { token, newPassword }),
 };
 
 // Profile API
@@ -128,8 +133,7 @@ export const profileAPI = {
 // Subject & Course Management (through main backend)
 export const subjectAPI = {
   list: () => api.get("/api/v1/study/subjects"),
-  create: (formData) =>
-    api.post("/api/v1/study/subjects", formData),
+  create: (formData) => api.post("/api/v1/study/subjects", formData),
   get: (subjectId) => api.get(`/api/v1/study/subjects/${subjectId}`),
   update: (subjectId, formData) =>
     api.put(`/api/v1/study/subjects/${subjectId}`, formData),
@@ -141,8 +145,7 @@ export const courseAPI = {
     api.get("/api/v1/study/courses", {
       params: subjectId ? { subject_id: subjectId } : {},
     }),
-  create: (formData) =>
-    api.post("/api/v1/study/courses", formData),
+  create: (formData) => api.post("/api/v1/study/courses", formData),
   createManual: (data) => api.post("/api/v1/study/courses/manual", data),
   get: (courseId) => api.get(`/api/v1/study/courses/${courseId}`),
   addFiles: (courseId, formData) =>
@@ -353,51 +356,110 @@ export const questAPI = {
 // Friends API
 export const friendsAPI = {
   getAll: () => api.get("/api/v1/users/friends").then((r) => r.data),
-  getIncoming: () => api.get("/api/v1/users/friends/requests/incoming").then((r) => r.data),
-  getOutgoing: () => api.get("/api/v1/users/friends/requests/outgoing").then((r) => r.data),
-  sendRequest: (data) => api.post("/api/v1/users/friends/request", data).then((r) => r.data),
-  acceptRequest: (id) => api.put(`/api/v1/users/friends/request/${id}/accept`).then((r) => r.data),
-  rejectRequest: (id) => api.put(`/api/v1/users/friends/request/${id}/reject`).then((r) => r.data),
-  cancelRequest: (id) => api.delete(`/api/v1/users/friends/request/${id}`).then((r) => r.data),
-  removeFriend: (friendId) => api.delete(`/api/v1/users/friends/${friendId}`).then((r) => r.data),
-  blockUser: (userId) => api.post(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
-  unblockUser: (userId) => api.delete(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
-  getBlocked: () => api.get("/api/v1/users/friends/blocked").then((r) => r.data),
-  search: (query) => api.get("/api/v1/users/friends/search", { params: { q: query } }).then((r) => r.data),
-  getProfile: (friendId) => api.get(`/api/v1/users/friends/${friendId}/profile`).then((r) => r.data),
+  getIncoming: () =>
+    api.get("/api/v1/users/friends/requests/incoming").then((r) => r.data),
+  getOutgoing: () =>
+    api.get("/api/v1/users/friends/requests/outgoing").then((r) => r.data),
+  sendRequest: (data) =>
+    api.post("/api/v1/users/friends/request", data).then((r) => r.data),
+  acceptRequest: (id) =>
+    api.put(`/api/v1/users/friends/request/${id}/accept`).then((r) => r.data),
+  rejectRequest: (id) =>
+    api.put(`/api/v1/users/friends/request/${id}/reject`).then((r) => r.data),
+  cancelRequest: (id) =>
+    api.delete(`/api/v1/users/friends/request/${id}`).then((r) => r.data),
+  removeFriend: (friendId) =>
+    api.delete(`/api/v1/users/friends/${friendId}`).then((r) => r.data),
+  blockUser: (userId) =>
+    api.post(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
+  unblockUser: (userId) =>
+    api.delete(`/api/v1/users/friends/block/${userId}`).then((r) => r.data),
+  getBlocked: () =>
+    api.get("/api/v1/users/friends/blocked").then((r) => r.data),
+  search: (query) =>
+    api
+      .get("/api/v1/users/friends/search", { params: { q: query } })
+      .then((r) => r.data),
+  getProfile: (friendId) =>
+    api.get(`/api/v1/users/friends/${friendId}/profile`).then((r) => r.data),
   getOnline: () => api.get("/api/v1/users/friends/online").then((r) => r.data),
   getCount: () => api.get("/api/v1/users/friends/count").then((r) => r.data),
 };
 
 // Team Sessions API
 export const teamSessionsAPI = {
-  create: (data) => api.post("/api/v1/study/sessions/team", data).then((r) => r.data),
-  join: (sessionId, inviteCode) => api.post(`/api/v1/study/sessions/team/${sessionId}/join`, { inviteCode }).then((r) => r.data),
-  joinByCode: (inviteCode) => api.post("/api/v1/study/sessions/team/join-by-code", { inviteCode }).then((r) => r.data),
-  start: (sessionId) => api.put(`/api/v1/study/sessions/team/${sessionId}/start`).then((r) => r.data),
-  leave: (sessionId) => api.post(`/api/v1/study/sessions/team/${sessionId}/leave`).then((r) => r.data),
-  invite: (sessionId, friendId) => api.post(`/api/v1/study/sessions/team/${sessionId}/invite`, { friendId }).then((r) => r.data),
-  getParticipants: (sessionId) => api.get(`/api/v1/study/sessions/team/${sessionId}/participants`).then((r) => r.data),
-  end: (sessionId) => api.put(`/api/v1/study/sessions/team/${sessionId}/end`).then((r) => r.data),
+  create: (data) =>
+    api.post("/api/v1/study/sessions/team", data).then((r) => r.data),
+  join: (sessionId, inviteCode) =>
+    api
+      .post(`/api/v1/study/sessions/team/${sessionId}/join`, { inviteCode })
+      .then((r) => r.data),
+  joinByCode: (inviteCode) =>
+    api
+      .post("/api/v1/study/sessions/team/join-by-code", { inviteCode })
+      .then((r) => r.data),
+  start: (sessionId) =>
+    api
+      .put(`/api/v1/study/sessions/team/${sessionId}/start`)
+      .then((r) => r.data),
+  leave: (sessionId) =>
+    api
+      .post(`/api/v1/study/sessions/team/${sessionId}/leave`)
+      .then((r) => r.data),
+  invite: (sessionId, friendId) =>
+    api
+      .post(`/api/v1/study/sessions/team/${sessionId}/invite`, { friendId })
+      .then((r) => r.data),
+  getParticipants: (sessionId) =>
+    api
+      .get(`/api/v1/study/sessions/team/${sessionId}/participants`)
+      .then((r) => r.data),
+  end: (sessionId) =>
+    api.put(`/api/v1/study/sessions/team/${sessionId}/end`).then((r) => r.data),
 };
 
 // Session Setup & Task Progression API
 export const sessionSetupAPI = {
-  setup: (data) => api.post("/api/v1/study/sessions/setup", data).then((r) => r.data),
-  completeTask: (sessionId) => api.post(`/api/v1/study/sessions/${sessionId}/task/complete`).then((r) => r.data),
-  skipTask: (sessionId) => api.post(`/api/v1/study/sessions/${sessionId}/task/skip`).then((r) => r.data),
+  setup: (data) =>
+    api.post("/api/v1/study/sessions/setup", data).then((r) => r.data),
+  completeTask: (sessionId) =>
+    api
+      .post(`/api/v1/study/sessions/${sessionId}/task/complete`)
+      .then((r) => r.data),
+  skipTask: (sessionId) =>
+    api
+      .post(`/api/v1/study/sessions/${sessionId}/task/skip`)
+      .then((r) => r.data),
 };
 
 // Background Customization API
 export const backgroundAPI = {
-  getSettings: () => api.get("/api/v1/users/profile/background").then((r) => r.data),
-  applyBackground: (data) => api.post("/api/v1/users/profile/background/apply", data).then((r) => r.data),
-  uploadBackground: (formData) => api.post("/api/v1/users/profile/background/upload", formData).then((r) => r.data),
-  uploadAnimatedBackground: (formData) => api.post("/api/v1/users/profile/animated-background/upload", formData).then((r) => r.data),
-  getPresets: () => api.get("/api/v1/users/profile/background/presets").then((r) => r.data),
-  applyAnimatedBackground: (data) => api.post("/api/v1/users/profile/animated-background/apply", data).then((r) => r.data),
-  getAnimatedPresets: () => api.get("/api/v1/users/profile/animated-background/presets").then((r) => r.data),
-  getLevelInfo: () => api.get("/api/v1/users/profile/level").then((r) => r.data),
+  getSettings: () =>
+    api.get("/api/v1/users/profile/background").then((r) => r.data),
+  applyBackground: (data) =>
+    api
+      .post("/api/v1/users/profile/background/apply", data)
+      .then((r) => r.data),
+  uploadBackground: (formData) =>
+    api
+      .post("/api/v1/users/profile/background/upload", formData)
+      .then((r) => r.data),
+  uploadAnimatedBackground: (formData) =>
+    api
+      .post("/api/v1/users/profile/animated-background/upload", formData)
+      .then((r) => r.data),
+  getPresets: () =>
+    api.get("/api/v1/users/profile/background/presets").then((r) => r.data),
+  applyAnimatedBackground: (data) =>
+    api
+      .post("/api/v1/users/profile/animated-background/apply", data)
+      .then((r) => r.data),
+  getAnimatedPresets: () =>
+    api
+      .get("/api/v1/users/profile/animated-background/presets")
+      .then((r) => r.data),
+  getLevelInfo: () =>
+    api.get("/api/v1/users/profile/level").then((r) => r.data),
 };
 
 // Legacy support - maintain backward compatibility

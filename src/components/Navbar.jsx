@@ -21,7 +21,7 @@ import {
   Search,
   Users,
   Menu,
-  X
+  X,
 } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
@@ -39,10 +39,22 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const tierBadge = {
-    trial: { label: "TRIAL", color: "bg-amber-500/20 text-amber-400 border-amber-500/30" },
-    normal: { label: "FREE", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
-    vip: { label: "VIP", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-    vip_plus: { label: "VIP+", color: "bg-purple-500/20 text-purple-400 border-purple-500/30" },
+    trial: {
+      label: "TRIAL",
+      color: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+    },
+    normal: {
+      label: "FREE",
+      color: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+    },
+    vip: {
+      label: "VIP",
+      color: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    },
+    vip_plus: {
+      label: "VIP+",
+      color: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    },
   };
 
   useEffect(() => {
@@ -101,23 +113,22 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
               to="/"
               className="relative z-10 flex items-center space-x-4 group"
             >
-            <motion.div
-              className="relative"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg transition-all duration-300">
-                <BookOpen className="w-6 h-6 text-foreground" />
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg transition-all duration-300">
+                  <BookOpen className="w-6 h-6 text-foreground" />
+                </motion.div>
               </motion.div>
-            </motion.div>
 
-            <div className="hidden sm:block">
-              <span className="text-xl font-bold tracking-tight text-foreground/90">
-                StudyPartner
-              </span>
-            </div>
-          </Link>
-
+              <div className="hidden sm:block">
+                <span className="text-xl font-bold tracking-tight text-foreground/90">
+                  StudyPartner
+                </span>
+              </div>
+            </Link>
           </div>
 
           {/* Right Corner: Actions */}
@@ -146,7 +157,9 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
                   </span>
                 </div>
                 {tierBadge[tier] && (
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${tierBadge[tier].color}`}>
+                  <span
+                    className={`text-xs font-bold px-2 py-0.5 rounded-full border ${tierBadge[tier].color}`}
+                  >
                     {tierBadge[tier].label}
                   </span>
                 )}
@@ -155,53 +168,53 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
 
             {user ? (
               <>
-              <div className="flex items-center gap-4">
-                <Link to="/profile" className="flex items-center gap-3 group">
-                <div className="text-right hidden sm:block">
-                  <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors tracking-wide">
-                    {profile?.nickname || user.name}
-                  </div>
-                  <div className="flex items-center justify-end gap-1 text-xs text-primary font-bold tracking-wider">
-                    <span>LVL</span>
-                    <span className="text-sm">
-                      {profile?.level?.current || 1}
-                    </span>
-                  </div>
-                </div>
-                <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-border group-hover:border-primary transition-colors relative shadow-sm">
-                    <img
-                      src={
-                        profile?.avatar
-                          ? profile.avatar.startsWith("data:")
-                            ? profile.avatar
-                            : profile.avatar.startsWith("http")
+                <div className="flex items-center gap-4">
+                  <Link to="/profile" className="flex items-center gap-3 group">
+                    <div className="text-right hidden sm:block">
+                      <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors tracking-wide">
+                        {profile?.nickname || user.name}
+                      </div>
+                      <div className="flex items-center justify-end gap-1 text-xs text-primary font-bold tracking-wider">
+                        <span>LVL</span>
+                        <span className="text-sm">
+                          {profile?.level?.current || 1}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-border group-hover:border-primary transition-colors relative shadow-sm">
+                      <img
+                        src={
+                          profile?.avatar
+                            ? profile.avatar.startsWith("data:")
                               ? profile.avatar
-                              : `${import.meta.env.VITE_API_URL || ""}${profile.avatar}`
-                          : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
-                      }
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </Link>
+                              : profile.avatar.startsWith("http")
+                                ? profile.avatar
+                                : `${import.meta.env.VITE_API_URL || ""}${profile.avatar}`
+                            : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
+                        }
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </Link>
 
+                  <motion.button
+                    onClick={logout}
+                    className="w-8 h-8 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center hover:bg-destructive/20"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <LogOut className="w-4 h-4 text-destructive" />
+                  </motion.button>
+                </div>
                 <motion.button
-                  onClick={logout}
-                  className="w-8 h-8 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center hover:bg-destructive/20"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="w-10 h-10 flex min-[800px]:hidden items-center justify-center rounded-xl bg-muted/40 hover:bg-muted/60 border border-border transition-colors text-foreground ml-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <LogOut className="w-4 h-4 text-destructive" />
+                  {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </motion.button>
-              </div>
-              <motion.button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="w-10 h-10 flex min-[800px]:hidden items-center justify-center rounded-xl bg-muted/40 hover:bg-muted/60 border border-border transition-colors text-foreground ml-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </motion.button>
               </>
             ) : (
               <Link to="/login">
@@ -221,7 +234,7 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
       {/* Enhanced Mobile Navigation */}
       {!minimal && user && (
         <AnimatePresence>
-            {mobileMenuOpen && (
+          {mobileMenuOpen && (
             <motion.div
               className="min-[800px]:hidden border-t border-border/60 bg-background/95 backdrop-blur-2xl rounded-b-3xl absolute left-0 right-0 z-50 shadow-xl overflow-hidden"
               style={{ top: topOffset }}
@@ -256,7 +269,9 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
                         >
                           <Icon className="w-5 h-5" />
                         </motion.div>
-                        <span className="font-semibold text-base">{item.label}</span>
+                        <span className="font-semibold text-base">
+                          {item.label}
+                        </span>
                       </Link>
                     </motion.div>
                   );

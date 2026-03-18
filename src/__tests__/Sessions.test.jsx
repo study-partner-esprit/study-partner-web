@@ -5,7 +5,11 @@ import { MemoryRouter } from "react-router-dom";
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
-  return { ...actual, useNavigate: () => vi.fn(), useLocation: () => ({ state: null }) };
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+    useLocation: () => ({ state: null }),
+  };
 });
 
 vi.mock("../services/api", () => ({
@@ -25,8 +29,35 @@ vi.mock("../store/authStore", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,layout,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            button: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <button ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        layout,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    button: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <button ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -41,8 +72,20 @@ const renderSessions = () =>
   );
 
 const mockSessions = [
-  { _id: "s1", mode: "deep_focus", duration: 3600, createdAt: new Date().toISOString(), status: "completed" },
-  { _id: "s2", mode: "pomodoro", duration: 1500, createdAt: new Date().toISOString(), status: "completed" },
+  {
+    _id: "s1",
+    mode: "deep_focus",
+    duration: 3600,
+    createdAt: new Date().toISOString(),
+    status: "completed",
+  },
+  {
+    _id: "s2",
+    mode: "pomodoro",
+    duration: 1500,
+    createdAt: new Date().toISOString(),
+    status: "completed",
+  },
 ];
 
 describe("Sessions Page", () => {

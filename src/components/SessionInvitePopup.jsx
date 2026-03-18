@@ -12,7 +12,7 @@ const SessionInvitePopup = () => {
   const pendingInvites = useNotificationStore((s) => s.pendingInvites);
   const dismissInvite = useNotificationStore((s) => s.dismissInvite);
   const joinTeamSessionFromInvite = useSessionStore(
-    (s) => s.joinTeamSessionFromInvite
+    (s) => s.joinTeamSessionFromInvite,
   );
 
   const invite = pendingInvites[0] || null;
@@ -41,10 +41,7 @@ const SessionInvitePopup = () => {
     setJoining(true);
     try {
       const meta = invite.metadata || {};
-      await joinTeamSessionFromInvite(
-        meta.sessionId,
-        meta.inviteCode
-      );
+      await joinTeamSessionFromInvite(meta.sessionId, meta.inviteCode);
       dismissInvite(invite._id || invite.id);
       navigate("/team-lobby");
     } catch {

@@ -26,7 +26,8 @@ export default function VerifyEmail() {
       .catch((err) => {
         setStatus("error");
         setMessage(
-          err.response?.data?.error || "Verification failed. The link may have expired."
+          err.response?.data?.error ||
+            "Verification failed. The link may have expired.",
         );
       });
   }, [token]);
@@ -40,14 +41,21 @@ export default function VerifyEmail() {
       >
         {status === "verifying" && (
           <>
-            <Loader2 className="mx-auto text-purple-400 animate-spin mb-4" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">Verifying your email...</h2>
+            <Loader2
+              className="mx-auto text-purple-400 animate-spin mb-4"
+              size={48}
+            />
+            <h2 className="text-xl font-bold text-white mb-2">
+              Verifying your email...
+            </h2>
           </>
         )}
         {status === "success" && (
           <>
             <CheckCircle className="mx-auto text-green-400 mb-4" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">Email Verified!</h2>
+            <h2 className="text-xl font-bold text-white mb-2">
+              Email Verified!
+            </h2>
             <p className="text-gray-400 mb-6">{message}</p>
             <button
               onClick={() => navigate("/login")}
@@ -60,7 +68,9 @@ export default function VerifyEmail() {
         {status === "error" && (
           <>
             <XCircle className="mx-auto text-red-400 mb-4" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">Verification Failed</h2>
+            <h2 className="text-xl font-bold text-white mb-2">
+              Verification Failed
+            </h2>
             <p className="text-gray-400 mb-6">{message}</p>
             <button
               onClick={() => navigate("/login")}

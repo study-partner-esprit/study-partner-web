@@ -83,8 +83,13 @@ const useNotificationStore = create((set, get) => ({
 
     // Add to pendingInvites if it's a team_invite
     let pendingInvites = get().pendingInvites;
-    if (notification.type === "team_invite" && notification.status === "unread") {
-      const alreadyQueued = pendingInvites.some((inv) => inv._id === notification._id);
+    if (
+      notification.type === "team_invite" &&
+      notification.status === "unread"
+    ) {
+      const alreadyQueued = pendingInvites.some(
+        (inv) => inv._id === notification._id,
+      );
       if (!alreadyQueued) {
         pendingInvites = [...pendingInvites, notification];
       }
@@ -104,7 +109,7 @@ const useNotificationStore = create((set, get) => ({
   dismissInvite: async (notificationId) => {
     await get().markAsRead(notificationId);
     const pendingInvites = get().pendingInvites.filter(
-      (inv) => inv._id !== notificationId
+      (inv) => inv._id !== notificationId,
     );
     set({ pendingInvites });
   },
@@ -132,11 +137,16 @@ const useNotificationStore = create((set, get) => ({
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === 'new_notification' && data.notification) {
+          if (data.type === "new_notification" && data.notification) {
             get().addNotification(data.notification);
-          } else if (data.type === 'session_start') {
+          } else if (data.type === "session_start") {
             // Leader triggered start — push all members to study session
-            set({ sessionStartSignal: { sessionId: data.sessionId, inviteCode: data.inviteCode } });
+            set({
+              sessionStartSignal: {
+                sessionId: data.sessionId,
+                inviteCode: data.inviteCode,
+              },
+            });
           }
         } catch (err) {
           console.warn("[Notifications] Failed to parse WS message:", err);

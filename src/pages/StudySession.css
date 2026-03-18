@@ -171,11 +171,21 @@
 }
 
 .focus-gauge {
-  background: linear-gradient(90deg, #ff6b6b 0%, #ffa500 50%, var(--primary) 100%);
+  background: linear-gradient(
+    90deg,
+    #ff6b6b 0%,
+    #ffa500 50%,
+    var(--primary) 100%
+  );
 }
 
 .fatigue-gauge {
-  background: linear-gradient(90deg, var(--primary) 0%, #ffa500 50%, #ff6b6b 100%);
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    #ffa500 50%,
+    #ff6b6b 100%
+  );
 }
 
 .signal-details {

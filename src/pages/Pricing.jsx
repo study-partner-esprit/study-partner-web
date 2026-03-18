@@ -19,7 +19,7 @@ const tiers = [
       "Study sessions": true,
       "Calendar view": true,
       "Subjects & topics": true,
-      "Leaderboard": true,
+      Leaderboard: true,
       "AI course ingestion": false,
       "AI study planner": false,
       "AI scheduler": false,
@@ -44,7 +44,7 @@ const tiers = [
       "Study sessions": true,
       "Calendar view": true,
       "Subjects & topics": true,
-      "Leaderboard": true,
+      Leaderboard: true,
       "AI course ingestion": true,
       "AI study planner": true,
       "AI scheduler": true,
@@ -69,7 +69,7 @@ const tiers = [
       "Study sessions": true,
       "Calendar view": true,
       "Subjects & topics": true,
-      "Leaderboard": true,
+      Leaderboard: true,
       "AI course ingestion": true,
       "AI study planner": true,
       "AI scheduler": true,
@@ -168,13 +168,24 @@ export default function Pricing() {
 
                 <ul className="flex-1 space-y-3 mb-8">
                   {Object.entries(tier.features).map(([feature, enabled]) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm">
+                    <li
+                      key={feature}
+                      className="flex items-start gap-2 text-sm"
+                    >
                       {enabled ? (
-                        <Check className="text-green-400 mt-0.5 shrink-0" size={16} />
+                        <Check
+                          className="text-green-400 mt-0.5 shrink-0"
+                          size={16}
+                        />
                       ) : (
-                        <X className="text-gray-600 mt-0.5 shrink-0" size={16} />
+                        <X
+                          className="text-gray-600 mt-0.5 shrink-0"
+                          size={16}
+                        />
                       )}
-                      <span className={enabled ? "text-gray-200" : "text-gray-600"}>
+                      <span
+                        className={enabled ? "text-gray-200" : "text-gray-600"}
+                      >
                         {feature}
                       </span>
                     </li>

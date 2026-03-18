@@ -29,7 +29,8 @@ import "./StudySession.css";
 const TaskProgressBar = ({ taskProgress }) => {
   if (!taskProgress?.tasks?.length) return null;
   const { tasks, completedTasks, totalTasks } = taskProgress;
-  const progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  const progressPercent =
+    totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <div className="mb-6">
@@ -83,7 +84,11 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => (
     </div>
 
     <div className="relative z-10 max-w-lg w-full p-8">
-      <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="text-center mb-8">
+      <motion.div
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        className="text-center mb-8"
+      >
         <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
         <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
           SESSION COMPLETE
@@ -95,13 +100,21 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => (
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-4 bg-[#0f1923] rounded-xl">
             <CheckCircle2 size={24} className="mx-auto text-green-500 mb-2" />
-            <p className="text-2xl font-black text-white">{summary.completedTasks}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">Completed</p>
+            <p className="text-2xl font-black text-white">
+              {summary.completedTasks}
+            </p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">
+              Completed
+            </p>
           </div>
           <div className="text-center p-4 bg-[#0f1923] rounded-xl">
             <SkipForward size={24} className="mx-auto text-yellow-500 mb-2" />
-            <p className="text-2xl font-black text-white">{summary.skippedTasks}</p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">Skipped</p>
+            <p className="text-2xl font-black text-white">
+              {summary.skippedTasks}
+            </p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider">
+              Skipped
+            </p>
           </div>
         </div>
 
@@ -115,12 +128,16 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => (
           {summary.xpMultiplier > 1 && (
             <div className="flex items-center justify-between mb-3">
               <span className="text-gray-400">Team Multiplier</span>
-              <span className="text-lg font-bold text-[#0fb8ce]">{summary.xpMultiplier}x</span>
+              <span className="text-lg font-bold text-[#0fb8ce]">
+                {summary.xpMultiplier}x
+              </span>
             </div>
           )}
           <div className="flex items-center justify-between">
             <span className="text-gray-400">Total Tasks</span>
-            <span className="text-lg font-bold text-white">{summary.totalTasks}</span>
+            <span className="text-lg font-bold text-white">
+              {summary.totalTasks}
+            </span>
           </div>
         </div>
       </div>
@@ -204,12 +221,17 @@ const StudySession = () => {
     setSessionActive(true);
     setSessionDuration(0);
     try {
-      const focusRes = await focusAPI.startSession({ studySessionId: activeSession._id });
+      const focusRes = await focusAPI.startSession({
+        studySessionId: activeSession._id,
+      });
       focusSessionIdRef.current = focusRes.data?.sessionId;
     } catch (err) {
       console.error("[StudySession] Failed to start focus tracking:", err);
     }
-    sessionTimerRef.current = setInterval(() => setSessionDuration((p) => p + 1), 1000);
+    sessionTimerRef.current = setInterval(
+      () => setSessionDuration((p) => p + 1),
+      1000,
+    );
     signalPollingRef.current = setInterval(() => fetchSignals(), 10000);
     coachPollingRef.current = setInterval(() => requestCoachDecision(), 30000);
     fetchSignals();
@@ -561,8 +583,14 @@ const StudySession = () => {
     return (
       <SessionSummary
         summary={sessionSummary}
-        onRestart={() => { resetSession(); navigate("/session-setup"); }}
-        onGoHome={() => { resetSession(); navigate("/dashboard"); }}
+        onRestart={() => {
+          resetSession();
+          navigate("/session-setup");
+        }}
+        onGoHome={() => {
+          resetSession();
+          navigate("/dashboard");
+        }}
       />
     );
   }
@@ -572,15 +600,26 @@ const StudySession = () => {
     const currentIdx = taskProgress.currentTaskIndex || 0;
     const current = taskProgress.tasks[currentIdx];
     const allDone = taskProgress.completedTasks >= taskProgress.totalTasks;
-    const estimatedMinutes = Number(current?.estimatedMinutes) > 0 ? Number(current.estimatedMinutes) : 30;
+    const estimatedMinutes =
+      Number(current?.estimatedMinutes) > 0
+        ? Number(current.estimatedMinutes)
+        : 30;
     const minRequiredSeconds = Math.floor(estimatedMinutes * 60 * 0.8);
-    const taskStartedAtMs = current?.startedAt ? new Date(current.startedAt).getTime() : null;
+    const taskStartedAtMs = current?.startedAt
+      ? new Date(current.startedAt).getTime()
+      : null;
     const elapsedTaskSeconds = taskStartedAtMs
       ? Math.max(0, Math.floor((Date.now() - taskStartedAtMs) / 1000))
       : 0;
     const canAdvanceTask = elapsedTaskSeconds >= minRequiredSeconds;
-    const remainingAdvanceSeconds = Math.max(0, minRequiredSeconds - elapsedTaskSeconds);
-    const advanceProgressPct = Math.min(100, Math.round((elapsedTaskSeconds / Math.max(minRequiredSeconds, 1)) * 100));
+    const remainingAdvanceSeconds = Math.max(
+      0,
+      minRequiredSeconds - elapsedTaskSeconds,
+    );
+    const advanceProgressPct = Math.min(
+      100,
+      Math.round((elapsedTaskSeconds / Math.max(minRequiredSeconds, 1)) * 100),
+    );
 
     return (
       <div className="min-h-screen bg-[#0f1923] text-white relative">
@@ -591,7 +630,11 @@ const StudySession = () => {
           <div className="h-16 px-6 flex items-center justify-between border-b border-[#ffffff10] bg-[#0f1923]/80 backdrop-blur-md">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => { stopSession(); resetSession(); navigate("/session-setup"); }}
+                onClick={() => {
+                  stopSession();
+                  resetSession();
+                  navigate("/session-setup");
+                }}
                 className="p-2 hover:bg-[#ffffff10] rounded-lg transition-colors"
               >
                 <ArrowLeft size={18} />
@@ -605,16 +648,25 @@ const StudySession = () => {
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2 text-gray-400">
                 <Clock size={16} />
-                <span className="font-mono font-bold text-lg">{formatDuration(sessionDuration)}</span>
+                <span className="font-mono font-bold text-lg">
+                  {formatDuration(sessionDuration)}
+                </span>
               </div>
               {activeSession?.xpMultiplier > 1 && (
                 <div className="flex items-center gap-1 text-[#0fb8ce]">
                   <Zap size={14} />
-                  <span className="font-bold text-sm">{activeSession.xpMultiplier}x XP</span>
+                  <span className="font-bold text-sm">
+                    {activeSession.xpMultiplier}x XP
+                  </span>
                 </div>
               )}
               <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
-                <input type="checkbox" checked={doNotDisturb} onChange={(e) => setDoNotDisturb(e.target.checked)} className="rounded" />
+                <input
+                  type="checkbox"
+                  checked={doNotDisturb}
+                  onChange={(e) => setDoNotDisturb(e.target.checked)}
+                  className="rounded"
+                />
                 DND
               </label>
               <button
@@ -631,7 +683,12 @@ const StudySession = () => {
             <TaskProgressBar taskProgress={taskProgress} />
 
             {!allDone && current && (
-              <motion.div key={currentIdx} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <motion.div
+                key={currentIdx}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+              >
                 {/* Task Content */}
                 <div className="lg:col-span-2">
                   <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 relative overflow-hidden">
@@ -646,15 +703,23 @@ const StudySession = () => {
                       </span>
                     </div>
 
-                    <h2 className="text-2xl font-black tracking-tight mb-3">{current.title}</h2>
+                    <h2 className="text-2xl font-black tracking-tight mb-3">
+                      {current.title}
+                    </h2>
                     {current.description && (
-                      <p className="text-gray-400 leading-relaxed mb-6 whitespace-pre-wrap">{current.description}</p>
+                      <p className="text-gray-400 leading-relaxed mb-6 whitespace-pre-wrap">
+                        {current.description}
+                      </p>
                     )}
 
                     <div className="rounded-xl border border-[#ffffff10] bg-[#0f1923] p-4">
                       <div className="flex items-center justify-between text-xs mb-2">
-                        <span className="text-gray-500 uppercase tracking-wider">Task time gate</span>
-                        <span className="font-bold text-gray-300">{advanceProgressPct}%</span>
+                        <span className="text-gray-500 uppercase tracking-wider">
+                          Task time gate
+                        </span>
+                        <span className="font-bold text-gray-300">
+                          {advanceProgressPct}%
+                        </span>
                       </div>
                       <div className="w-full h-2 bg-[#1a2633] rounded-full overflow-hidden mb-2">
                         <div
@@ -675,7 +740,8 @@ const StudySession = () => {
                         disabled={taskLoading || !canAdvanceTask}
                         className="flex-1 px-6 py-3 bg-green-600 text-white font-bold tracking-wider uppercase rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
-                        <CheckCircle2 size={18} /> {taskLoading ? "..." : "MARK COMPLETE"}
+                        <CheckCircle2 size={18} />{" "}
+                        {taskLoading ? "..." : "MARK COMPLETE"}
                       </button>
                       <button
                         onClick={skipTask}
@@ -692,8 +758,14 @@ const StudySession = () => {
                 <div className="space-y-4">
                   {sessionActive && (
                     <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
-                      <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">Focus Monitoring</h3>
-                      <WebcamCapture onFrameCapture={handleFrameCapture} captureInterval={3000} enabled={sessionActive} />
+                      <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">
+                        Focus Monitoring
+                      </h3>
+                      <WebcamCapture
+                        onFrameCapture={handleFrameCapture}
+                        captureInterval={3000}
+                        enabled={sessionActive}
+                      />
                     </div>
                   )}
 
@@ -702,23 +774,33 @@ const StudySession = () => {
                       <div>
                         <div className="flex justify-between text-xs mb-1">
                           <span className="text-gray-500">Focus</span>
-                          <span className={`font-bold ${signals.focus.score > 0.6 ? "text-green-400" : signals.focus.score > 0.3 ? "text-yellow-400" : "text-red-400"}`}>
+                          <span
+                            className={`font-bold ${signals.focus.score > 0.6 ? "text-green-400" : signals.focus.score > 0.3 ? "text-yellow-400" : "text-red-400"}`}
+                          >
                             {(signals.focus.score * 100).toFixed(0)}%
                           </span>
                         </div>
                         <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
-                          <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${signals.focus.score * 100}%` }} />
+                          <div
+                            className="h-full bg-green-500 rounded-full transition-all duration-500"
+                            style={{ width: `${signals.focus.score * 100}%` }}
+                          />
                         </div>
                       </div>
                       <div>
                         <div className="flex justify-between text-xs mb-1">
                           <span className="text-gray-500">Fatigue</span>
-                          <span className={`font-bold ${signals.fatigue.score < 0.3 ? "text-green-400" : signals.fatigue.score < 0.6 ? "text-yellow-400" : "text-red-400"}`}>
+                          <span
+                            className={`font-bold ${signals.fatigue.score < 0.3 ? "text-green-400" : signals.fatigue.score < 0.6 ? "text-yellow-400" : "text-red-400"}`}
+                          >
                             {(signals.fatigue.score * 100).toFixed(0)}%
                           </span>
                         </div>
                         <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
-                          <div className="h-full bg-orange-500 rounded-full transition-all duration-500" style={{ width: `${signals.fatigue.score * 100}%` }} />
+                          <div
+                            className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                            style={{ width: `${signals.fatigue.score * 100}%` }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -726,22 +808,32 @@ const StudySession = () => {
 
                   {/* Task list sidebar */}
                   <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
-                    <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">Task List</h3>
+                    <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">
+                      Task List
+                    </h3>
                     <div className="space-y-1.5 max-h-60 overflow-y-auto">
                       {taskProgress.tasks.map((task, idx) => (
                         <div
                           key={idx}
                           className={`flex items-center gap-2 px-2 py-1.5 rounded text-xs ${
-                            idx === currentIdx ? "bg-[#ff4655]/10 text-white"
-                              : task.status === "completed" ? "text-green-500"
-                              : task.status === "skipped" ? "text-yellow-500"
-                              : "text-gray-600"
+                            idx === currentIdx
+                              ? "bg-[#ff4655]/10 text-white"
+                              : task.status === "completed"
+                                ? "text-green-500"
+                                : task.status === "skipped"
+                                  ? "text-yellow-500"
+                                  : "text-gray-600"
                           }`}
                         >
-                          {task.status === "completed" ? <CheckCircle2 size={12} />
-                            : task.status === "skipped" ? <SkipForward size={12} />
-                            : idx === currentIdx ? <Play size={12} className="text-[#ff4655]" />
-                            : <div className="w-3 h-3 rounded-full border border-gray-600" />}
+                          {task.status === "completed" ? (
+                            <CheckCircle2 size={12} />
+                          ) : task.status === "skipped" ? (
+                            <SkipForward size={12} />
+                          ) : idx === currentIdx ? (
+                            <Play size={12} className="text-[#ff4655]" />
+                          ) : (
+                            <div className="w-3 h-3 rounded-full border border-gray-600" />
+                          )}
                           <span className="truncate">{task.title}</span>
                         </div>
                       ))}
@@ -753,10 +845,18 @@ const StudySession = () => {
 
             {/* All tasks complete prompt */}
             {allDone && (
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-20">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-20"
+              >
                 <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
-                <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">ALL TASKS COMPLETE!</h2>
-                <p className="text-gray-400 mb-8">Amazing work! End the session to view your results.</p>
+                <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">
+                  ALL TASKS COMPLETE!
+                </h2>
+                <p className="text-gray-400 mb-8">
+                  Amazing work! End the session to view your results.
+                </p>
                 <button
                   onClick={() => stopSession()}
                   className="px-12 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]"
@@ -771,16 +871,36 @@ const StudySession = () => {
         {/* Coach Popup (task mode) */}
         {coachVisible && coachDecision && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-bold mb-2 flex items-center gap-2">AI Coach</h3>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 max-w-md w-full mx-4"
+            >
+              <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
+                AI Coach
+              </h3>
               <div className="bg-[#0f1923] rounded-lg px-3 py-1.5 text-xs font-bold text-[#ff4655] uppercase tracking-wider inline-block mb-3">
                 {coachDecision.action_type.replace("_", " ")}
               </div>
-              {coachDecision.message && <p className="text-gray-300 mb-3">{coachDecision.message}</p>}
-              <p className="text-gray-500 text-sm mb-4">{coachDecision.reasoning}</p>
+              {coachDecision.message && (
+                <p className="text-gray-300 mb-3">{coachDecision.message}</p>
+              )}
+              <p className="text-gray-500 text-sm mb-4">
+                {coachDecision.reasoning}
+              </p>
               <div className="flex gap-3">
-                <button onClick={acceptCoachSuggestion} className="flex-1 px-4 py-2 bg-[#ff4655] text-white rounded-lg font-bold">Accept</button>
-                <button onClick={ignoreCoachSuggestion} className="flex-1 px-4 py-2 bg-[#1a2633] border border-[#ffffff10] text-gray-400 rounded-lg font-bold">Ignore</button>
+                <button
+                  onClick={acceptCoachSuggestion}
+                  className="flex-1 px-4 py-2 bg-[#ff4655] text-white rounded-lg font-bold"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={ignoreCoachSuggestion}
+                  className="flex-1 px-4 py-2 bg-[#1a2633] border border-[#ffffff10] text-gray-400 rounded-lg font-bold"
+                >
+                  Ignore
+                </button>
               </div>
             </motion.div>
           </div>

@@ -8,11 +8,20 @@ const mockNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
-  return { ...actual, useNavigate: () => mockNavigate, useSearchParams: () => [new URLSearchParams(), vi.fn()] };
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useSearchParams: () => [new URLSearchParams(), vi.fn()],
+  };
 });
 
 vi.mock("../services/api", () => ({
-  studyPlanAPI: { getAll: vi.fn(), create: vi.fn(), schedule: vi.fn(), scheduleTasks: vi.fn() },
+  studyPlanAPI: {
+    getAll: vi.fn(),
+    create: vi.fn(),
+    schedule: vi.fn(),
+    scheduleTasks: vi.fn(),
+  },
   tasksAPI: { getAll: vi.fn() },
   availabilityAPI: { get: vi.fn(), getCalendarEntries: vi.fn() },
 }));
@@ -34,8 +43,46 @@ vi.mock("../components/WeeklyCalendar", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => <div ref={r} {...Object.fromEntries(Object.entries(p).filter(([k]) => !["initial","animate","exit","whileHover","whileTap","variants","transition"].includes(k)))} />),
-            button: React.forwardRef((p, r) => <button ref={r} {...Object.fromEntries(Object.entries(p).filter(([k]) => !["initial","animate","exit","whileHover","whileTap","variants","transition"].includes(k)))} />) },
+  motion: {
+    div: React.forwardRef((p, r) => (
+      <div
+        ref={r}
+        {...Object.fromEntries(
+          Object.entries(p).filter(
+            ([k]) =>
+              ![
+                "initial",
+                "animate",
+                "exit",
+                "whileHover",
+                "whileTap",
+                "variants",
+                "transition",
+              ].includes(k),
+          ),
+        )}
+      />
+    )),
+    button: React.forwardRef((p, r) => (
+      <button
+        ref={r}
+        {...Object.fromEntries(
+          Object.entries(p).filter(
+            ([k]) =>
+              ![
+                "initial",
+                "animate",
+                "exit",
+                "whileHover",
+                "whileTap",
+                "variants",
+                "transition",
+              ].includes(k),
+          ),
+        )}
+      />
+    )),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -52,8 +99,12 @@ const renderPlanner = () =>
 describe("StudyPlanner Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    availabilityAPI.get.mockResolvedValue({ data: { availability: { slots: [] } } });
-    availabilityAPI.getCalendarEntries.mockResolvedValue({ data: { entries: [] } });
+    availabilityAPI.get.mockResolvedValue({
+      data: { availability: { slots: [] } },
+    });
+    availabilityAPI.getCalendarEntries.mockResolvedValue({
+      data: { entries: [] },
+    });
     tasksAPI.getAll.mockResolvedValue({ data: { tasks: [] } });
     studyPlanAPI.getAll.mockResolvedValue({ data: { plans: [] } });
   });
@@ -82,7 +133,11 @@ describe("StudyPlanner Page", () => {
 
   it("shows tasks when available", async () => {
     tasksAPI.getAll.mockResolvedValue({
-      data: { tasks: [{ _id: "t1", title: "Math HW", status: "todo", priority: "high" }] },
+      data: {
+        tasks: [
+          { _id: "t1", title: "Math HW", status: "todo", priority: "high" },
+        ],
+      },
     });
     renderPlanner();
     await waitFor(() => {

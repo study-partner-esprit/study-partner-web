@@ -35,11 +35,17 @@ export default function ForgotPassword() {
         {sent ? (
           <div className="text-center">
             <CheckCircle className="mx-auto text-green-400 mb-4" size={48} />
-            <h2 className="text-xl font-bold text-white mb-2">Check your email</h2>
+            <h2 className="text-xl font-bold text-white mb-2">
+              Check your email
+            </h2>
             <p className="text-gray-400 mb-6">
-              If an account exists with that email, we&apos;ve sent a password reset link.
+              If an account exists with that email, we&apos;ve sent a password
+              reset link.
             </p>
-            <Link to="/login" className="text-purple-400 hover:text-purple-300 text-sm">
+            <Link
+              to="/login"
+              className="text-purple-400 hover:text-purple-300 text-sm"
+            >
               &larr; Back to Login
             </Link>
           </div>
@@ -50,7 +56,8 @@ export default function ForgotPassword() {
               <h2 className="text-xl font-bold text-white">Forgot Password</h2>
             </div>
             <p className="text-gray-400 text-sm mb-6">
-              Enter your email and we&apos;ll send you a link to reset your password.
+              Enter your email and we&apos;ll send you a link to reset your
+              password.
             </p>
 
             {error && (

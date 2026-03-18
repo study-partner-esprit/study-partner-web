@@ -63,18 +63,24 @@ function FriendProfileModal({ onClose }) {
 
         {/* Info */}
         <div className="text-center px-6 mt-3">
-          <h2 className="text-xl font-bold">{profile.displayName || profile.name}</h2>
+          <h2 className="text-xl font-bold">
+            {profile.displayName || profile.name}
+          </h2>
           {profile.bio && (
             <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>
           )}
           {profile.level && (
             <div className="flex items-center justify-center gap-2 mt-2">
               <Trophy size={14} className="text-yellow-500" />
-              <span className="text-sm text-gray-400">Level {profile.level.current || profile.level}</span>
+              <span className="text-sm text-gray-400">
+                Level {profile.level.current || profile.level}
+              </span>
               {profile.streak > 0 && (
                 <>
                   <Flame size={14} className="text-orange-500 ml-2" />
-                  <span className="text-sm text-gray-400">{profile.streak} day streak</span>
+                  <span className="text-sm text-gray-400">
+                    {profile.streak} day streak
+                  </span>
                 </>
               )}
             </div>
@@ -86,7 +92,9 @@ function FriendProfileModal({ onClose }) {
           <StatCard
             icon={<Clock size={16} className="text-blue-400" />}
             label="Study Hours"
-            value={profile.totalStudyHours || profile.stats?.totalStudyHours || 0}
+            value={
+              profile.totalStudyHours || profile.stats?.totalStudyHours || 0
+            }
           />
           <StatCard
             icon={<BookOpen size={16} className="text-green-400" />}
@@ -103,7 +111,9 @@ function FriendProfileModal({ onClose }) {
         {/* Badges */}
         {profile.badges && profile.badges.length > 0 && (
           <div className="px-6 mt-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Badges</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+              Badges
+            </p>
             <div className="flex flex-wrap gap-2">
               {profile.badges.slice(0, 6).map((badge, i) => (
                 <span

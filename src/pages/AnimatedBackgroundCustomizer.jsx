@@ -73,7 +73,7 @@ const AnimatedBackgroundCustomizer = () => {
     if (!Video) return;
     await applyAnimatedBackground({
       videoUrl: Video,
-      type: uploadFile ? "uploaded" : (selectedPreset?.type || "preset"),
+      type: uploadFile ? "uploaded" : selectedPreset?.type || "preset",
       opacity: localSettings.opacity,
       brightness: localSettings.brightness,
       saturation: localSettings.saturation,
@@ -98,8 +98,9 @@ const AnimatedBackgroundCustomizer = () => {
     if (!uploadFile) return;
     // Upload the video file and get the new settings with videoUrl
     const uploadResult = await uploadAnimatedBackground(uploadFile);
-    const newVideoUrl = uploadResult?.animatedBackgroundSettings?.videoUrl || uploadPreview;
-    
+    const newVideoUrl =
+      uploadResult?.animatedBackgroundSettings?.videoUrl || uploadPreview;
+
     // Then apply the settings with the new videoUrl
     await applyAnimatedBackground({
       videoUrl: newVideoUrl,
@@ -111,7 +112,7 @@ const AnimatedBackgroundCustomizer = () => {
       loop: localSettings.loop,
       enabled: true,
     });
-    
+
     // Clear upload state after successful apply
     setUploadFile(null);
     setUploadPreview(null);
@@ -137,11 +138,13 @@ const AnimatedBackgroundCustomizer = () => {
             LOCKED
           </h1>
           <p className="text-gray-400 mb-4">
-            Animated backgrounds unlock at <span className="text-[#0fb8ce] font-bold">Level 20</span>.
+            Animated backgrounds unlock at{" "}
+            <span className="text-[#0fb8ce] font-bold">Level 20</span>.
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            You are currently <span className="text-white font-bold">Level {level}</span>.
-            Keep pushing to unlock this premium feature!
+            You are currently{" "}
+            <span className="text-white font-bold">Level {level}</span>. Keep
+            pushing to unlock this premium feature!
           </p>
           <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden mb-4">
             <div
@@ -238,42 +241,42 @@ const AnimatedBackgroundCustomizer = () => {
                 Presets
               </h3>
               <div className="grid grid-cols-2 gap-3">
-              {animatedPresets.map((preset, idx) => (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setSelectedPreset(preset)}
-                  className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-colors ${
-                    selectedPreset?.url === preset.url
-                      ? "border-[#0fb8ce]"
-                      : "border-transparent hover:border-[#ffffff20]"
-                  }`}
-                >
-                  {/* Thumbnail — use poster or gradient fallback */}
-                  <div className="w-full h-full bg-gradient-to-br from-[#1a2633] to-[#0f1923] flex items-center justify-center">
-                    {preset.thumbnail ? (
-                      <img
-                        src={preset.thumbnail}
-                        alt={preset.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Film size={20} className="text-gray-600" />
-                    )}
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <span className="absolute bottom-1 left-2 text-[10px] font-bold text-white/80">
-                    {preset.name}
-                  </span>
-                  {selectedPreset?.url === preset.url && (
-                    <div className="absolute top-1 right-1 w-5 h-5 bg-[#0fb8ce] rounded-full flex items-center justify-center">
-                      <Check size={12} />
+                {animatedPresets.map((preset, idx) => (
+                  <motion.button
+                    key={idx}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedPreset(preset)}
+                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-colors ${
+                      selectedPreset?.url === preset.url
+                        ? "border-[#0fb8ce]"
+                        : "border-transparent hover:border-[#ffffff20]"
+                    }`}
+                  >
+                    {/* Thumbnail — use poster or gradient fallback */}
+                    <div className="w-full h-full bg-gradient-to-br from-[#1a2633] to-[#0f1923] flex items-center justify-center">
+                      {preset.thumbnail ? (
+                        <img
+                          src={preset.thumbnail}
+                          alt={preset.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Film size={20} className="text-gray-600" />
+                      )}
                     </div>
-                  )}
-                </motion.button>
-              ))}
-            </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <span className="absolute bottom-1 left-2 text-[10px] font-bold text-white/80">
+                      {preset.name}
+                    </span>
+                    {selectedPreset?.url === preset.url && (
+                      <div className="absolute top-1 right-1 w-5 h-5 bg-[#0fb8ce] rounded-full flex items-center justify-center">
+                        <Check size={12} />
+                      </div>
+                    )}
+                  </motion.button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -294,14 +297,20 @@ const AnimatedBackgroundCustomizer = () => {
                 >
                   <Upload size={32} className="text-[#0fb8ce]" />
                   <div className="text-center">
-                    <p className="text-xs font-bold text-gray-400">Click to upload</p>
-                    <p className="text-[10px] text-gray-600 mt-1">MP4, WebM, MOV (max 50MB)</p>
+                    <p className="text-xs font-bold text-gray-400">
+                      Click to upload
+                    </p>
+                    <p className="text-[10px] text-gray-600 mt-1">
+                      MP4, WebM, MOV (max 50MB)
+                    </p>
                   </div>
                 </button>
               ) : (
                 <div className="w-full space-y-2">
                   <div className="w-full bg-[#1a2633] rounded-lg p-2 flex items-center justify-between">
-                    <p className="text-xs text-gray-300 truncate">{uploadFile.name}</p>
+                    <p className="text-xs text-gray-300 truncate">
+                      {uploadFile.name}
+                    </p>
                     <button
                       onClick={() => {
                         setUploadFile(null);
@@ -328,7 +337,8 @@ const AnimatedBackgroundCustomizer = () => {
 
             <div>
               <label className="text-xs text-gray-400 font-bold tracking-wider flex items-center gap-1 mb-2">
-                <Droplets size={12} /> Opacity — {(localSettings.opacity * 100).toFixed(0)}%
+                <Droplets size={12} /> Opacity —{" "}
+                {(localSettings.opacity * 100).toFixed(0)}%
               </label>
               <input
                 type="range"
@@ -336,7 +346,10 @@ const AnimatedBackgroundCustomizer = () => {
                 max="30"
                 value={localSettings.opacity * 100}
                 onChange={(e) =>
-                  setLocalSettings((p) => ({ ...p, opacity: parseInt(e.target.value) / 100 }))
+                  setLocalSettings((p) => ({
+                    ...p,
+                    opacity: parseInt(e.target.value) / 100,
+                  }))
                 }
                 className="w-full accent-[#0fb8ce]"
               />
@@ -352,7 +365,10 @@ const AnimatedBackgroundCustomizer = () => {
                 max="50"
                 value={localSettings.brightness}
                 onChange={(e) =>
-                  setLocalSettings((p) => ({ ...p, brightness: parseInt(e.target.value) }))
+                  setLocalSettings((p) => ({
+                    ...p,
+                    brightness: parseInt(e.target.value),
+                  }))
                 }
                 className="w-full accent-[#0fb8ce]"
               />
@@ -368,7 +384,10 @@ const AnimatedBackgroundCustomizer = () => {
                 max="150"
                 value={localSettings.saturation}
                 onChange={(e) =>
-                  setLocalSettings((p) => ({ ...p, saturation: parseInt(e.target.value) }))
+                  setLocalSettings((p) => ({
+                    ...p,
+                    saturation: parseInt(e.target.value),
+                  }))
                 }
                 className="w-full accent-[#0fb8ce]"
               />
@@ -384,7 +403,10 @@ const AnimatedBackgroundCustomizer = () => {
                 max="200"
                 value={localSettings.speed * 100}
                 onChange={(e) =>
-                  setLocalSettings((p) => ({ ...p, speed: parseInt(e.target.value) / 100 }))
+                  setLocalSettings((p) => ({
+                    ...p,
+                    speed: parseInt(e.target.value) / 100,
+                  }))
                 }
                 className="w-full accent-[#0fb8ce]"
               />
@@ -432,7 +454,10 @@ const AnimatedBackgroundCustomizer = () => {
                   if (el) el.playbackRate = localSettings.speed;
                 }}
               >
-                <source src={selectedPreset?.url || uploadPreview} type="video/mp4" />
+                <source
+                  src={selectedPreset?.url || uploadPreview}
+                  type="video/mp4"
+                />
               </video>
               <div className="absolute inset-0 bg-[#0f1923]/60" />
 

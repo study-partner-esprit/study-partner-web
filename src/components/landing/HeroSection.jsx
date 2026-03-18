@@ -44,8 +44,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden pt-0 mt-0">
-      
-
       <div className="relative w-full z-10 h-full flex items-center">
         <TiltCard className="w-full min-h-[80vh] p-0 !bg-transparent !border-transparent !shadow-none !backdrop-blur-none">
           <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full min-h-[80vh]">

@@ -65,7 +65,6 @@ const Dashboard = () => {
       {/* Content wrapper */}
       <div className="relative z-10 pt-4 pb-12">
         {/* Header with theme-aware design */}
-        
 
         <div className="max-w-7xl mx-auto px-6">
           {error && (

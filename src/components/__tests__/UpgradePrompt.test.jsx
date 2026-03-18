@@ -23,7 +23,21 @@ vi.mock("@/store/authStore", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -85,7 +99,11 @@ describe("UpgradePrompt Component", () => {
     // Dispatch the custom event
     window.dispatchEvent(
       new CustomEvent("tier-upgrade-required", {
-        detail: { code: "TIER_REQUIRED", requiredTier: "vip", currentTier: "normal" },
+        detail: {
+          code: "TIER_REQUIRED",
+          requiredTier: "vip",
+          currentTier: "normal",
+        },
       }),
     );
     await waitFor(() => {

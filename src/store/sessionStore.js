@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { sessionSetupAPI, sessionsAPI, teamSessionsAPI, courseAPI } from "../services/api";
+import {
+  sessionSetupAPI,
+  sessionsAPI,
+  teamSessionsAPI,
+  courseAPI,
+} from "../services/api";
 
 const useSessionStore = create((set, get) => ({
   // Session flow state
@@ -310,7 +315,9 @@ const useSessionStore = create((set, get) => ({
         try {
           const courseRes = await courseAPI.get(session.courseId);
           selectedCourse = courseRes.data?.course || courseRes.data;
-        } catch { /* optional */ }
+        } catch {
+          /* optional */
+        }
       }
 
       set({
@@ -326,7 +333,9 @@ const useSessionStore = create((set, get) => ({
       return session;
     } catch (err) {
       set({
-        error: err.response?.data?.error || "Invalid invite code or session not found",
+        error:
+          err.response?.data?.error ||
+          "Invalid invite code or session not found",
         sessionLoading: false,
       });
       throw err;

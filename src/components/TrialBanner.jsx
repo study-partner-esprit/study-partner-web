@@ -29,10 +29,13 @@ export default function TrialBanner() {
     >
       <Clock size={16} />
       {isExpired ? (
-        <span>Your trial has expired. Upgrade now to keep using AI features.</span>
+        <span>
+          Your trial has expired. Upgrade now to keep using AI features.
+        </span>
       ) : (
         <span>
-          {daysRemaining} day{daysRemaining !== 1 ? "s" : ""} left in your free trial
+          {daysRemaining} day{daysRemaining !== 1 ? "s" : ""} left in your free
+          trial
         </span>
       )}
       <button

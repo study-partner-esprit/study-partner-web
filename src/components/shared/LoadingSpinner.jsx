@@ -9,7 +9,9 @@ function LoadingSpinner({ size = "md", text = "", className = "" }) {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center gap-3 ${className}`}>
+    <div
+      className={`flex flex-col items-center justify-center gap-3 ${className}`}
+    >
       <Loader2 className={`${sizes[size]} animate-spin text-primary`} />
       {text && <p className="text-sm text-muted-foreground">{text}</p>}
     </div>

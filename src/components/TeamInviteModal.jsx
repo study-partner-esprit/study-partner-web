@@ -12,11 +12,10 @@ function TeamInviteModal({ sessionId, onClose }) {
     fetchFriends();
   }, []);
 
-  const filteredFriends = friends.filter(
-    (f) =>
-      (f.name || f.displayName || "")
-        .toLowerCase()
-        .includes(filter.toLowerCase())
+  const filteredFriends = friends.filter((f) =>
+    (f.name || f.displayName || "")
+      .toLowerCase()
+      .includes(filter.toLowerCase()),
   );
 
   const handleInvite = async (friendId) => {
@@ -91,7 +90,9 @@ function TeamInviteModal({ sessionId, onClose }) {
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 text-sm font-bold">
-                      {(friend.name || friend.displayName || "?")[0].toUpperCase()}
+                      {(friend.name ||
+                        friend.displayName ||
+                        "?")[0].toUpperCase()}
                     </div>
                     <span className="text-sm font-medium">
                       {friend.name || friend.displayName}

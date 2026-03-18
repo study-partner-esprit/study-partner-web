@@ -123,7 +123,8 @@ const useGamificationStore = create((set, get) => ({
       return data;
     } catch (err) {
       set({
-        error: err.response?.data?.error || "Failed to upload animated background",
+        error:
+          err.response?.data?.error || "Failed to upload animated background",
         loading: false,
       });
       throw err;

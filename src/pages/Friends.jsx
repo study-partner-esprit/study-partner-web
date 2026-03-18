@@ -107,7 +107,7 @@ function Friends() {
       setSearchQuery(q);
       searchUsers(q);
     },
-    [searchUsers]
+    [searchUsers],
   );
 
   const handleSendRequestByCode = async () => {
@@ -302,7 +302,15 @@ function Friends() {
 
 // ==================== Sub-Components ====================
 
-function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contextMenu, setContextMenu }) {
+function FriendsTab({
+  friends,
+  loading,
+  onViewProfile,
+  onRemove,
+  onBlock,
+  contextMenu,
+  setContextMenu,
+}) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -316,7 +324,9 @@ function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contex
       <div className="text-center py-20">
         <Users size={48} className="mx-auto text-gray-600 mb-4" />
         <h3 className="text-xl font-semibold text-gray-400">No friends yet</h3>
-        <p className="text-gray-500 mt-2">Share your friend code or search for users to connect!</p>
+        <p className="text-gray-500 mt-2">
+          Share your friend code or search for users to connect!
+        </p>
       </div>
     );
   }
@@ -345,8 +355,8 @@ function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contex
                 {friend.onlineStatus === "studying"
                   ? "Currently studying"
                   : friend.onlineStatus === "online"
-                  ? "Online"
-                  : "Offline"}
+                    ? "Online"
+                    : "Offline"}
               </p>
             </div>
           </div>
@@ -357,7 +367,7 @@ function FriendsTab({ friends, loading, onViewProfile, onRemove, onBlock, contex
                 setContextMenu(
                   contextMenu === (friend.userId || friend._id)
                     ? null
-                    : friend.userId || friend._id
+                    : friend.userId || friend._id,
                 )
               }
               className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -420,7 +430,9 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                     {(req.requesterName || req.name || "?")[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-medium">{req.requesterName || req.name}</p>
+                    <p className="font-medium">
+                      {req.requesterName || req.name}
+                    </p>
                     <p className="text-xs text-gray-500">
                       <Clock size={10} className="inline mr-1" />
                       {new Date(req.createdAt).toLocaleDateString()}
@@ -468,7 +480,9 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                     {(req.recipientName || req.name || "?")[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-medium">{req.recipientName || req.name}</p>
+                    <p className="font-medium">
+                      {req.recipientName || req.name}
+                    </p>
                     <p className="text-xs text-gray-500">Pending...</p>
                   </div>
                 </div>
@@ -524,7 +538,10 @@ function FindTab({
       <div>
         <h3 className="text-lg font-semibold mb-3">Search Users</h3>
         <div className="relative mb-4">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          />
           <input
             type="text"
             value={searchQuery}
@@ -550,7 +567,11 @@ function FindTab({
                 </div>
                 <div>
                   <p className="font-medium">{u.displayName || u.name}</p>
-                  {u.bio && <p className="text-xs text-gray-500 truncate max-w-xs">{u.bio}</p>}
+                  {u.bio && (
+                    <p className="text-xs text-gray-500 truncate max-w-xs">
+                      {u.bio}
+                    </p>
+                  )}
                 </div>
               </div>
               {u.friendshipStatus === "accepted" ? (
@@ -582,7 +603,9 @@ function BlockedTab({ blocked, onUnblock }) {
     return (
       <div className="text-center py-20">
         <Shield size={48} className="mx-auto text-gray-600 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-400">No blocked users</h3>
+        <h3 className="text-xl font-semibold text-gray-400">
+          No blocked users
+        </h3>
       </div>
     );
   }

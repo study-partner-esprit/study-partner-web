@@ -21,8 +21,34 @@ vi.mock("../store/authStore", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            tr: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <tr ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    tr: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <tr ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -45,9 +71,15 @@ const renderLeaderboard = () =>
 describe("Leaderboard Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    gamificationAPI.getLeaderboard.mockResolvedValue({ data: { leaderboard: mockLeaderboard } });
-    gamificationAPI.getProfile.mockResolvedValue({ data: { level: 5, xp: 500, streak: 3 } });
-    friendsAPI.getAll.mockResolvedValue({ data: { friends: [{ _id: "f1", friend: { _id: "u2" } }] } });
+    gamificationAPI.getLeaderboard.mockResolvedValue({
+      data: { leaderboard: mockLeaderboard },
+    });
+    gamificationAPI.getProfile.mockResolvedValue({
+      data: { level: 5, xp: 500, streak: 3 },
+    });
+    friendsAPI.getAll.mockResolvedValue({
+      data: { friends: [{ _id: "f1", friend: { _id: "u2" } }] },
+    });
   });
 
   it("fetches leaderboard on mount", async () => {

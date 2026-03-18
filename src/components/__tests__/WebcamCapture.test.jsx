@@ -54,7 +54,9 @@ describe("WebcamCapture Component", () => {
     mockGetUserMedia.mockRejectedValue(new Error("Permission denied"));
     render(<WebcamCapture onFrameCapture={vi.fn()} enabled />);
     await waitFor(() => {
-      expect(screen.getByText(/unable to access webcam|camera/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/unable to access webcam|camera/i),
+      ).toBeInTheDocument();
     });
   });
 });

@@ -42,7 +42,9 @@ function ProgressBar({
           )}
         </div>
       )}
-      <div className={`w-full bg-muted/50 rounded-full overflow-hidden ${sizes[size]}`}>
+      <div
+        className={`w-full bg-muted/50 rounded-full overflow-hidden ${sizes[size]}`}
+      >
         <div
           className={`h-full bg-gradient-to-r ${colors[color]} rounded-full transition-all duration-500 ease-out`}
           style={{ width: `${percentage}%` }}

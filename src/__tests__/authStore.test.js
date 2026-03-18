@@ -108,7 +108,13 @@ describe("Auth Store", () => {
 
     act(() => {
       login(
-        { _id: "u1", name: "VIP", email: "vip@test.com", role: "student", tier: "vip" },
+        {
+          _id: "u1",
+          name: "VIP",
+          email: "vip@test.com",
+          role: "student",
+          tier: "vip",
+        },
         "jwt-token",
         "refresh-token",
       );
@@ -139,7 +145,13 @@ describe("Auth Store", () => {
 
     act(() => {
       login(
-        { _id: "u1", name: "Trial", email: "trial@test.com", tier: "trial", trialExpiresAt: future },
+        {
+          _id: "u1",
+          name: "Trial",
+          email: "trial@test.com",
+          tier: "trial",
+          trialExpiresAt: future,
+        },
         "jwt-token",
         "refresh-token",
       );
@@ -156,7 +168,13 @@ describe("Auth Store", () => {
 
     act(() => {
       login(
-        { _id: "u1", name: "Expired", email: "exp@test.com", tier: "trial", trialExpiresAt: past },
+        {
+          _id: "u1",
+          name: "Expired",
+          email: "exp@test.com",
+          tier: "trial",
+          trialExpiresAt: past,
+        },
         "jwt-token",
         "refresh-token",
       );
@@ -171,7 +189,12 @@ describe("Auth Store", () => {
 
     act(() => {
       login(
-        { _id: "u1", name: "VIP+", email: "vipplus@test.com", tier: "vip_plus" },
+        {
+          _id: "u1",
+          name: "VIP+",
+          email: "vipplus@test.com",
+          tier: "vip_plus",
+        },
         "jwt-token",
         "refresh-token",
       );

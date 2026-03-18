@@ -25,8 +25,35 @@ vi.mock("../store/authStore", () => ({
 }));
 
 vi.mock("framer-motion", () => ({
-  motion: { div: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,layout,variants,transition,...rest} = p; return <div ref={r} {...rest} />; }),
-            button: React.forwardRef((p, r) => { const {initial,animate,exit,whileHover,whileTap,variants,transition,...rest} = p; return <button ref={r} {...rest} />; }) },
+  motion: {
+    div: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        layout,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <div ref={r} {...rest} />;
+    }),
+    button: React.forwardRef((p, r) => {
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = p;
+      return <button ref={r} {...rest} />;
+    }),
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -41,16 +68,36 @@ const renderTasks = () =>
   );
 
 const mockTasks = [
-  { _id: "t1", title: "Read Chapter 1", status: "todo", priority: "high", estimatedTime: 30 },
-  { _id: "t2", title: "Practice Problems", status: "in-progress", priority: "medium", estimatedTime: 45 },
-  { _id: "t3", title: "Review Notes", status: "completed", priority: "low", estimatedTime: 15 },
+  {
+    _id: "t1",
+    title: "Read Chapter 1",
+    status: "todo",
+    priority: "high",
+    estimatedTime: 30,
+  },
+  {
+    _id: "t2",
+    title: "Practice Problems",
+    status: "in-progress",
+    priority: "medium",
+    estimatedTime: 45,
+  },
+  {
+    _id: "t3",
+    title: "Review Notes",
+    status: "completed",
+    priority: "low",
+    estimatedTime: 15,
+  },
 ];
 
 describe("Tasks Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     tasksAPI.getAll.mockResolvedValue({ data: { tasks: mockTasks } });
-    tasksAPI.create.mockResolvedValue({ data: { task: { _id: "t4", title: "New Task" } } });
+    tasksAPI.create.mockResolvedValue({
+      data: { task: { _id: "t4", title: "New Task" } },
+    });
     tasksAPI.delete.mockResolvedValue({ data: {} });
   });
 
