@@ -1,5 +1,6 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Calendar,
   Users,
@@ -15,6 +16,8 @@ import {
   Gamepad2,
 } from "lucide-react";
 import TiltCard from "@/components/ui/TiltCard";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -80,16 +83,75 @@ const features = [
 ];
 
 const FeaturesSection = () => {
+  const containerRef = useRef(null);
+  const headerRef = useRef(null);
+  const cardsRef = useRef(null);
+  const achievementRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.fromTo(
+        headerRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Cards Stagger Animation
+      gsap.fromTo(
+        cardsRef.current.children,
+        { opacity: 0, y: 50, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "back.out(1.5)",
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Achievement Banner Animation
+      gsap.fromTo(
+        achievementRef.current,
+        { opacity: 0, y: 30, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: achievementRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-24 px-4 relative">
+    <section ref={containerRef} className="py-32 px-4 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
+        <div ref={headerRef} className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-6 py-2 bg-primary/10 border-l-2 border-primary mb-6 animate-pulse">
             <Star className="w-4 h-4 text-primary" />
             <span className="text-primary font-valorant tracking-wider">
@@ -104,22 +166,15 @@ const FeaturesSection = () => {
             Transform studying into an addictive game with rewards,
             achievements, and progress tracking.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <TiltCard key={index} className="h-full group">
               {/* Glossy sheen overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 pointer-events-none rounded-2xl" />
 
-              <motion.div
-                className="h-full p-8 relative overflow-hidden"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-              >
+              <div className="h-full p-8 relative overflow-hidden transition-transform duration-300 hover:-translate-y-2">
                 {/* XP Badge */}
                 <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/10 border-b border-l border-yellow-500/50 text-xs font-bold text-yellow-600 dark:text-yellow-400 font-valorant tracking-widest">
                   {feature.xp}
@@ -148,27 +203,21 @@ const FeaturesSection = () => {
 
                 {/* Hover Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
-              </motion.div>
+              </div>
             </TiltCard>
           ))}
         </div>
 
         {/* Achievement Showcase */}
-        <motion.div
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400/30">
-            <Award className="w-5 h-5 text-yellow-500" />
+        <div ref={achievementRef} className="mt-16 text-center">
+          <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400/30 shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-shadow duration-500">
+            <Award className="w-5 h-5 text-yellow-500 animate-bounce" />
             <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
               🎉 Unlock 50+ unique achievements as you study!
             </span>
-            <Award className="w-5 h-5 text-yellow-500" />
+            <Award className="w-5 h-5 text-yellow-500 animate-bounce" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

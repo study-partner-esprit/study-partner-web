@@ -1,7 +1,10 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TiltCard from "@/components/ui/TiltCard";
 import { Bot, Brain, Clock, BarChart } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const agents = [
   {
@@ -43,16 +46,55 @@ const agents = [
 ];
 
 const AgentsSection = () => {
+  const containerRef = useRef(null);
+  const headerRef = useRef(null);
+  const cardsRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.fromTo(
+        headerRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Cards Stagger Animation
+      gsap.fromTo(
+        cardsRef.current.children,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-24 px-4 relative">
+    <section ref={containerRef} className="py-32 px-4 relative">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div ref={headerRef} className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900 dark:text-white font-valorant uppercase tracking-tighter">
             Multi-Agent <span className="text-outline">Intelligence</span>
           </h2>
@@ -60,24 +102,18 @@ const AgentsSection = () => {
             A team of specialized AI agents working together to power your
             learning journey.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {agents.map((agent, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <TiltCard className="h-full">
+            <div key={index} className="h-full">
+              <TiltCard className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
                 {/* Glossy sheen overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 pointer-events-none" />
 
-                <div className="flex flex-col items-center text-center relative z-10 p-6 pt-10">
+                <div className="flex flex-col items-center text-center relative z-10 p-6 pt-10 h-full">
                   <div
-                    className={`p-4 mb-6 bg-gradient-to-br ${agent.gradient} relative overflow-hidden`}
+                    className={`p-4 mb-6 bg-gradient-to-br ${agent.gradient} relative overflow-hidden transition-transform duration-500 hover:rotate-12`}
                     style={{
                       clipPath:
                         "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
@@ -101,12 +137,12 @@ const AgentsSection = () => {
                     <span className="w-1.5 h-1.5 rounded-none bg-primary animate-pulse" />
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed border-t border-primary/10 pt-4 w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed border-t border-primary/10 pt-4 w-full mt-auto">
                     {agent.description}
                   </p>
                 </div>
               </TiltCard>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

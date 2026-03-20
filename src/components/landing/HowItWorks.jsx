@@ -1,8 +1,11 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Upload, Calendar, BookOpen, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TiltCard from "@/components/ui/TiltCard";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
@@ -32,38 +35,101 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const containerRef = useRef(null);
+  const headerRef = useRef(null);
+  const stepsRef = useRef(null);
+  const lineRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.fromTo(
+        headerRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Line Drawing Animation
+      gsap.fromTo(
+        lineRef.current,
+        { height: "0%" },
+        {
+          height: "100%",
+          scrollTrigger: {
+            trigger: stepsRef.current,
+            start: "top 60%",
+            end: "bottom 80%",
+            scrub: 1,
+          },
+        }
+      );
+
+      // Steps Stagger Animation
+      const stepElements = stepsRef.current.children;
+      Array.from(stepElements).forEach((step, index) => {
+        // Skip the line element which is absolute
+        if (step.classList.contains("absolute")) return;
+
+        gsap.fromTo(
+          step,
+          { opacity: 0, x: -50 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: step,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-24 px-4 relative">
+    <section ref={containerRef} className="py-32 px-4 relative">
       <div className="max-w-4xl mx-auto">
-        <motion.h2
+        <h2
+          ref={headerRef}
           className="text-4xl md:text-6xl font-bold text-center mb-16 text-gray-900 dark:text-white font-valorant uppercase tracking-tighter"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
         >
           How It <span className="text-outline">Works</span>
-        </motion.h2>
-        <div className="relative">
+        </h2>
+        <div ref={stepsRef} className="relative">
           {/* Timeline line - Tech style */}
-          <div className="absolute left-8 top-0 bottom-0 w-px bg-primary/30"></div>
+          <div className="absolute left-8 top-0 bottom-0 w-px bg-primary/30 opacity-20"></div>
+          <div
+            ref={lineRef}
+            className="absolute left-8 top-0 w-px bg-primary shadow-[0_0_10px_rgba(var(--primary),0.8)] z-0"
+          ></div>
 
           {steps.map((step, index) => (
-            <motion.div
+            <div
               key={index}
               className="flex items-start mb-16 relative"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
             >
               {/* Timeline Node - Diamond shape */}
-              <div className="absolute left-8 top-8 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-background border-2 border-primary rotate-45 z-10 shadow-[0_0_15px_rgba(var(--primary),0.5)] flex items-center justify-center">
+              <div className="absolute left-8 top-8 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-background border-2 border-primary rotate-45 z-10 shadow-[0_0_15px_rgba(var(--primary),0.5)] flex items-center justify-center transition-transform hover:scale-125 duration-300">
                 <div className="w-1.5 h-1.5 bg-primary" />
               </div>
 
-              <TiltCard className="w-full card-valorant">
-                <div className="ml-16 md:ml-20 p-6 md:p-8 relative w-full">
+              <TiltCard className="w-full card-valorant ml-16 md:ml-20">
+                <div className="p-6 md:p-8 relative w-full">
                   {/* Glossy sheen overlay */}
                   <div className="card-inner-sheen" />
 
@@ -86,7 +152,7 @@ const HowItWorks = () => {
                   </p>
                 </div>
               </TiltCard>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
