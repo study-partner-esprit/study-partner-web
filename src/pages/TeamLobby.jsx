@@ -20,6 +20,7 @@ import useSessionStore from "../store/sessionStore";
 import useFriendsStore from "../store/friendsStore";
 import useNotificationStore from "../store/notificationStore";
 import { profileAPI, teamSessionsAPI } from "../services/api";
+import VoiceButton from "@/components/VoiceChat/VoiceButton";
 
 // XP Multiplier table
 const XP_MULTIPLIERS = {
@@ -397,6 +398,12 @@ const TeamLobby = () => {
 
         {/* Right sidebar — Friends list */}
         <div className="w-80 border-l border-[#ffffff10] bg-[#0f1923]/50 backdrop-blur-sm flex flex-col">
+          {teamSession?._id && user?._id && (
+            <div className="p-4 border-b border-[#ffffff10]">
+              <VoiceButton sessionId={teamSession._id} userId={user._id} />
+            </div>
+          )}
+
           <div className="p-4 border-b border-[#ffffff10]">
             <h3 className="font-bold tracking-wider text-sm uppercase text-gray-400 mb-3 flex items-center gap-2">
               <Users size={16} />

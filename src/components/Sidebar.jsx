@@ -36,6 +36,7 @@ const Sidebar = ({ topOffset = 80 }) => {
       title: "Main",
       items: [
         { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
+        { path: "/analytics", label: "Analytics", icon: Home },
         { path: "/search", label: "AI Search", icon: Search },
       ],
     },

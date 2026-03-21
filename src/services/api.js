@@ -115,6 +115,8 @@ export const authAPI = {
   refresh: (refreshToken) => api.post("/api/v1/auth/refresh", { refreshToken }),
   getMe: () => api.get("/api/v1/auth/me"),
   updateTier: (tier) => api.put("/api/v1/auth/tier", { tier }),
+  subscribe: (tier) => api.post("/api/v1/auth/stripe/subscribe", { tier }),
+  getSubscriptionStatus: () => api.get("/api/v1/auth/stripe/subscription/status"),
   verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
   resendVerification: (email) =>
     api.post("/api/v1/auth/resend-verification", { email }),
@@ -122,6 +124,9 @@ export const authAPI = {
     api.post("/api/v1/auth/forgot-password", { email }),
   resetPassword: (token, newPassword) =>
     api.post("/api/v1/auth/reset-password", { token, newPassword }),
+  redeemCoupon: (coupon, expectedTier) =>
+    api.post("/api/v1/auth/coupon/redeem", { coupon, expectedTier }),
+  listCoupons: () => api.get("/api/v1/auth/coupon/list"),
 };
 
 // Profile API
@@ -163,6 +168,23 @@ export const aiAPI = {
   getCoachDecision: (data) => api.post("/api/v1/ai/coach", data),
   getCoachHistory: (userId, limit = 20) =>
     api.get(`/api/v1/ai/coach/history/${userId}`, { params: { limit } }),
+  applyCoachActionToSchedule: (coachAction) =>
+    api.post("/api/v1/ai/schedule/apply-coach-action", {
+      coach_action: coachAction,
+    }),
+
+  // Schedule Orchestrator
+  getScheduleStatus: () => api.get("/api/v1/ai/schedule/status"),
+  optimizeSchedule: (reason = "manual_optimize") =>
+    api.put("/api/v1/ai/schedule/optimize", { reason }),
+  reschedule: (reason = "manual") =>
+    api.post("/api/v1/ai/schedule/reschedule", { reason }),
+  evaluateSession: (payload) =>
+    api.post("/api/v1/ai/evaluator/session", payload),
+  getVectorIndexStatus: (courseId) =>
+    api.get(`/api/v1/ai/vector/status/${courseId}`),
+  rebuildVectorIndex: (courseId) =>
+    api.post(`/api/v1/ai/vector/rebuild/${courseId}`),
 
   // Signal Processing
   getCurrentSignals: (userId) =>
@@ -342,6 +364,26 @@ export const notificationAPI = {
     api
       .delete(`/api/v1/notifications/${id}`, { timeout: 15000 })
       .then((res) => res.data),
+};
+
+export const sessionChatAPI = {
+  getHistory: (sessionId, params = {}) =>
+    api.get(`/api/v1/session-chat/${sessionId}/history`, { params }),
+  query: (sessionId, query) =>
+    api.post(`/api/v1/session-chat/${sessionId}/query`, { query }),
+  deleteMessage: (sessionId, messageId) =>
+    api.delete(`/api/v1/session-chat/${sessionId}/${messageId}`),
+};
+
+export const voiceAPI = {
+  start: (sessionId) => api.post(`/api/v1/voice/${sessionId}/start`),
+  end: (sessionId) => api.post(`/api/v1/voice/${sessionId}/end`),
+  status: (sessionId) => api.get(`/api/v1/voice/${sessionId}/status`),
+  join: (sessionId, peerId = "") =>
+    api.post(`/api/v1/voice/${sessionId}/participant`, { peerId }),
+  leave: (sessionId) => api.delete(`/api/v1/voice/${sessionId}/participant`),
+  mute: (sessionId, isMuted) =>
+    api.patch(`/api/v1/voice/${sessionId}/mute`, { isMuted }),
 };
 
 // Quest API

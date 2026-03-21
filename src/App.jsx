@@ -26,7 +26,10 @@ import Leaderboard from "./pages/Leaderboard";
 import ReviewCenter from "./pages/ReviewCenter";
 import AISearch from "./pages/AISearch";
 import Friends from "./pages/Friends";
+import Analytics from "./pages/Analytics";
 import Pricing from "./pages/Pricing";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
 import StudySessionSetup from "./pages/StudySessionSetup";
 import TeamLobby from "./pages/TeamLobby";
 import BackgroundCustomizer from "./pages/BackgroundCustomizer";
@@ -219,6 +222,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path="/checkout/cancel" element={<CheckoutCancel />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
@@ -339,6 +344,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Friends />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <PrivateRoute>
+                <Analytics />
               </PrivateRoute>
             }
           />

@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/authStore";
+import { authAPI } from "@/services/api";
 import { Check, X, Sparkles, Crown, Star, Zap } from "lucide-react";
 
 const tiers = [
@@ -84,14 +85,63 @@ const tiers = [
 export default function Pricing() {
   const navigate = useNavigate();
   const currentTier = useAuthStore((s) => s.getTier());
-  const user = useAuthStore((s) => s.user);
+  const updateUser = useAuthStore((s) => s.updateUser);
+  const [checkoutTier, setCheckoutTier] = React.useState(null);
+  const [couponTier, setCouponTier] = React.useState(null);
+  const [couponCode, setCouponCode] = React.useState("");
+  const [redeemingTier, setRedeemingTier] = React.useState(null);
+  const [error, setError] = React.useState("");
+  const [success, setSuccess] = React.useState("");
 
-  const handleSelect = (tierId) => {
+  const handlePay = async (tierId) => {
     if (tierId === currentTier) return;
-    // TODO: integrate real payment flow (Stripe)
-    alert(
-      `Payment integration coming soon! You selected the ${tierId.toUpperCase()} plan.`,
-    );
+
+    if (tierId === "normal") {
+      setError("Downgrade/cancel is managed in account settings.");
+      return;
+    }
+
+    setCheckoutTier(tierId);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await authAPI.subscribe(tierId);
+      const checkoutUrl = response.data?.checkoutUrl;
+
+      if (!checkoutUrl) {
+        throw new Error("Checkout URL not returned");
+      }
+
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to start checkout flow.");
+      setCheckoutTier(null);
+    }
+  };
+
+  const handleRedeemCoupon = async (tierId) => {
+    if (!couponCode.trim()) {
+      setError("Please enter a coupon code.");
+      return;
+    }
+
+    setRedeemingTier(tierId);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await authAPI.redeemCoupon(couponCode.trim(), tierId);
+      const updatedUser = response.data?.user;
+      if (updatedUser) {
+        updateUser(updatedUser);
+      }
+      setSuccess(`Coupon applied. Plan changed to ${response.data?.tier || tierId}.`);
+      setCouponCode("");
+      setCouponTier(null);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to redeem coupon.");
+    } finally {
+      setRedeemingTier(null);
+    }
   };
 
   return (
@@ -131,6 +181,17 @@ export default function Pricing() {
         </div>
 
         {/* Tier Cards */}
+        {error && (
+          <div className="mb-8 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="mb-8 rounded-lg border border-green-500/40 bg-green-500/10 px-4 py-3 text-sm text-green-200">
+            {success}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {tiers.map((tier, i) => {
             const isCurrent = tier.id === currentTier;
@@ -192,19 +253,65 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => (isCurrent ? null : handleSelect(tier.id))}
-                  disabled={isCurrent}
-                  className={`w-full rounded-xl py-3 font-semibold transition-all ${
-                    isCurrent
-                      ? "bg-gray-700 text-gray-400 cursor-default"
-                      : tier.popular
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-purple-500/25"
-                        : "bg-gray-800 hover:bg-gray-700 text-white"
-                  }`}
-                >
-                  {isCurrent ? "Current Plan" : "Get Started"}
-                </button>
+                {isCurrent ? (
+                  <button
+                    disabled
+                    className="w-full rounded-xl py-3 font-semibold bg-gray-700 text-gray-400 cursor-default"
+                  >
+                    Current Plan
+                  </button>
+                ) : tier.id === "normal" ? (
+                  <button
+                    onClick={() => handlePay(tier.id)}
+                    className="w-full rounded-xl py-3 font-semibold bg-gray-800 hover:bg-gray-700 text-white"
+                  >
+                    Switch to Free
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => handlePay(tier.id)}
+                      disabled={checkoutTier === tier.id || redeemingTier === tier.id}
+                      className={`w-full rounded-xl py-3 font-semibold transition-all ${
+                        tier.popular
+                          ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-purple-500/25"
+                          : "bg-gray-800 hover:bg-gray-700 text-white"
+                      }`}
+                    >
+                      {checkoutTier === tier.id ? "Redirecting..." : "Pay & Subscribe"}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setCouponTier((prev) => (prev === tier.id ? null : tier.id));
+                        setError("");
+                        setSuccess("");
+                      }}
+                      disabled={checkoutTier === tier.id || redeemingTier === tier.id}
+                      className="w-full rounded-xl py-3 font-semibold bg-gray-700/60 hover:bg-gray-700 text-white"
+                    >
+                      Use Coupon
+                    </button>
+
+                    {couponTier === tier.id && (
+                      <div className="rounded-xl border border-gray-700 bg-gray-950/60 p-3">
+                        <input
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder={`Enter ${tier.name} coupon`}
+                          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+                        />
+                        <button
+                          onClick={() => handleRedeemCoupon(tier.id)}
+                          disabled={redeemingTier === tier.id}
+                          className="mt-2 w-full rounded-lg bg-green-600 hover:bg-green-500 px-3 py-2 text-sm font-semibold text-white"
+                        >
+                          {redeemingTier === tier.id ? "Applying..." : "Apply Coupon"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </motion.div>
             );
           })}

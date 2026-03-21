@@ -23,6 +23,7 @@ import {
 import { useAuthStore } from "../store/authStore";
 import useSessionStore from "../store/sessionStore";
 import WebcamCapture from "../components/WebcamCapture";
+import ChatWindow from "@/components/SessionChat/ChatWindow";
 import "./StudySession.css";
 
 // ─── Task Progress Bar ───────────────────────────────────────────────
@@ -456,6 +457,35 @@ const StudySession = () => {
       }
     }
 
+    // Evaluate session quality and surface actionable recommendations.
+    try {
+      const completedTasks = taskProgress?.completedTasks || 0;
+      const skippedTasks = taskProgress?.skippedTasks || 0;
+      const finalFocus = focusSummary?.avgFocusLevel || focusScore || 0;
+      const evalRes = await aiAPI.evaluateSession({
+        session_duration_minutes: Math.floor(sessionDuration / 60),
+        focus_score: finalFocus,
+        completed_tasks: completedTasks,
+        skipped_tasks: skippedTasks,
+      });
+
+      const evaluation = evalRes?.data?.evaluation;
+      if (evaluation?.level === "excellent") {
+        await notificationAPI.create({
+          userId: user._id,
+          type: "achievement",
+          title: "Excellent Study Session",
+          message: `Session score ${evaluation.score}/100. Keep this rhythm going!`,
+          metadata: {
+            actionUrl: "/analytics",
+          },
+          priority: "normal",
+        });
+      }
+    } catch (err) {
+      console.error("[StudySession] Session evaluation failed:", err);
+    }
+
     // Award XP for perfect focus session (score > 80)
     if (
       focusScore > 80 ||
@@ -839,6 +869,13 @@ const StudySession = () => {
                       ))}
                     </div>
                   </div>
+
+                  {sessionActive && (
+                    <ChatWindow
+                      sessionId={activeSession?._id || studySessionIdRef.current}
+                      userId={user?._id}
+                    />
+                  )}
                 </div>
               </motion.div>
             )}
@@ -1077,6 +1114,15 @@ const StudySession = () => {
               <span className="legend-color fatigue-color"></span> Fatigue
             </span>
           </div>
+        </div>
+      )}
+
+      {sessionActive && (
+        <div style={{ marginTop: "16px" }}>
+          <ChatWindow
+            sessionId={activeSession?._id || studySessionIdRef.current}
+            userId={user?._id}
+          />
         </div>
       )}
 
