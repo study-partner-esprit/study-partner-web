@@ -128,6 +128,7 @@ export const authAPI = {
   confirmCheckout: (sessionId) =>
     api.post("/api/v1/auth/stripe/confirm", { sessionId }),
   verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
+  verifyOtp: (email, otp) => api.post("/api/v1/auth/verify-otp", { email, otp }),
   resendVerification: (email) =>
     api.post("/api/v1/auth/resend-verification", { email }),
   forgotPassword: (email) =>
@@ -161,6 +162,12 @@ export const adminAPI = {
 export const profileAPI = {
   get: () => api.get("/api/v1/users/profile"),
   update: (data) => api.put("/api/v1/users/profile", data),
+  updateOnlineStatus: (onlineStatus) =>
+    api.put("/api/v1/users/profile/online-status", { onlineStatus }),
+  getOnlineStatusBatch: (userIds = []) =>
+    api.get("/api/v1/users/profile/online-status/batch", {
+      params: { userIds: userIds.join(",") },
+    }),
 };
 
 // Subject & Course Management (through main backend)

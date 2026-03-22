@@ -121,7 +121,7 @@ const StudySessionSetup = () => {
   const handleStart = async () => {
     if (selectedType === "solo") {
       await setupSoloSession();
-      navigate("/study-session");
+      navigate("/session-live");
     } else {
       const session = await setupTeamSession();
       // Use returned session or fall back to store value

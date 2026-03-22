@@ -7,12 +7,14 @@ import {
   BookOpen,
   CheckSquare,
   Target,
-  Zap,
   Trophy,
   Brain,
   Users,
   Search,
   Shield,
+  Ticket,
+  CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -23,7 +25,9 @@ const Sidebar = ({ topOffset = 80 }) => {
 
   const activeToggle = isHovered;
 
-  const navGroups = [
+  const isAdmin = user?.role === "admin" || user?.isAdmin;
+
+  const studentNavGroups = [
     {
       title: "Main",
       items: [
@@ -38,7 +42,6 @@ const Sidebar = ({ topOffset = 80 }) => {
         { path: "/subjects", label: "Subjects", icon: BookOpen },
         { path: "/tasks", label: "Tasks", icon: CheckSquare },
         { path: "/planner", label: "Study Plans", icon: Target },
-        { path: "/study-session", label: "Session", icon: Zap },
         { path: "/reviews", label: "Reviews", icon: Brain },
       ],
     },
@@ -51,18 +54,20 @@ const Sidebar = ({ topOffset = 80 }) => {
     },
   ];
 
-  if (user?.role === "admin" || user?.isAdmin) {
-    navGroups.push({
+  const adminNavGroups = [
+    {
       title: "Admin",
       items: [
-        { path: "/admin", label: "Dashboard", icon: Shield },
+        { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { path: "/admin/users", label: "Users", icon: Shield },
-        { path: "/admin/subscriptions", label: "Subscriptions", icon: Shield },
-        { path: "/admin/coupons", label: "Coupons", icon: Shield },
-        { path: "/admin/analytics", label: "Analytics", icon: Shield },
+        { path: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
+        { path: "/admin/coupons", label: "Coupons", icon: Ticket },
+        { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
       ],
-    });
-  }
+    },
+  ];
+
+  const navGroups = isAdmin ? adminNavGroups : studentNavGroups;
 
   if (!user) return null;
 

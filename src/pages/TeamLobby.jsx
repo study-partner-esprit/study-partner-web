@@ -207,7 +207,7 @@ const TeamLobby = () => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          navigate("/study-session");
+          navigate("/session-live");
           return 0;
         }
         return prev - 1;

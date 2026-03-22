@@ -5,7 +5,6 @@ import {
   Moon,
   Sun,
   Trophy,
-  Zap,
   Target,
   BookOpen,
   Home,
@@ -17,6 +16,9 @@ import {
   Users,
   Menu,
   X,
+  Shield,
+  Ticket,
+  CreditCard,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuthStore } from "@/store/authStore";
@@ -41,20 +43,29 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
     }
   }, [user]);
 
+  const isAdmin = user?.role === "admin" || user?.isAdmin;
+
   const navItems = minimal
     ? []
-    : [
-        { path: "/", label: "Home", icon: Home },
-        { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
-        { path: "/subjects", label: "Subjects", icon: BookOpen },
-        { path: "/tasks", label: "Tasks", icon: CheckSquare },
-        { path: "/planner", label: "Study Plans", icon: Target },
-        { path: "/study-session", label: "Session", icon: Zap },
-        { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
-        { path: "/reviews", label: "Reviews", icon: Brain },
-        { path: "/friends", label: "Friends", icon: Users },
-        { path: "/search", label: "Search", icon: Search },
-      ];
+    : isAdmin
+      ? [
+          { path: "/admin/dashboard", label: "Dashboard", icon: Shield },
+          { path: "/admin/users", label: "Users", icon: Users },
+          { path: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
+          { path: "/admin/coupons", label: "Coupons", icon: Ticket },
+          { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+        ]
+      : [
+          { path: "/", label: "Home", icon: Home },
+          { path: "/dashboard", label: "Dashboard", icon: BarChart3 },
+          { path: "/subjects", label: "Subjects", icon: BookOpen },
+          { path: "/tasks", label: "Tasks", icon: CheckSquare },
+          { path: "/planner", label: "Study Plans", icon: Target },
+          { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
+          { path: "/reviews", label: "Reviews", icon: Brain },
+          { path: "/friends", label: "Friends", icon: Users },
+          { path: "/search", label: "Search", icon: Search },
+        ];
 
   return (
     <motion.nav

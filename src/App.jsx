@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
-import { authAPI } from "@/services/api";
+import { authAPI, profileAPI } from "@/services/api";
 import {
   extractDominantColor,
   extractColorFromVideo,
@@ -165,6 +165,41 @@ function App() {
     }
   }, [user?._id, startPolling, stopPolling]);
 
+  // Presence updates for online/offline status in social features.
+  useEffect(() => {
+    if (!user?._id) return;
+
+    let isMounted = true;
+
+    const sendStatus = async (status) => {
+      if (!isMounted) return;
+      try {
+        await profileAPI.updateOnlineStatus(status);
+      } catch {
+        // non-blocking status update
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      sendStatus(document.hidden ? "offline" : "online");
+    };
+
+    const handleBeforeUnload = () => {
+      sendStatus("offline");
+    };
+
+    sendStatus("online");
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      isMounted = false;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      sendStatus("offline");
+    };
+  }, [user?._id]);
+
   // Show sidebar for any authenticated user on all pages except the lobby / fullscreen pages
   const showSidebar = user && !isLobby && !isFullscreenPage;
 
@@ -261,7 +296,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Dashboard />
               </PrivateRoute>
             }
@@ -269,7 +304,7 @@ function App() {
           <Route
             path="/lobby"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Lobby />
               </PrivateRoute>
             }
@@ -277,7 +312,7 @@ function App() {
           <Route
             path="/sessions"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Sessions />
               </PrivateRoute>
             }
@@ -285,7 +320,7 @@ function App() {
           <Route
             path="/tasks"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Tasks />
               </PrivateRoute>
             }
@@ -301,7 +336,7 @@ function App() {
           <Route
             path="/subjects"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Subjects />
               </PrivateRoute>
             }
@@ -309,7 +344,7 @@ function App() {
           <Route
             path="/subjects/:subjectId"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <SubjectDetail />
               </PrivateRoute>
             }
@@ -317,7 +352,7 @@ function App() {
           <Route
             path="/upload-course"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <CourseUpload />
               </PrivateRoute>
             }
@@ -325,15 +360,15 @@ function App() {
           <Route
             path="/planner"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <StudyPlanner />
               </PrivateRoute>
             }
           />
           <Route
-            path="/study-session"
+            path="/session-live"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <StudySession />
               </PrivateRoute>
             }
@@ -341,7 +376,7 @@ function App() {
           <Route
             path="/calendar"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Calendar />
               </PrivateRoute>
             }
@@ -349,7 +384,7 @@ function App() {
           <Route
             path="/leaderboard"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Leaderboard />
               </PrivateRoute>
             }
@@ -357,7 +392,7 @@ function App() {
           <Route
             path="/reviews"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <ReviewCenter />
               </PrivateRoute>
             }
@@ -365,7 +400,7 @@ function App() {
           <Route
             path="/search"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <AISearch />
               </PrivateRoute>
             }
@@ -373,7 +408,7 @@ function App() {
           <Route
             path="/friends"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Friends />
               </PrivateRoute>
             }
@@ -381,13 +416,21 @@ function App() {
           <Route
             path="/analytics"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <Analytics />
               </PrivateRoute>
             }
           />
           <Route
             path="/admin"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
             element={
               <PrivateRoute requireAdmin>
                 <AdminDashboard />
@@ -429,7 +472,7 @@ function App() {
           <Route
             path="/session-setup"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <StudySessionSetup />
               </PrivateRoute>
             }
@@ -437,7 +480,7 @@ function App() {
           <Route
             path="/team-lobby"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <TeamLobby />
               </PrivateRoute>
             }
@@ -445,7 +488,7 @@ function App() {
           <Route
             path="/customize/wallpaper"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <BackgroundCustomizer />
               </PrivateRoute>
             }
@@ -453,7 +496,7 @@ function App() {
           <Route
             path="/customize/animated"
             element={
-              <PrivateRoute>
+              <PrivateRoute requireStudent>
                 <AnimatedBackgroundCustomizer />
               </PrivateRoute>
             }

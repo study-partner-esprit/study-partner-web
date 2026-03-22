@@ -18,21 +18,33 @@
   flex-wrap: wrap;
 }
 
-.calendar-zoom-controls label {
+.calendar-zoom-controls label,
+.zoom-label {
   font-weight: 600;
   color: var(--foreground);
 }
 
-.calendar-zoom-controls input[type="range"] {
-  width: 220px;
-}
-
-.calendar-zoom-controls select {
-  padding: 8px 10px;
+.zoom-drag-handle {
+  padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--background);
   color: var(--foreground);
+  cursor: ns-resize;
+}
+
+.zoom-drag-handle.active {
+  border-color: var(--primary);
+  background: var(--accent);
+}
+
+.timezone-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 0.85rem;
 }
 
 .calendar-layout {

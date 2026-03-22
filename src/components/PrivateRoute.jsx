@@ -2,7 +2,11 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
-const PrivateRoute = ({ children, requireAdmin = false }) => {
+const PrivateRoute = ({
+  children,
+  requireAdmin = false,
+  requireStudent = false,
+}) => {
   const { isAuthenticated, token, sessionExpiry, user } = useAuthStore();
 
   // Consider session valid if persisted token exists and hasn't expired yet.
@@ -15,6 +19,11 @@ const PrivateRoute = ({ children, requireAdmin = false }) => {
 
   if (requireAdmin && user?.role !== "admin" && !user?.isAdmin) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  // Admin users should not access student-only pages
+  if (requireStudent && (user?.role === "admin" || user?.isAdmin)) {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return children;

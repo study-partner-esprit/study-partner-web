@@ -11,19 +11,6 @@ const DAYS = [
   "Sunday",
 ];
 
-const TIMEZONE_OPTIONS = [
-  "UTC",
-  "Africa/Cairo",
-  "Asia/Dubai",
-  "Asia/Kolkata",
-  "Asia/Singapore",
-  "Europe/London",
-  "Europe/Berlin",
-  "America/New_York",
-  "America/Chicago",
-  "America/Los_Angeles",
-];
-
 const START_HOUR = 7;
 const END_HOUR = 22;
 const SLOT_MINUTES = 10;
@@ -69,7 +56,6 @@ export default function WeeklyCalendar({
   availability = [],
   events = [],
   currentWeekStart,
-  weeksView = 1,
   onSave,
   onDelete,
 }) {
@@ -82,8 +68,9 @@ export default function WeeklyCalendar({
   const [rowHeight, setRowHeight] = useState(22);
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
   const [dragSelection, setDragSelection] = useState(null);
+  const [zoomDrag, setZoomDrag] = useState(null);
   const [createRange, setCreateRange] = useState({ startIndex: 0, endIndex: 1 });
-  const [selectedTimezone, setSelectedTimezone] = useState(() => {
+  const [selectedTimezone] = useState(() => {
     try {
       return localStorage.getItem("calendar.timezone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
     } catch {
@@ -155,14 +142,6 @@ export default function WeeklyCalendar({
   }, [availability, events, currentWeekStart]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem("calendar.timezone", selectedTimezone);
-    } catch {
-      // Ignore storage issues in private browsing contexts.
-    }
-  }, [selectedTimezone]);
-
-  useEffect(() => {
     const handleGlobalMouseUp = () => {
       if (dragSelection) {
         openCreateModalFromSelection(dragSelection);
@@ -172,6 +151,28 @@ export default function WeeklyCalendar({
     window.addEventListener("mouseup", handleGlobalMouseUp);
     return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
   }, [dragSelection]);
+
+  useEffect(() => {
+    if (!zoomDrag) return;
+
+    const handleMouseMove = (event) => {
+      const delta = zoomDrag.startY - event.clientY;
+      const computed = clamp(zoomDrag.startHeight + Math.round(delta / 3), 14, 38);
+      setRowHeight(computed);
+    };
+
+    const handleMouseUp = () => {
+      setZoomDrag(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [zoomDrag]);
 
   const findEventAt = (week, dayIndex, slotIndex) =>
     eventSlots.find(
@@ -403,29 +404,17 @@ export default function WeeklyCalendar({
     <div className="weekly-calendar">
       <div className="calendar-header">
         <div className="calendar-zoom-controls">
-          <label htmlFor="hourScale">Hour Scale</label>
-          <input
-            id="hourScale"
-            type="range"
-            min="14"
-            max="38"
-            step="1"
-            value={rowHeight}
-            onChange={(e) => setRowHeight(Number(e.target.value))}
-          />
-          <span>{rowHeight}px</span>
-          <label htmlFor="tzSelect">Timezone</label>
-          <select
-            id="tzSelect"
-            value={selectedTimezone}
-            onChange={(e) => setSelectedTimezone(e.target.value)}
+          <span className="zoom-label">Scale</span>
+          <button
+            type="button"
+            className={`zoom-drag-handle ${zoomDrag ? "active" : ""}`}
+            onMouseDown={(event) => {
+              setZoomDrag({ startY: event.clientY, startHeight: rowHeight });
+            }}
           >
-            {[...new Set([selectedTimezone, ...TIMEZONE_OPTIONS])].map((zone) => (
-              <option key={zone} value={zone}>
-                {zone}
-              </option>
-            ))}
-          </select>
+            Hold and drag to resize ({rowHeight}px)
+          </button>
+          <span className="timezone-chip">{selectedTimezone}</span>
           {selectedDayIndex !== null && (
             <button className="focus-reset-btn" onClick={() => setSelectedDayIndex(null)}>
               Back to Week
@@ -436,7 +425,7 @@ export default function WeeklyCalendar({
 
       <div className="calendar-layout">
         <div className="calendar-main">
-          {Array.from({ length: weeksView }, (_, weekIndex) => (
+          {Array.from({ length: 1 }, (_, weekIndex) => (
         <div key={weekIndex} className="week-section">
           <div className="week-header">
             Week {weekIndex + 1}:{" "}

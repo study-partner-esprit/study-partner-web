@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [showPendingTasks, setShowPendingTasks] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const Dashboard = () => {
           }
           throw err;
         }),
-        tasksAPI.getAll({ status: "todo" }).catch((err) => {
+        tasksAPI.getAll().catch((err) => {
           if (err.response?.status === 404) {
             return { data: { tasks: [] } };
           }
@@ -34,8 +35,12 @@ const Dashboard = () => {
         }),
       ]);
 
+      const pendingTasks = (tasksRes.data.tasks || []).filter(
+        (task) => task.status === "todo" || task.status === "in-progress",
+      );
+
       setProfile(profileRes.data.profile);
-      setTasks(tasksRes.data.tasks || []);
+      setTasks(pendingTasks);
       setError("");
     } catch (err) {
       const status = err.response?.status;
@@ -108,89 +113,91 @@ const Dashboard = () => {
               value={tasks.length}
               subtitle="TASKS"
               icon="📋"
+              clickable
+              onClick={() => setShowPendingTasks((prev) => !prev)}
             />
           </div>
 
+          {showPendingTasks && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 card-valorant p-6 bg-card/80 backdrop-blur-md"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold tracking-wider text-foreground">
+                  <span className="text-primary">{"//"}</span> PENDING TASKS
+                </h2>
+                <Link
+                  to="/tasks"
+                  className="px-4 py-2 bg-muted hover:bg-muted/80 transition-colors text-sm font-bold tracking-wider border border-border text-foreground"
+                >
+                  VIEW ALL
+                </Link>
+              </div>
+
+              <div className="space-y-3">
+                {tasks.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p className="text-lg mb-2">NO PENDING TASKS</p>
+                    <Link
+                      to="/tasks"
+                      className="text-primary hover:underline font-semibold"
+                    >
+                      Create your first task
+                    </Link>
+                  </div>
+                ) : (
+                  tasks.slice(0, 6).map((task) => (
+                    <div
+                      key={task._id}
+                      className="bg-background/50 border-l-4 border-primary p-4 hover:bg-accent/50 transition-all duration-300"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-base text-foreground truncate">
+                            {task.title}
+                          </h3>
+                          <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                            <span className="uppercase">{task.status || "todo"}</span>
+                            {task.priority && (
+                              <span className="uppercase">{task.priority}</span>
+                            )}
+                            {task.estimatedTime && (
+                              <span>{task.estimatedTime} min</span>
+                            )}
+                          </div>
+                        </div>
+                        <Link
+                          to={`/session-setup?taskId=${task._id}`}
+                          className="px-3 py-2 bg-primary text-primary-foreground rounded font-semibold text-xs tracking-wide hover:opacity-90 transition-opacity"
+                        >
+                          PLAY
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          )}
+
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Pending Tasks */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="lg:col-span-2"
             >
-              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md">
+              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md h-full">
                 <div className="card-inner-sheen" />
-                {/* Valorant corner accent */}
-                <div className="absolute top-0 right-0 w-24 h-24 border-t-4 border-r-4 border-primary opacity-50"></div>
-
-                <div className="flex items-center justify-between mb-6 relative z-10">
-                  <h2 className="text-2xl font-bold tracking-wider text-foreground">
-                    <span className="text-primary">{"//"}</span> PENDING TASKS
-                  </h2>
-                  <Link
-                    to="/tasks"
-                    className="px-4 py-2 bg-muted hover:bg-muted/80 transition-colors text-sm font-bold tracking-wider border border-border text-foreground"
-                  >
-                    VIEW ALL
-                  </Link>
-                </div>
-
-                <div className="space-y-3 relative z-10">
-                  {tasks.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <p className="text-xl mb-2">NO PENDING TASKS</p>
-                      <Link
-                        to="/tasks"
-                        className="text-primary hover:underline font-semibold"
-                      >
-                        Create your first task →
-                      </Link>
-                    </div>
-                  ) : (
-                    tasks.slice(0, 5).map((task, index) => (
-                      <motion.div
-                        key={task._id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index }}
-                        className="bg-background/50 border-l-4 border-primary p-4 hover:bg-accent/50 transition-all duration-300 group"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-bold text-lg mb-1 text-foreground group-hover:text-primary transition-colors">
-                              {task.title}
-                            </h3>
-                            {task.description && (
-                              <p className="text-muted-foreground text-sm mb-2">
-                                {task.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-4 text-xs">
-                              <span
-                                className={`px-2 py-1 rounded ${
-                                  task.priority === "high"
-                                    ? "bg-destructive/10 text-destructive"
-                                    : task.priority === "medium"
-                                      ? "bg-orange-500/10 text-orange-500"
-                                      : "bg-green-500/10 text-green-500"
-                                }`}
-                              >
-                                {task.priority?.toUpperCase() || "NORMAL"}
-                              </span>
-                              {task.estimatedTime && (
-                                <span className="text-muted-foreground">
-                                  ⏱ {task.estimatedTime}min
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
-                </div>
+                <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
+                  <span className="text-primary">{"//"}</span> STUDY FOCUS
+                </h2>
+                <p className="text-muted-foreground relative z-10">
+                  Start your study directly from pending tasks using the PLAY button.
+                  Your pending list updates from backend task data.
+                </p>
               </div>
             </motion.div>
 
@@ -261,15 +268,6 @@ const Dashboard = () => {
                     CREATE TASK
                   </Link>
                   <Link
-                    to="/sessions"
-                    className="block px-4 py-3 bg-muted/30 hover:bg-primary transition-all duration-300 font-bold tracking-wider text-center border border-border hover:border-primary text-foreground hover:text-white group"
-                  >
-                    <span className="group-hover:scale-110 inline-block transition-transform mr-2">
-                      📚
-                    </span>{" "}
-                    RESUME SESSION
-                  </Link>
-                  <Link
                     to="/session-setup"
                     className="block px-4 py-3 bg-[#ff4655] text-white hover:brightness-110 transition-all duration-300 font-bold tracking-wider text-center shadow-lg group"
                   >
@@ -292,13 +290,26 @@ const Dashboard = () => {
 };
 
 // Theme-aware StatCard
-const StatCard = ({ title, value, subtitle, icon }) => {
+const StatCard = ({ title, value, subtitle, icon, onClick, clickable = false }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
+      onClick={onClick}
       className="card-valorant p-6 relative overflow-hidden group border border-border hover:border-primary transition-all duration-300 bg-card/80 backdrop-blur-md"
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={
+        clickable
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onClick?.();
+              }
+            }
+          : undefined
+      }
     >
       <div className="card-inner-sheen" />
       {/* Corner accent */}

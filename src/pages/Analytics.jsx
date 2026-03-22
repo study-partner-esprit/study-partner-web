@@ -2,6 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { analyticsAPI } from "../services/api";
 
+const retryRequest = async (requestFn, retries = 2, baseDelayMs = 500) => {
+  let lastError;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await requestFn();
+    } catch (error) {
+      lastError = error;
+      const status = error?.response?.status;
+      const retryable = !status || status >= 500;
+
+      if (!retryable || attempt === retries) {
+        break;
+      }
+
+      const waitMs = baseDelayMs * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+  }
+
+  throw lastError;
+};
+
 const eventLabels = {
   study_session_started: "Session Started",
   study_session_completed: "Session Completed",
@@ -34,16 +57,54 @@ export default function Analytics() {
       setLoading(true);
       setError("");
       try {
-        const [summaryRes, insightsRes, timelineRes] = await Promise.all([
-          analyticsAPI.getSummary({}),
-          analyticsAPI.getInsights({ days: 30 }),
-          analyticsAPI.getTimeline({ limit: 20 }),
+        const [summaryRes, insightsRes, timelineRes] = await Promise.allSettled([
+          retryRequest(() => analyticsAPI.getSummary({})),
+          retryRequest(() => analyticsAPI.getInsights({ days: 30 })),
+          retryRequest(() => analyticsAPI.getTimeline({ limit: 20 })),
         ]);
-        setSummary(summaryRes.data || {});
-        setInsights(insightsRes.data?.insights || null);
-        setTimeline(timelineRes.data?.events || []);
+
+        const summaryData =
+          summaryRes.status === "fulfilled" ? summaryRes.value?.data || {} : {};
+        const insightsData =
+          insightsRes.status === "fulfilled"
+            ? insightsRes.value?.data?.insights || null
+            : null;
+        const timelineData =
+          timelineRes.status === "fulfilled"
+            ? timelineRes.value?.data?.events || []
+            : [];
+
+        setSummary(summaryData);
+        setInsights(insightsData);
+        setTimeline(timelineData);
+
+        const failures = [summaryRes, insightsRes, timelineRes].filter(
+          (result) => result.status === "rejected",
+        );
+
+        if (failures.length > 0) {
+          const statusCodes = failures
+            .map((result) => result.reason?.response?.status)
+            .filter(Boolean);
+
+          if (statusCodes.includes(502) || statusCodes.includes(503)) {
+            setError(
+              "Some analytics services are temporarily unavailable. Showing partial data.",
+            );
+          } else if (statusCodes.includes(401)) {
+            setError("Session expired. Please log in again.");
+          } else if (!summaryData.totalEvents && !insightsData && !timelineData.length) {
+            setError("Failed to load analytics data.");
+          }
+        }
       } catch (err) {
-        setError(err?.response?.data?.error || "Failed to load analytics data.");
+        if (err?.response?.status === 502 || err?.response?.status === 503) {
+          setError("Learning analytics service is temporarily unavailable.");
+        } else if (err?.response?.status === 401) {
+          setError("Session expired. Please log in again.");
+        } else {
+          setError(err?.response?.data?.error || "Failed to load analytics data.");
+        }
       } finally {
         setLoading(false);
       }

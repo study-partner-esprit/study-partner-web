@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { subjectAPI, courseAPI, studyPlanAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
@@ -356,13 +357,7 @@ const SubjectDetail = () => {
   const [isCourseDetailModalOpen, setIsCourseDetailModalOpen] = useState(false);
   const [generatingPlan, setGeneratingPlan] = useState({});
 
-  useEffect(() => {
-    if (user && subjectId) {
-      loadSubjectData();
-    }
-  }, [user, subjectId]);
-
-  const loadSubjectData = async () => {
+  const loadSubjectData = useCallback(async () => {
     if (!user?._id) return;
     try {
       // Load subject info
@@ -377,7 +372,13 @@ const SubjectDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [subjectId, user?._id]);
+
+  useEffect(() => {
+    if (user && subjectId) {
+      loadSubjectData();
+    }
+  }, [user, subjectId, loadSubjectData]);
 
   const handleBack = () => {
     navigate("/subjects");

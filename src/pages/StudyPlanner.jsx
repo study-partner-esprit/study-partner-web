@@ -14,7 +14,7 @@ const StudyPlanner = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
-  const [weeksView, setWeeksView] = useState(2);
+  const weeksView = 1;
 
   // Initialize to start of current week (Monday)
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -52,13 +52,13 @@ const StudyPlanner = () => {
     } catch (err) {
       console.error("✗ StudyPlanner: Error fetching calendar entries:", err);
     }
-  }, [weeksView, currentWeekStart]);
+  }, [currentWeekStart]);
 
   useEffect(() => {
     fetchAvailability();
     fetchScheduledSessions();
     fetchTasks();
-  }, [user, currentWeekStart, weeksView, fetchScheduledSessions]);
+  }, [user, currentWeekStart, fetchScheduledSessions]);
 
   const goToPreviousWeek = () => {
     const newStart = new Date(currentWeekStart);
@@ -275,7 +275,7 @@ const StudyPlanner = () => {
                     : "Generate AI-powered schedule"
                 }
               >
-                {scheduling ? "⏳ GENERATING..." : "📅 GENERATE SCHEDULE"}
+                {scheduling ? "GENERATING..." : "GENERATE SCHEDULE"}
               </button>
             </div>
           </div>
@@ -296,74 +296,31 @@ const StudyPlanner = () => {
 
       {/* Calendar Section */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-6 p-6 bg-[#1a2633]/50 backdrop-blur-md border border-white/10 rounded-xl">
-          <h2 className="text-xl font-bold tracking-wider mb-2 text-white">
-            📋 HOW IT WORKS
-          </h2>
-          <ol className="list-decimal list-inside space-y-2 text-white/60">
-            <li>
-              <strong className="text-white">Block your busy times</strong> -
-              Click calendar slots to mark when you're unavailable (classes,
-              work, etc.)
-            </li>
-            <li>
-              <strong className="text-white">Click "Generate Schedule"</strong>{" "}
-              - AI analyzes your tasks and availability
-            </li>
-            <li>
-              <strong className="text-white">View scheduled sessions</strong> -
-              Blue slots show your optimally scheduled study times
-            </li>
-            <li>
-              <strong className="text-white">Go to Tasks page</strong> - Create
-              or manage tasks to schedule
-            </li>
-          </ol>
-        </div>
-
         <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
           <button
             className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/20 text-white font-medium transition-colors"
             onClick={goToPreviousWeek}
           >
-            ⬅️ Previous
+            Previous
           </button>
-          <button
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors"
-            onClick={goToCurrentWeek}
-          >
-            📅 Current Week
-          </button>
+            <button
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors"
+              onClick={goToCurrentWeek}
+            >
+              Current Week
+            </button>
           <button
             className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/20 text-white font-medium transition-colors"
             onClick={goToNextWeek}
           >
-            Next ➡️
+            Next
           </button>
           <div className="px-4 py-2 bg-black/30 backdrop-blur-sm border border-white/10 rounded-lg font-semibold min-w-[200px] text-center text-white">
             {formatWeekRange()}
           </div>
 
-          <div className="flex items-center gap-2 ml-4">
-            <span className="text-sm font-medium text-white/60">View:</span>
-            <button
-              className={`px-3 py-1 rounded ${weeksView === 1 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
-              onClick={() => setWeeksView(1)}
-            >
-              1
-            </button>
-            <button
-              className={`px-3 py-1 rounded ${weeksView === 2 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
-              onClick={() => setWeeksView(2)}
-            >
-              2
-            </button>
-            <button
-              className={`px-3 py-1 rounded ${weeksView === 4 ? "bg-primary text-white" : "bg-white/10 border border-white/10 text-white/70"}`}
-              onClick={() => setWeeksView(4)}
-            >
-              4
-            </button>
+          <div className="px-3 py-1 rounded bg-white/10 border border-white/10 text-white/70 text-sm">
+            Single week view
           </div>
         </div>
 
@@ -371,7 +328,6 @@ const StudyPlanner = () => {
           availability={availability}
           events={events}
           currentWeekStart={currentWeekStart}
-          weeksView={weeksView}
           onSave={handleSaveSlot}
           onDelete={handleDeleteSlot}
         />

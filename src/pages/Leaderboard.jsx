@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { gamificationAPI, friendsAPI } from "../services/api";
+import { gamificationAPI, friendsAPI, profileAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import {
   Trophy,
@@ -24,6 +24,23 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(true);
   const [friendsOnly, setFriendsOnly] = useState(false);
   const [friendIds, setFriendIds] = useState(new Set());
+  const [userStatuses, setUserStatuses] = useState({});
+
+  const fetchOnlineStatuses = async (entries) => {
+    const userIds = (entries || []).map((entry) => entry.userId).filter(Boolean);
+    if (!userIds.length) return;
+
+    try {
+      const response = await profileAPI.getOnlineStatusBatch(userIds);
+      const statusMap = (response.data?.statuses || []).reduce((acc, status) => {
+        acc[status.userId] = status;
+        return acc;
+      }, {});
+      setUserStatuses(statusMap);
+    } catch {
+      // non-critical for leaderboard rendering
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +51,7 @@ const Leaderboard = () => {
         ]);
         setLeaderboard(lb);
         setMyProfile(profile);
+        fetchOnlineStatuses(lb);
 
         // Fetch friend IDs for filtering
         try {
@@ -55,7 +73,17 @@ const Leaderboard = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (!leaderboard.length) return;
+
+    const timer = setInterval(() => {
+      fetchOnlineStatuses(leaderboard);
+    }, 30000);
+
+    return () => clearInterval(timer);
+  }, [leaderboard]);
 
   const displayedLeaderboard = friendsOnly
     ? leaderboard.filter((e) => friendIds.has(e.userId))
@@ -257,6 +285,20 @@ const Leaderboard = () => {
                             ? "You"
                             : entry.nickname || `Player #${idx + 1}`}
                         </span>
+                        {!isMe && (
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                            <span
+                              className={`inline-block w-2 h-2 rounded-full ${
+                                userStatuses[entry.userId]?.isOnline
+                                  ? "bg-green-500"
+                                  : "bg-gray-400"
+                              }`}
+                            />
+                            {userStatuses[entry.userId]?.isOnline
+                              ? "Online"
+                              : "Offline"}
+                          </span>
+                        )}
                         {isMe && <Zap className="w-4 h-4 text-primary" />}
                       </div>
                     </td>
