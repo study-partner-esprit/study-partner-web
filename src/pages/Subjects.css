@@ -1,8 +1,14 @@
 .subjects-container {
-  padding: 100px 40px 40px; /* Navbar height + spacing */
+  padding: 100px 40px 40px 64px; /* Extra left room for expanding sidebar */
   max-width: 1600px;
   margin: 0 auto;
   min-height: 100vh;
+}
+
+@media (max-width: 800px) {
+  .subjects-container {
+    padding: 96px 20px 24px;
+  }
 }
 
 /* Header */

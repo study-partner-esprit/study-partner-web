@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +58,7 @@ const TiltCard = ({ children, className }) => {
 
       {/* Tech Text Decorations (Valorant Gameday style) */}
       <div className="absolute top-2 right-4 text-[10px] font-bold tracking-widest text-primary/30 pointer-events-none select-none">
-        // SYS.RDY
+        {"// SYS.RDY"}
       </div>
       <div className="absolute bottom-2 left-4 text-[10px] font-bold tracking-widest text-primary/30 pointer-events-none select-none">
         _COORDS: {Math.floor(Math.random() * 99)}.84

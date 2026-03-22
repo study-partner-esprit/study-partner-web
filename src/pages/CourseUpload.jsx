@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { aiAPI, courseAPI, subjectAPI, gamificationAPI } from "../services/api";
+import { courseAPI, subjectAPI, gamificationAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
-import XPNotification from "../components/XPNotification";
-import LevelUpModal from "../components/LevelUpModal";
 import "./CourseUpload.css";
 
 const CourseUpload = () => {
@@ -13,28 +11,15 @@ const CourseUpload = () => {
   const [subjectName, setSubjectName] = useState(
     location.state?.subjectName || "",
   );
-  const [selectedSubjectId, setSelectedSubjectId] = useState("");
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [showXPNotification, setShowXPNotification] = useState(false);
-  const [xpAwarded, setXpAwarded] = useState(0);
-  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
-  const [levelUpData, setLevelUpData] = useState(null);
 
   const handleSubjectChange = (e) => {
     const value = e.target.value;
     setSubjectName(value);
-
-    // Find existing subject by name
-    const existingSubject = subjects.find((s) => s.name === value);
-    if (existingSubject) {
-      setSelectedSubjectId(existingSubject.id);
-    } else {
-      setSelectedSubjectId(""); // Will create new subject
-    }
   };
 
   const handleFileChange = (e) => {
@@ -101,7 +86,7 @@ const CourseUpload = () => {
 
       // Award XP for course upload
       try {
-        const xpResponse = await gamificationAPI.awardXP({
+        await gamificationAPI.awardXP({
           action: "course_upload",
           metadata: {
             course_title: courseTitle,
@@ -109,22 +94,6 @@ const CourseUpload = () => {
             file_count: files.length,
           },
         });
-
-        // Show XP notification
-        setXpAwarded(xpResponse.xp_awarded);
-        setShowXPNotification(true);
-
-        // Show level-up modal if leveled up
-        if (xpResponse.leveled_up) {
-          setLevelUpData({
-            newLevel: xpResponse.new_level,
-            totalXP: xpResponse.total_xp,
-          });
-          // Delay level-up modal to show after XP notification
-          setTimeout(() => {
-            setShowLevelUpModal(true);
-          }, 3500);
-        }
       } catch (xpError) {
         console.error("Failed to award XP:", xpError);
         // Don't block upload success if XP fails
@@ -157,29 +126,6 @@ const CourseUpload = () => {
     if (!user?._id) return;
     try {
       const response = await subjectAPI.list();
-      {
-        /* XP Notification */
-      }
-      <XPNotification
-        xpAwarded={xpAwarded}
-        visible={showXPNotification}
-        onComplete={() => setShowXPNotification(false)}
-      />;
-
-      {
-        /* Level-Up Modal */
-      }
-      {
-        levelUpData && (
-          <LevelUpModal
-            visible={showLevelUpModal}
-            newLevel={levelUpData.newLevel}
-            totalXP={levelUpData.totalXP}
-            onClose={() => setShowLevelUpModal(false)}
-          />
-        );
-      }
-
       setSubjects(response.data.subjects || []);
     } catch (error) {
       console.error("Failed to load subjects:", error);

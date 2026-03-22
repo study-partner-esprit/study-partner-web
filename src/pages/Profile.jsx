@@ -148,6 +148,49 @@ const Profile = () => {
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
+        <div className="mb-6 rounded-2xl border border-border bg-card/70 p-5">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3">
+            Subscription Details
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div>
+              <span className="text-muted-foreground">Current Plan:</span>{" "}
+              <span className="font-semibold uppercase">{user?.tier || "normal"}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Days Remaining:</span>{" "}
+              <span className={`font-semibold ${Number(user?.daysRemaining || 0) <= 5 ? "text-amber-300" : ""}`}>
+                {Number(user?.daysRemaining || 0)}
+              </span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Start Date:</span>{" "}
+              <span className="font-semibold">
+                {user?.subscriptionStartAt
+                  ? new Date(user.subscriptionStartAt).toLocaleDateString()
+                  : "-"}
+              </span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">End Date:</span>{" "}
+              <span className="font-semibold">
+                {user?.subscriptionEndAt
+                  ? new Date(user.subscriptionEndAt).toLocaleDateString()
+                  : "-"}
+              </span>
+            </div>
+          </div>
+          <div className="mt-3 text-xs">
+            {user?.canChangePlan ? (
+              <span className="text-green-400">Plan change is available now.</span>
+            ) : (
+              <span className="text-muted-foreground">
+                Plan change will unlock in {Number(user?.daysUntilCanChange || 0)} day(s).
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Profile Header Card */}
         <div className="relative mb-12">
           {/* Card Container - Glassmorphism Valorant Style */}

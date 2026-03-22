@@ -12,7 +12,7 @@ import {
   Brain,
   Users,
   Search,
-  Sparkles,
+  Shield,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -20,14 +20,6 @@ const Sidebar = ({ topOffset = 80 }) => {
   const location = useLocation();
   const { user } = useAuthStore();
   const [isHovered, setIsHovered] = React.useState(false);
-
-  // DEBUG: log auth + positioning
-  // eslint-disable-next-line no-console
-  console.log("[Sidebar] render", {
-    userPresent: !!user,
-    isHovered,
-    topOffset,
-  });
 
   const activeToggle = isHovered;
 
@@ -58,6 +50,19 @@ const Sidebar = ({ topOffset = 80 }) => {
       ],
     },
   ];
+
+  if (user?.role === "admin" || user?.isAdmin) {
+    navGroups.push({
+      title: "Admin",
+      items: [
+        { path: "/admin", label: "Dashboard", icon: Shield },
+        { path: "/admin/users", label: "Users", icon: Shield },
+        { path: "/admin/subscriptions", label: "Subscriptions", icon: Shield },
+        { path: "/admin/coupons", label: "Coupons", icon: Shield },
+        { path: "/admin/analytics", label: "Analytics", icon: Shield },
+      ],
+    });
+  }
 
   if (!user) return null;
 

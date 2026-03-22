@@ -3,10 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Calendar,
-  Users,
   Eye,
-  Heart,
-  FileText,
   Bot,
   Trophy,
   Star,
@@ -182,7 +179,8 @@ const FeaturesSection = () => {
 
                 {/* Feature Badge - Replaced with tech decoration */}
                 <div className="absolute top-4 left-4 text-[10px] font-bold tracking-widest text-primary/30 pointer-events-none select-none font-valorant">
-                  // {feature.badge}
+                  {"// "}
+                  {feature.badge}
                 </div>
 
                 <div

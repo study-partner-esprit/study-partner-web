@@ -11,7 +11,7 @@ const Calendar = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [events, setEvents] = useState([]);
-  const [weeksView, setWeeksView] = useState(2);
+  const [weeksView] = useState(1);
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
     const now = new Date();
     const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -54,9 +54,7 @@ const Calendar = () => {
   const fetchAvailability = async () => {
     try {
       setLoading(true);
-      console.log("Fetching availability slots...");
       const data = await availabilityAPI.get();
-      console.log("Fetched availability slots:", data.length, "slots");
       setAvailability(data);
       setError(null);
     } catch (err) {
@@ -100,40 +98,12 @@ const Calendar = () => {
 
   const fetchCalendarEntries = async (weeks = 2) => {
     try {
-      console.log("\n========================================");
-      console.log("CALENDAR: Fetching calendar entries");
-      console.log("========================================");
-      console.log("Weeks:", weeks);
-      console.log("Start date:", currentWeekStart.toISOString());
-      console.log("API call: studyPlanAPI.getCalendar()");
-
       const resp = await studyPlanAPI.getCalendar({
         weeks,
         startDate: currentWeekStart.toISOString(),
       });
 
-      console.log("API Response received:", {
-        status: resp.status,
-        hasData: !!resp.data,
-        hasEntries: !!resp.data?.entries,
-      });
-
       const entries = resp.data.entries || [];
-      console.log(
-        `✓ SUCCESS: Fetched ${entries.length} calendar entries from backend`,
-      );
-
-      if (entries.length === 0) {
-        console.log("⚠ WARNING: No calendar entries found");
-        console.log("Troubleshooting checklist:");
-        console.log("  1. Check browser console for [API] logs above");
-        console.log("  2. Verify JWT token is being sent (see Network tab)");
-        console.log("  3. Check backend logs: docker logs study-service -f");
-        console.log("  4. Verify you have scheduled tasks in database");
-        console.log("  5. Check date range matches your scheduled tasks");
-      } else {
-        console.log("Sample entry:", entries[0]);
-      }
 
       // Normalize entries to the shape expected by WeeklyCalendar
       const mapped = entries.map((e) => ({
@@ -149,27 +119,17 @@ const Calendar = () => {
         status: e.status,
       }));
 
-      console.log("Mapped events count:", mapped.length);
-      console.log("Event sources:", [...new Set(mapped.map((e) => e.source))]);
-      console.log("========================================\n");
-
       setEvents(mapped);
     } catch (err) {
-      console.error("\n✗ ERROR fetching calendar entries:");
-      console.error("Error details:", err);
-      console.error("Response status:", err.response?.status);
-      console.error("Response data:", err.response?.data);
+      console.error("Error fetching calendar entries:", err);
 
       if (err.response?.status === 401) {
-        console.error("→ Authentication failed - token is invalid or expired");
         setError(
           "Authentication failed. Please check the console for token details.",
         );
       } else if (err.response?.status === 500) {
-        console.error("→ Server error - check backend logs");
         setError("Server error. Check backend logs for details.");
       } else {
-        console.error("→ Network or other error");
         setError("Failed to load calendar events. Check console for details.");
       }
     }
@@ -266,10 +226,6 @@ const Calendar = () => {
         <div className="calendar-header-section">
           <div className="header-content">
             <h1 className="page-title">📅 Weekly Schedule</h1>
-            <p className="page-subtitle">
-              Block your busy times (classes, work, commitments) and let the AI
-              schedule your study sessions in free slots.
-            </p>
           </div>
 
           <div className="stats-panel">
@@ -326,28 +282,6 @@ const Calendar = () => {
                 Next ➡️
               </button>
               <div className="week-range">{formatWeekRange()}</div>
-            </div>
-
-            <div className="calendar-controls">
-              <label>View weeks:</label>
-              <button
-                className={weeksView === 1 ? "active" : ""}
-                onClick={() => setWeeksView(1)}
-              >
-                1
-              </button>
-              <button
-                className={weeksView === 2 ? "active" : ""}
-                onClick={() => setWeeksView(2)}
-              >
-                2
-              </button>
-              <button
-                className={weeksView === 4 ? "active" : ""}
-                onClick={() => setWeeksView(4)}
-              >
-                4
-              </button>
             </div>
 
             <WeeklyCalendar

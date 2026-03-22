@@ -142,7 +142,7 @@ const Sessions = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-5xl font-bold tracking-wider uppercase">
-                <span className="text-primary">//</span> SESSIONS
+                <span className="text-primary">{"//"}</span> SESSIONS
               </h1>
               <p className="text-muted-foreground mt-2">
                 Track your study sessions
@@ -172,7 +172,7 @@ const Sessions = () => {
 
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-[#ff4655]">//</span> ACTIVE SESSION
+                <span className="text-[#ff4655]">{"//"}</span> ACTIVE SESSION
               </h2>
 
               {/* Timer */}
@@ -202,7 +202,7 @@ const Sessions = () => {
         {/* Session History */}
         <div className="bg-[#1a2633] border-2 border-[#2e3a4a] p-6">
           <h2 className="text-2xl font-bold mb-6">
-            <span className="text-[#ff4655]">//</span> SESSION HISTORY
+            <span className="text-[#ff4655]">{"//"}</span> SESSION HISTORY
           </h2>
 
           {sessions.length === 0 ? (
@@ -283,7 +283,7 @@ const Sessions = () => {
               className="bg-card border-2 border-primary p-8 max-w-md w-full"
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-primary">//</span> NEW SESSION
+                <span className="text-primary">{"//"}</span> NEW SESSION
               </h2>
 
               <div className="space-y-6">

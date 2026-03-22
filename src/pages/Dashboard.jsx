@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { profileAPI, tasksAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import QuestPanel from "../components/QuestPanel";
 
 const Dashboard = () => {
-  const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -21,24 +20,31 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const [profileRes, tasksRes] = await Promise.all([
-        profileAPI.get(),
-        tasksAPI.getAll({ status: "todo" }),
+        profileAPI.get().catch((err) => {
+          if (err.response?.status === 404) {
+            return { data: { profile: null } };
+          }
+          throw err;
+        }),
+        tasksAPI.getAll({ status: "todo" }).catch((err) => {
+          if (err.response?.status === 404) {
+            return { data: { tasks: [] } };
+          }
+          throw err;
+        }),
       ]);
 
       setProfile(profileRes.data.profile);
       setTasks(tasksRes.data.tasks || []);
       setError("");
     } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
-      setError("Failed to load dashboard data");
+      const status = err.response?.status;
+      if (status !== 404) {
+        setError(`Failed to load dashboard - ${status === 401 ? "Please log in again" : "Server error"}`);
+      }
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
   };
 
   if (loading) {
@@ -121,7 +127,7 @@ const Dashboard = () => {
 
                 <div className="flex items-center justify-between mb-6 relative z-10">
                   <h2 className="text-2xl font-bold tracking-wider text-foreground">
-                    <span className="text-primary">//</span> PENDING TASKS
+                    <span className="text-primary">{"//"}</span> PENDING TASKS
                   </h2>
                   <Link
                     to="/tasks"
@@ -201,7 +207,7 @@ const Dashboard = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
 
                 <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
-                  <span className="text-primary">//</span> PROFILE
+                  <span className="text-primary">{"//"}</span> PROFILE
                 </h2>
 
                 <div className="space-y-3 text-sm relative z-10">
@@ -241,7 +247,7 @@ const Dashboard = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
 
                 <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
-                  <span className="text-primary">//</span> QUICK ACTIONS
+                  <span className="text-primary">{"//"}</span> QUICK ACTIONS
                 </h2>
 
                 <div className="space-y-3 relative z-10">

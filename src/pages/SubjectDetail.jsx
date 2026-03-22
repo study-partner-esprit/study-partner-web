@@ -20,7 +20,6 @@ import "./SubjectDetail.css";
 
 // Add Files Modal Component
 const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
-  const user = useAuthStore((state) => state.user);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);

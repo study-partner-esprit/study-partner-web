@@ -12,6 +12,17 @@ export default function CheckoutSuccess() {
   useEffect(() => {
     const syncUser = async () => {
       try {
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get("session_id");
+
+        if (sessionId) {
+          try {
+            await authAPI.confirmCheckout(sessionId);
+          } catch {
+            // Webhook may still be processing; continue to best-effort user refresh.
+          }
+        }
+
         const response = await authAPI.getMe();
         const user = response.data?.user;
         if (user) {

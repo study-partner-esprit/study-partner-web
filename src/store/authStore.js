@@ -67,11 +67,9 @@ const useAuthStore = create(
           const now = new Date().getTime();
           if (sessionExpiry > now) {
             set({ isAuthenticated: true });
-            console.log("[Auth] Initialized from persisted session");
           } else {
             // Session expired, clear it
             get().logout();
-            console.log("[Auth] Persisted session expired, logged out");
           }
         }
       },
@@ -151,8 +149,6 @@ const useAuthStore = create(
             sessionExpiry: expiry.getTime(),
             isRefreshing: false,
           });
-
-          console.log("[Auth] Token refreshed successfully");
           return true;
         } catch (error) {
           console.error("[Auth] Token refresh failed:", error);

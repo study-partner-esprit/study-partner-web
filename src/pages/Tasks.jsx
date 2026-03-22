@@ -129,7 +129,7 @@ const Tasks = () => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold tracking-wider uppercase">
-                <span className="text-primary">//</span> TASKS
+                <span className="text-primary">{"//"}</span> TASKS
               </h1>
               <p className="text-white/60 mt-2">Manage your study tasks</p>
             </div>
@@ -210,7 +210,7 @@ const Tasks = () => {
               className="bg-[#0f1923]/85 backdrop-blur-xl border-2 border-primary p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-xl"
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-primary">//</span>{" "}
+                <span className="text-primary">{"//"}</span>{" "}
                 {editingTask ? "EDIT" : "NEW"} TASK
               </h2>
 

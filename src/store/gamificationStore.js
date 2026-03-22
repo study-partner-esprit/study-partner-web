@@ -33,7 +33,10 @@ const useGamificationStore = create((set, get) => ({
         unlockedFeatures: data.unlockedFeatures || [],
       });
     } catch (err) {
-      console.error("Failed to fetch level info:", err);
+      // Silently fail for unimplemented endpoints
+      if (err.response?.status !== 404) {
+        console.error("Failed to fetch level info:", err);
+      }
     }
   },
 
@@ -46,7 +49,10 @@ const useGamificationStore = create((set, get) => ({
         animatedBackgroundSettings: data.animatedBackgroundSettings,
       });
     } catch (err) {
-      console.error("Failed to fetch background settings:", err);
+      // Silently fail for unimplemented endpoints
+      if (err.response?.status !== 404) {
+        console.error("Failed to fetch background settings:", err);
+      }
     }
   },
 

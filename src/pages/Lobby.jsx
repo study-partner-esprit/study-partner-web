@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import {
-  Play,
-  Clock,
-  Zap,
-  Target,
-  Book,
-  Brain,
-  User,
-  Shield,
-} from "lucide-react";
+import { Clock, Zap, Brain, Shield } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { profileAPI } from "../services/api";
 
@@ -169,7 +160,7 @@ const Lobby = () => {
       {/* Header */}
       <div className="relative z-20 h-20 px-8 flex items-center border-b border-[#ffffff10] bg-[#0f1923]/80 backdrop-blur-md">
         <div className="text-xl font-bold tracking-widest text-[#ff4655] mr-4">
-          //
+          {"//"}
         </div>
         <h1 className="text-2xl font-bold tracking-wider uppercase">
           Session Setup

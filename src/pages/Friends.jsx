@@ -9,8 +9,6 @@ import {
   X,
   Copy,
   Clock,
-  Circle,
-  MessageSquare,
   MoreVertical,
   UserMinus,
   Shield,

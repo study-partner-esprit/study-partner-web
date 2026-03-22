@@ -28,13 +28,11 @@ const StudyPlanner = () => {
 
   const fetchScheduledSessions = useCallback(async () => {
     try {
-      console.log("\n=== StudyPlanner: Fetching calendar entries ===");
       const resp = await studyPlanAPI.getCalendar({
         weeks: weeksView,
         startDate: currentWeekStart.toISOString(),
       });
       const entries = resp.data.entries || [];
-      console.log(`✓ StudyPlanner: Fetched ${entries.length} calendar entries`);
 
       // Normalize entries to the shape expected by WeeklyCalendar
       const mapped = entries.map((e) => ({
@@ -57,11 +55,6 @@ const StudyPlanner = () => {
   }, [weeksView, currentWeekStart]);
 
   useEffect(() => {
-    console.log("=== StudyPlanner: Component mounted, fetching data ===");
-    console.log("User:", user);
-    console.log("Current week start:", currentWeekStart);
-    console.log("Weeks view:", weeksView);
-
     fetchAvailability();
     fetchScheduledSessions();
     fetchTasks();
@@ -98,12 +91,10 @@ const StudyPlanner = () => {
   const fetchTasks = async () => {
     try {
       const response = await tasksAPI.getAll();
-      console.log("All tasks response:", response.data.tasks);
       // Filter for pending tasks (todo and in-progress) on client side
       const pendingTasks = (response.data.tasks || []).filter(
         (task) => task.status === "todo" || task.status === "in-progress",
       );
-      console.log("Filtered pending tasks:", pendingTasks);
       setTasks(pendingTasks);
     } catch (error) {
       console.error("Failed to load tasks:", error);
@@ -211,7 +202,6 @@ const StudyPlanner = () => {
 
       // Convert availability slots to calendar events
       const calendarEvents = convertAvailabilityToEvents(availability);
-      console.log("Converted calendar events:", calendarEvents);
 
       // Call the schedule-tasks endpoint
       const response = await studyPlanAPI.scheduleTasks({
@@ -223,9 +213,6 @@ const StudyPlanner = () => {
       const schedule = response.data.schedule;
 
       // Note: Sessions are already saved to calendar by the backend
-      console.log(`✓ Successfully scheduled ${schedule.sessions.length} tasks`);
-      console.log("Sample scheduled session:", schedule.sessions[0]);
-
       // Refresh calendar entries from database to show all events
       await fetchScheduledSessions();
 
@@ -262,7 +249,7 @@ const StudyPlanner = () => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold tracking-wider uppercase">
-                <span className="text-primary">//</span> STUDY SCHEDULE
+                <span className="text-primary">{"//"}</span> STUDY SCHEDULE
               </h1>
               <p className="text-white/60 mt-2">
                 {tasks.length > 0 ? (

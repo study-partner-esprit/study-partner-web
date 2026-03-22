@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, FileText, Check, AlertCircle } from "lucide-react";
 import { courseAPI } from "../services/api";
-import { useAuthStore } from "../store/authStore";
 import "./UploadModal.css";
 
 const UploadModal = ({

@@ -5,16 +5,11 @@ import {
   Moon,
   Sun,
   Trophy,
-  Star,
   Zap,
   Target,
   BookOpen,
   Home,
-  User,
   BarChart3,
-  Sparkles,
-  Crown,
-  Rocket,
   LogOut,
   CheckSquare,
   Brain,
@@ -23,39 +18,19 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuthStore } from "@/store/authStore";
 import { profileAPI } from "@/services/api";
 import NotificationBell from "./NotificationBell";
+import SubscriptionBadge from "./SubscriptionBadge";
 
 const Navbar = ({ minimal = false, topOffset = 80 }) => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuthStore();
   const tier = useAuthStore((s) => s.getTier());
-  const hasPerm = useAuthStore((s) => s.hasTierPermission);
   const location = useLocation();
   const [profile, setProfile] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const tierBadge = {
-    trial: {
-      label: "TRIAL",
-      color: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    },
-    normal: {
-      label: "FREE",
-      color: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-    },
-    vip: {
-      label: "VIP",
-      color: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    },
-    vip_plus: {
-      label: "VIP+",
-      color: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    },
-  };
 
   useEffect(() => {
     if (user) {
@@ -80,18 +55,6 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
         { path: "/friends", label: "Friends", icon: Users },
         { path: "/search", label: "Search", icon: Search },
       ];
-
-  useEffect(() => {
-    try {
-      // eslint-disable-next-line no-console
-      console.log("Navbar debug:", {
-        path: location.pathname,
-        minimal,
-        userPresent: !!user,
-        navCount: navItems.length,
-      });
-    } catch (e) {}
-  }, [location.pathname, minimal, user, navItems.length]);
 
   return (
     <motion.nav
@@ -156,13 +119,7 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
                     LEVEL {profile?.level?.current || 1}
                   </span>
                 </div>
-                {tierBadge[tier] && (
-                  <span
-                    className={`text-xs font-bold px-2 py-0.5 rounded-full border ${tierBadge[tier].color}`}
-                  >
-                    {tierBadge[tier].label}
-                  </span>
-                )}
+                <SubscriptionBadge user={user} tier={tier} />
               </div>
             )}
 

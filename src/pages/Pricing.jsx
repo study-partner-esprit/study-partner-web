@@ -84,28 +84,92 @@ const tiers = [
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
   const currentTier = useAuthStore((s) => s.getTier());
   const updateUser = useAuthStore((s) => s.updateUser);
   const [checkoutTier, setCheckoutTier] = React.useState(null);
   const [couponTier, setCouponTier] = React.useState(null);
   const [couponCode, setCouponCode] = React.useState("");
   const [redeemingTier, setRedeemingTier] = React.useState(null);
+  const [selectedMonths, setSelectedMonths] = React.useState({ vip: 1, vip_plus: 1 });
   const [error, setError] = React.useState("");
   const [success, setSuccess] = React.useState("");
+  const [couponInfo, setCouponInfo] = React.useState(null);
+  const [stripeUnavailable, setStripeUnavailable] = React.useState(false);
+
+  const monthOptions = [1, 3, 6, 12];
+
+  const getDiscountPct = (months) => {
+    if (months >= 12) return 20;
+    if (months >= 6) return 10;
+    return 0;
+  };
+
+  const getMonthlyPrice = (tierId) => {
+    if (tierId === "vip") return 9.99;
+    if (tierId === "vip_plus") return 19.99;
+    return 0;
+  };
+
+  const getPricingSummary = (tierId) => {
+    const months = selectedMonths[tierId] || 1;
+    const monthly = getMonthlyPrice(tierId);
+    const base = monthly * months;
+    const discountPct = getDiscountPct(months);
+    const total = base * (1 - discountPct / 100);
+    return { months, monthly, base, discountPct, total };
+  };
+
+  const hasActivePaidPlan = ["vip", "vip_plus"].includes(currentTier) &&
+    Number(user?.daysRemaining || 0) > 0;
+  const canChangePlan = user?.canChangePlan !== false;
+  const isPlanChangeLocked = hasActivePaidPlan && !canChangePlan;
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const loadStripeConfig = async () => {
+      try {
+        const response = await authAPI.getStripeConfig();
+        if (!mounted) return;
+        setStripeUnavailable(response.data?.stripeConfigured === false);
+      } catch {
+        // If this check fails, defer to checkout attempt handling.
+      }
+    };
+
+    loadStripeConfig();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handlePay = async (tierId) => {
     if (tierId === currentTier) return;
+
+    if (isPlanChangeLocked) {
+      setError(
+        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`
+      );
+      return;
+    }
 
     if (tierId === "normal") {
       setError("Downgrade/cancel is managed in account settings.");
       return;
     }
 
+    if (stripeUnavailable) {
+      setError("Payments are temporarily unavailable. Please try again later or contact support.");
+      return;
+    }
+
+    const durationMonths = selectedMonths[tierId] || 1;
     setCheckoutTier(tierId);
     setError("");
     setSuccess("");
     try {
-      const response = await authAPI.subscribe(tierId);
+      const response = await authAPI.subscribe(tierId, durationMonths);
       const checkoutUrl = response.data?.checkoutUrl;
 
       if (!checkoutUrl) {
@@ -114,12 +178,25 @@ export default function Pricing() {
 
       window.location.href = checkoutUrl;
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to start checkout flow.");
+      const status = err?.response?.status;
+      if (status === 503) {
+        setStripeUnavailable(true);
+        setError("Payments are temporarily unavailable. Please try again later or contact support.");
+      } else {
+        setError(err.response?.data?.error || "Failed to start checkout flow.");
+      }
       setCheckoutTier(null);
     }
   };
 
   const handleRedeemCoupon = async (tierId) => {
+    if (isPlanChangeLocked) {
+      setError(
+        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`
+      );
+      return;
+    }
+
     if (!couponCode.trim()) {
       setError("Please enter a coupon code.");
       return;
@@ -128,6 +205,7 @@ export default function Pricing() {
     setRedeemingTier(tierId);
     setError("");
     setSuccess("");
+    setCouponInfo(null);
     try {
       const response = await authAPI.redeemCoupon(couponCode.trim(), tierId);
       const updatedUser = response.data?.user;
@@ -135,6 +213,14 @@ export default function Pricing() {
         updateUser(updatedUser);
       }
       setSuccess(`Coupon applied. Plan changed to ${response.data?.tier || tierId}.`);
+      const expiresAt = response.data?.couponExpiresAt;
+      if (expiresAt) {
+        const daysLeft = Math.max(
+          0,
+          Math.ceil((new Date(expiresAt) - new Date()) / (1000 * 60 * 60 * 24))
+        );
+        setCouponInfo({ expiresAt, daysLeft });
+      }
       setCouponCode("");
       setCouponTier(null);
     } catch (err) {
@@ -191,10 +277,26 @@ export default function Pricing() {
             {success}
           </div>
         )}
+        {couponInfo && (
+          <div className="mb-8 rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
+            Coupon access expires on {new Date(couponInfo.expiresAt).toLocaleDateString()}.
+            {couponInfo.daysLeft < 5 && (
+              <span className="ml-2 font-semibold text-yellow-200">
+                Warning: less than 5 days left.
+              </span>
+            )}
+          </div>
+        )}
+        {stripeUnavailable && (
+          <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            Card payments are currently unavailable. Coupon upgrades still work.
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {tiers.map((tier, i) => {
             const isCurrent = tier.id === currentTier;
+            const pricing = getPricingSummary(tier.id);
             return (
               <motion.div
                 key={tier.id}
@@ -226,6 +328,37 @@ export default function Pricing() {
                     {tier.period}
                   </span>
                 </div>
+
+                {tier.id !== "normal" && (
+                  <div className="mb-5 rounded-xl border border-gray-700/60 bg-gray-950/50 p-3">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                      Select Months
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {monthOptions.map((m) => (
+                        <button
+                          key={m}
+                          onClick={() =>
+                            setSelectedMonths((prev) => ({ ...prev, [tier.id]: m }))
+                          }
+                          className={`rounded-lg py-1.5 text-xs font-semibold border transition ${
+                            pricing.months === m
+                              ? "border-purple-500 bg-purple-500/20 text-white"
+                              : "border-gray-700 bg-gray-900 text-gray-300 hover:bg-gray-800"
+                          }`}
+                        >
+                          {m}m
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-2 text-xs text-gray-300">
+                      Total: ${pricing.total.toFixed(2)}
+                      {pricing.discountPct > 0 && (
+                        <span className="ml-2 text-green-400">({pricing.discountPct}% OFF)</span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <ul className="flex-1 space-y-3 mb-8">
                   {Object.entries(tier.features).map(([feature, enabled]) => (
@@ -260,6 +393,10 @@ export default function Pricing() {
                   >
                     Current Plan
                   </button>
+                ) : isPlanChangeLocked && tier.id !== currentTier ? (
+                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                    Plan locked until last 5 days. Remaining: {user?.daysRemaining ?? 0} day(s).
+                  </div>
                 ) : tier.id === "normal" ? (
                   <button
                     onClick={() => handlePay(tier.id)}
@@ -271,14 +408,22 @@ export default function Pricing() {
                   <div className="space-y-3">
                     <button
                       onClick={() => handlePay(tier.id)}
-                      disabled={checkoutTier === tier.id || redeemingTier === tier.id}
+                      disabled={
+                        checkoutTier === tier.id ||
+                        redeemingTier === tier.id ||
+                        stripeUnavailable
+                      }
                       className={`w-full rounded-xl py-3 font-semibold transition-all ${
                         tier.popular
                           ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-purple-500/25"
                           : "bg-gray-800 hover:bg-gray-700 text-white"
                       }`}
                     >
-                      {checkoutTier === tier.id ? "Redirecting..." : "Pay & Subscribe"}
+                      {stripeUnavailable
+                        ? "Payments Unavailable"
+                        : checkoutTier === tier.id
+                          ? "Redirecting..."
+                          : "Pay & Subscribe"}
                     </button>
 
                     <button

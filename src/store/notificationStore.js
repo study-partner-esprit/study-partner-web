@@ -10,6 +10,7 @@ const useNotificationStore = create((set, get) => ({
   unreadCount: 0,
   isLoading: false,
   error: null,
+  unavailableUntil: null,
   isOpen: false,
   ws: null,
   pollingInterval: null,
@@ -18,6 +19,11 @@ const useNotificationStore = create((set, get) => ({
 
   // Actions
   fetchNotifications: async (userId) => {
+    const unavailableUntil = get().unavailableUntil;
+    if (unavailableUntil && Date.now() < unavailableUntil) {
+      return;
+    }
+
     set({ isLoading: true, error: null });
     try {
       const data = await notificationAPI.getAll({ userId });
@@ -28,13 +34,26 @@ const useNotificationStore = create((set, get) => ({
         notifications,
         unreadCount,
         isLoading: false,
+        unavailableUntil: null,
       });
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-      set({
-        error: error.message,
-        isLoading: false,
-      });
+      const status = error.response?.status;
+
+      // Silently fail for unimplemented endpoints
+      if (status !== 404 && ![500, 502, 503, 504].includes(status)) {
+        console.error("Failed to fetch notifications:", error);
+        set({
+          error: error.message,
+          isLoading: false,
+        });
+      } else {
+        set({
+          isLoading: false,
+          // Back off polling briefly when notifications service is degraded.
+          unavailableUntil:
+            status === 503 ? Date.now() + 2 * 60 * 1000 : get().unavailableUntil,
+        });
+      }
     }
   },
 
@@ -125,7 +144,6 @@ const useNotificationStore = create((set, get) => ({
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        console.log("[Notifications] WebSocket connected");
         // Clear polling if it was started as fallback
         const { pollingInterval } = get();
         if (pollingInterval) {
@@ -154,9 +172,6 @@ const useNotificationStore = create((set, get) => ({
       };
 
       ws.onclose = () => {
-        console.log(
-          "[Notifications] WebSocket closed, falling back to polling",
-        );
         set({ ws: null });
         // Fallback to polling
         if (!get().pollingInterval) {

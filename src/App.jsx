@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { authAPI } from "@/services/api";
 import {
   extractDominantColor,
   extractColorFromVideo,
@@ -27,6 +28,11 @@ import ReviewCenter from "./pages/ReviewCenter";
 import AISearch from "./pages/AISearch";
 import Friends from "./pages/Friends";
 import Analytics from "./pages/Analytics";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminCoupons from "./pages/AdminCoupons";
+import AdminUsers from "./pages/AdminUsers";
+import AdminSubscriptions from "./pages/AdminSubscriptions";
+import AdminAnalytics from "./pages/AdminAnalytics";
 import Pricing from "./pages/Pricing";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
@@ -67,14 +73,39 @@ function App() {
 
   const tier = useAuthStore((s) => s.getTier());
   const trialVisible = tier === "trial";
+  const PAID_BANNER_NEAR_END_DAYS = 5;
+  const subscriptionVisible =
+    ["vip", "vip_plus"].includes(tier) &&
+    Number(user?.daysRemaining || 0) > 0 &&
+    Number(user?.daysRemaining || 0) <= PAID_BANNER_NEAR_END_DAYS;
+  const bannerVisible = trialVisible || subscriptionVisible;
   // heights in px: trial banner = 40, navbar = 80
-  const TRIAL_BANNER_HEIGHT = trialVisible ? 40 : 0;
+  const TRIAL_BANNER_HEIGHT = bannerVisible ? 40 : 0;
   const NAVBAR_HEIGHT = 80;
   const topOffsetPx = NAVBAR_HEIGHT + TRIAL_BANNER_HEIGHT;
 
   // Initialize authentication on app start
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
+  }, []);
+
+  // Refresh user data from server on app startup (to get latest subscription status)
+  useEffect(() => {
+    const refreshUserData = async () => {
+      try {
+        const { user: currentUser, token } = useAuthStore.getState();
+        if (currentUser && token) {
+          const response = await authAPI.getMe();
+          const freshUser = response.data?.user;
+          if (freshUser) {
+            useAuthStore.getState().updateUser(freshUser);
+          }
+        }
+      } catch (err) {
+        // Not critical - continue with cached user data
+      }
+    };
+    refreshUserData();
   }, []);
 
   // Fetch gamification data when authenticated
@@ -352,6 +383,46 @@ function App() {
             element={
               <PrivateRoute>
                 <Analytics />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/coupons"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminCoupons />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminAnalytics />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminUsers />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/subscriptions"
+            element={
+              <PrivateRoute requireAdmin>
+                <AdminSubscriptions />
               </PrivateRoute>
             }
           />

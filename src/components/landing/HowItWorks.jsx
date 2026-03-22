@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Upload, Calendar, BookOpen, TrendingUp } from "lucide-react";
-import { cn } from "@/lib/utils";
 import TiltCard from "@/components/ui/TiltCard";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -144,7 +143,8 @@ const HowItWorks = () => {
                       <step.icon className="w-6 h-6 text-primary" />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-valorant uppercase tracking-wide howitworks-title">
-                      // {step.title}
+                      {"// "}
+                      {step.title}
                     </h3>
                   </div>
                   <p className="text-muted leading-relaxed text-lg relative z-10 font-medium">

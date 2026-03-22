@@ -9,14 +9,26 @@ const api = axios.create({
   timeout: 180000, // Increased timeout for complex operations like study plan creation (3 mins)
 });
 
+const PUBLIC_AUTH_PATHS = [
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+  "/api/v1/auth/refresh",
+  "/api/v1/auth/stripe/config",
+  "/api/v1/auth/verify-email",
+  "/api/v1/auth/resend-verification",
+  "/api/v1/auth/forgot-password",
+  "/api/v1/auth/reset-password",
+];
+
+const isPublicAuthRequest = (url = "") =>
+  PUBLIC_AUTH_PATHS.some((path) => url.includes(path));
+
 // Request interceptor to add auth token
 api.interceptors.request.use(
   async (config) => {
-    console.log("[API] Interceptor running for:", config.url);
-
-    // Skip token for auth endpoints (login, register, refresh)
-    if (config.url?.includes("/auth/") && !config.url?.includes("/auth/me")) {
-      console.log("[API] Skipping token for auth endpoint");
+    // Skip token only for public auth endpoints.
+    // Protected auth routes like /auth/stripe/* still require Authorization.
+    if (isPublicAuthRequest(config.url)) {
       return config;
     }
 
@@ -29,13 +41,6 @@ api.interceptors.request.use(
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log(
-          "[API] ✓ Using valid token (first 20 chars):",
-          token.substring(0, 20) + "...",
-        );
-      } else {
-        console.log("[API] ✗ No valid token available");
-        // Don't reject here - let the request go through and handle 401 in response interceptor
       }
     } catch (error) {
       console.error("[API] Error in request interceptor:", error);
@@ -69,6 +74,11 @@ api.interceptors.response.use(
       }
     }
 
+    // Do not trigger refresh/logout flow on public auth requests.
+    if (error.response?.status === 401 && isPublicAuthRequest(originalRequest?.url)) {
+      return Promise.reject(error);
+    }
+
     // If 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -79,14 +89,12 @@ api.interceptors.response.use(
         const authStore = useAuthStore.getState();
 
         // Try to refresh token
-        console.log("[API] 401 received, attempting token refresh...");
         const refreshed = await authStore.refreshTokenAsync();
 
         if (refreshed) {
           // Retry the original request with new token
           const newToken = authStore.token;
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          console.log("[API] Retrying request with refreshed token");
           return api(originalRequest);
         }
       } catch (refreshError) {
@@ -94,7 +102,6 @@ api.interceptors.response.use(
       }
 
       // If refresh failed or no refresh token, logout user
-      console.log("[API] Authentication failed, logging out user");
       const { useAuthStore } = await import("../store/authStore");
       useAuthStore.getState().logout();
 
@@ -115,8 +122,11 @@ export const authAPI = {
   refresh: (refreshToken) => api.post("/api/v1/auth/refresh", { refreshToken }),
   getMe: () => api.get("/api/v1/auth/me"),
   updateTier: (tier) => api.put("/api/v1/auth/tier", { tier }),
-  subscribe: (tier) => api.post("/api/v1/auth/stripe/subscribe", { tier }),
-  getSubscriptionStatus: () => api.get("/api/v1/auth/stripe/subscription/status"),
+  getStripeConfig: () => api.get("/api/v1/auth/stripe/config"),
+  subscribe: (tier, durationMonths = 1) =>
+    api.post("/api/v1/auth/stripe/subscribe", { tier, durationMonths }),
+  confirmCheckout: (sessionId) =>
+    api.post("/api/v1/auth/stripe/confirm", { sessionId }),
   verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
   resendVerification: (email) =>
     api.post("/api/v1/auth/resend-verification", { email }),
@@ -127,6 +137,24 @@ export const authAPI = {
   redeemCoupon: (coupon, expectedTier) =>
     api.post("/api/v1/auth/coupon/redeem", { coupon, expectedTier }),
   listCoupons: () => api.get("/api/v1/auth/coupon/list"),
+  changePlan: (newTier, durationMonths = 1) =>
+    api.post("/api/v1/auth/plan/change", { newTier, durationMonths }),
+};
+
+export const adminAPI = {
+  getUsers: (params = {}) => api.get("/api/v1/auth/admin/users", { params }),
+  getUserById: (userId) => api.get(`/api/v1/auth/admin/users/${userId}`),
+  updateUser: (userId, data) => api.put(`/api/v1/auth/admin/users/${userId}`, data),
+  deactivateUser: (userId) => api.delete(`/api/v1/auth/admin/users/${userId}`),
+  getStats: () => api.get("/api/v1/auth/admin/stats"),
+  getRevenueAnalytics: () => api.get("/api/v1/auth/admin/analytics/revenue"),
+  getSubscriptions: (params = {}) => api.get("/api/v1/auth/admin/subscriptions", { params }),
+  cancelSubscription: (paymentId) => api.put(`/api/v1/auth/admin/subscriptions/${paymentId}/cancel`),
+  getCoupons: () => api.get("/api/v1/auth/admin/coupons"),
+  createCoupon: (data) => api.post("/api/v1/auth/admin/coupons", data),
+  updateCoupon: (couponId, data) => api.put(`/api/v1/auth/admin/coupons/${couponId}`, data),
+  deactivateCoupon: (couponId) => api.delete(`/api/v1/auth/admin/coupons/${couponId}`),
+  getCouponUsage: (couponId) => api.get(`/api/v1/auth/admin/coupons/${couponId}/usage`),
 };
 
 // Profile API
