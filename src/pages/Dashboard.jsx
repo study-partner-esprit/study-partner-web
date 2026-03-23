@@ -184,24 +184,17 @@ const Dashboard = () => {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Quest Panel - Left */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.3 }}
             >
-              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md h-full">
-                <div className="card-inner-sheen" />
-                <h2 className="text-xl font-bold tracking-wider mb-4 text-foreground relative z-10">
-                  <span className="text-primary">{"//"}</span> STUDY FOCUS
-                </h2>
-                <p className="text-muted-foreground relative z-10">
-                  Start your study directly from pending tasks using the PLAY button.
-                  Your pending list updates from backend task data.
-                </p>
-              </div>
+              <QuestPanel />
             </motion.div>
 
-            {/* Quick Actions & Profile */}
+            {/* Profile & Quick Actions - Right */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -209,7 +202,7 @@ const Dashboard = () => {
               className="space-y-6"
             >
               {/* Profile Card */}
-              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md">
+              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md border border-border/50">
                 <div className="card-inner-sheen" />
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
 
@@ -218,13 +211,13 @@ const Dashboard = () => {
                 </h2>
 
                 <div className="space-y-3 text-sm relative z-10">
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <div className="flex justify-between items-center py-2 border-b border-border/30">
                     <span className="text-muted-foreground">EMAIL</span>
                     <span className="font-semibold text-xs text-foreground">
                       {user?.email}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <div className="flex justify-between items-center py-2 border-b border-border/30">
                     <span className="text-muted-foreground">ROLE</span>
                     <span
                       className={`font-bold ${user?.role === "admin" ? "text-primary" : "text-green-500"}`}
@@ -232,7 +225,7 @@ const Dashboard = () => {
                       {user?.role?.toUpperCase()}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <div className="flex justify-between items-center py-2 border-b border-border/30">
                     <span className="text-muted-foreground">THEME</span>
                     <span className="font-semibold text-foreground">
                       {profile?.preferences?.theme?.toUpperCase() || "DARK"}
@@ -249,7 +242,7 @@ const Dashboard = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md">
+              <div className="card-valorant p-6 relative overflow-hidden bg-card/80 backdrop-blur-md border border-border/50">
                 <div className="card-inner-sheen" />
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
 
@@ -278,9 +271,6 @@ const Dashboard = () => {
                   </Link>
                 </div>
               </div>
-
-              {/* Quest Panel */}
-              <QuestPanel />
             </motion.div>
           </div>
         </div>
