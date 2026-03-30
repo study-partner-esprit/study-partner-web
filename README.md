@@ -121,6 +121,4 @@ API endpoints:
 - `/api/v1/tasks/*` - Task management
 - `/api/v1/sessions/*` - Study sessions
 
-## 📝 License
 
-MIT
