@@ -4,7 +4,7 @@
  * Tests form rendering, validation, and submit flow
  */
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 // jest-dom is loaded via src/setupTests.js
@@ -60,54 +60,60 @@ describe("Register Page", () => {
 
   it("should validate password match", async () => {
     renderRegister();
+    const user = userEvent.setup();
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordFields = screen.getAllByLabelText(/password/i);
 
-    await userEvent.type(nameInput, "Test User");
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.type(passwordFields[0], "Password123");
-    await userEvent.type(passwordFields[1], "DifferentPass");
+    await user.type(nameInput, "Test User");
+    await user.type(emailInput, "test@example.com");
+    await user.type(passwordFields[0], "Password123!");
+    await user.type(passwordFields[1], "DifferentPass!");
 
-    const buttons = screen.getAllByRole("button");
-    const submitBtn =
-      buttons.find((b) => b.type === "submit") || buttons[buttons.length - 1];
-    fireEvent.click(submitBtn);
+    await user.click(screen.getByRole("button", { name: /next/i }));
 
     await waitFor(() => {
-      const errorEl = screen.queryByText(/match|mismatch/i);
-      expect(errorEl || !authAPI.register.mock.calls.length).toBeTruthy();
+      expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+      expect(authAPI.register).not.toHaveBeenCalled();
     });
   });
 
   it("should call authAPI.register on valid submit", async () => {
     authAPI.register.mockResolvedValue({
-      data: {
-        token: "jwt-token",
-        refreshToken: "refresh-token",
-        user: { _id: "u1", name: "Test User", role: "student" },
-      },
+      message: "Registration successful. Please verify your email to continue.",
+      requiresVerification: true,
     });
 
     renderRegister();
+    const user = userEvent.setup();
 
     const nameInput = screen.getByLabelText(/name/i);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordFields = screen.getAllByLabelText(/password/i);
 
-    await userEvent.type(nameInput, "Test User");
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.type(passwordFields[0], "Password123");
-    await userEvent.type(passwordFields[1], "Password123");
+    await user.type(nameInput, "Test User");
+    await user.type(emailInput, "test@example.com");
+    await user.type(passwordFields[0], "Password123!");
+    await user.type(passwordFields[1], "Password123!");
 
-    const buttons = screen.getAllByRole("button");
-    const submitBtn =
-      buttons.find((b) => b.type === "submit") || buttons[buttons.length - 1];
-    fireEvent.click(submitBtn);
+    await user.click(screen.getByRole("button", { name: /next/i }));
+    await waitFor(() => {
+      expect(screen.getByText(/learning profile/i)).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: /next/i }));
+    await waitFor(() => {
+      expect(screen.getByText(/preferences/i)).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: /create account/i }));
 
     await waitFor(() => {
       expect(authAPI.register).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/verify-email?email=test%40example.com",
+      );
     });
   });
 });

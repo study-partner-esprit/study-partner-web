@@ -74,92 +74,142 @@ const TaskProgressBar = ({ taskProgress }) => {
 };
 
 // ─── Session Summary Screen ──────────────────────────────────────────
-const SessionSummary = ({ summary, onRestart, onGoHome }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden"
-  >
-    <div className="absolute inset-0 z-0 opacity-15">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff4655] rounded-full blur-[200px]" />
-    </div>
+const SessionSummary = ({ summary, onRestart, onGoHome }) => {
+  const kpResult = summary?.kpResult || null;
+  const primaryBreakdown =
+    kpResult?.primaryBreakdown ||
+    kpResult?.events?.find((event) => event.action === "session_complete") ||
+    kpResult?.events?.[0] ||
+    null;
 
-    <div className="relative z-10 max-w-lg w-full p-8">
-      <motion.div
-        initial={{ y: -20 }}
-        animate={{ y: 0 }}
-        className="text-center mb-8"
-      >
-        <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
-        <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
-          SESSION COMPLETE
-        </h1>
-        <p className="text-gray-400 text-lg">{summary.courseTitle}</p>
-      </motion.div>
+  const totalKP = Number(kpResult?.totalKP || summary?.totalKP || 0);
+  const difficultyMult = Number(primaryBreakdown?.multipliers?.difficulty || 1);
+  const performanceMult = Number(primaryBreakdown?.multipliers?.performance || 1);
+  const consistencyMult = Number(primaryBreakdown?.multipliers?.consistency || 1);
+  const formulaFinal = Number(primaryBreakdown?.finalKP || 0);
 
-      <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 space-y-4 mb-8">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-            <CheckCircle2 size={24} className="mx-auto text-green-500 mb-2" />
-            <p className="text-2xl font-black text-white">
-              {summary.completedTasks}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Completed
-            </p>
-          </div>
-          <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-            <SkipForward size={24} className="mx-auto text-yellow-500 mb-2" />
-            <p className="text-2xl font-black text-white">
-              {summary.skippedTasks}
-            </p>
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Skipped
-            </p>
-          </div>
-        </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden"
+    >
+      <div className="absolute inset-0 z-0 opacity-15">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff4655] rounded-full blur-[200px]" />
+      </div>
 
-        <div className="border-t border-[#ffffff10] pt-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-400">Total XP Earned</span>
-            <span className="text-2xl font-black text-[#ff4655] flex items-center gap-1">
-              <Zap size={20} />+{summary.totalXP}
-            </span>
+      <div className="relative z-10 max-w-lg w-full p-8">
+        <motion.div
+          initial={{ y: -20 }}
+          animate={{ y: 0 }}
+          className="text-center mb-8"
+        >
+          <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
+          <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
+            SESSION COMPLETE
+          </h1>
+          <p className="text-gray-400 text-lg">{summary.courseTitle}</p>
+        </motion.div>
+
+        <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 space-y-4 mb-8">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-4 bg-[#0f1923] rounded-xl">
+              <CheckCircle2 size={24} className="mx-auto text-green-500 mb-2" />
+              <p className="text-2xl font-black text-white">
+                {summary.completedTasks}
+              </p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider">
+                Completed
+              </p>
+            </div>
+            <div className="text-center p-4 bg-[#0f1923] rounded-xl">
+              <SkipForward size={24} className="mx-auto text-yellow-500 mb-2" />
+              <p className="text-2xl font-black text-white">
+                {summary.skippedTasks}
+              </p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider">
+                Skipped
+              </p>
+            </div>
           </div>
-          {summary.xpMultiplier > 1 && (
+
+          <div className="border-t border-[#ffffff10] pt-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-gray-400">Team Multiplier</span>
-              <span className="text-lg font-bold text-[#0fb8ce]">
-                {summary.xpMultiplier}x
+              <span className="text-gray-400">Total XP Earned</span>
+              <span className="text-2xl font-black text-[#ff4655] flex items-center gap-1">
+                <Zap size={20} />+{summary.totalXP}
               </span>
             </div>
-          )}
-          <div className="flex items-center justify-between">
-            <span className="text-gray-400">Total Tasks</span>
-            <span className="text-lg font-bold text-white">
-              {summary.totalTasks}
-            </span>
+
+            {totalKP > 0 && (
+              <div className="mb-3 rounded-lg bg-[#0f1923] border border-[#ffffff10] p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400">Knowledge Points Gained</span>
+                  <span className="text-lg font-black text-[#0fb8ce]">+{totalKP} KP</span>
+                </div>
+
+                {primaryBreakdown && (
+                  <div className="space-y-1 text-xs text-gray-300">
+                    <div className="flex items-center justify-between">
+                      <span>+ Base KP</span>
+                      <span>{primaryBreakdown.baseKP || 0}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>× Difficulty</span>
+                      <span>{difficultyMult.toFixed(2)}x</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>× Performance</span>
+                      <span>{performanceMult.toFixed(2)}x</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>× Streak</span>
+                      <span>{consistencyMult.toFixed(2)}x</span>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-[#ffffff10] pt-1 mt-1 text-white font-bold">
+                      <span>= Total KP gained</span>
+                      <span>{formulaFinal || totalKP} KP</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {summary.xpMultiplier > 1 && (
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-gray-400">Team Multiplier</span>
+                <span className="text-lg font-bold text-[#0fb8ce]">
+                  {summary.xpMultiplier}x
+                </span>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Total Tasks</span>
+              <span className="text-lg font-bold text-white">
+                {summary.totalTasks}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex gap-4">
-        <button
-          onClick={onRestart}
-          className="flex-1 px-6 py-3 bg-[#1a2633] border border-[#ffffff10] text-white font-bold tracking-wider uppercase hover:bg-[#ffffff10] transition-all rounded-lg flex items-center justify-center gap-2"
-        >
-          <RotateCcw size={18} /> STUDY AGAIN
-        </button>
-        <button
-          onClick={onGoHome}
-          className="flex-1 px-6 py-3 bg-[#ff4655] text-white font-bold tracking-wider uppercase hover:bg-[#ff2a3a] transition-all rounded-lg flex items-center justify-center gap-2"
-        >
-          DASHBOARD
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={onRestart}
+            className="flex-1 px-6 py-3 bg-[#1a2633] border border-[#ffffff10] text-white font-bold tracking-wider uppercase hover:bg-[#ffffff10] transition-all rounded-lg flex items-center justify-center gap-2"
+          >
+            <RotateCcw size={18} /> STUDY AGAIN
+          </button>
+          <button
+            onClick={onGoHome}
+            className="flex-1 px-6 py-3 bg-[#ff4655] text-white font-bold tracking-wider uppercase hover:bg-[#ff2a3a] transition-all rounded-lg flex items-center justify-center gap-2"
+          >
+            DASHBOARD
+          </button>
+        </div>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 const StudySession = () => {
   const navigate = useNavigate();
@@ -422,6 +472,8 @@ const StudySession = () => {
       coachPollingRef.current = null;
     }
 
+    const completedStudySessionId = studySessionIdRef.current;
+
     // End focus tracking session and get summary
     let focusScore = 0;
     let focusSummary = null;
@@ -492,10 +544,27 @@ const StudySession = () => {
       (focusSummary?.avgFocusLevel && focusSummary.avgFocusLevel > 80)
     ) {
       try {
-        await gamificationAPI.awardXP({ action: "perfect_focus_session" });
+        await gamificationAPI.awardXP({
+          action: "perfect_focus_session",
+          metadata: {
+            sessionId: focusSessionIdRef.current || completedStudySessionId || null,
+            focusScore: focusSummary?.avgFocusLevel || focusScore || 0,
+          },
+        });
         console.log("[StudySession] Awarded XP for perfect focus session!");
       } catch (err) {
         console.error("[StudySession] Failed to award XP:", err);
+      }
+    }
+
+    let kpSessionResult = null;
+    if (completedStudySessionId) {
+      try {
+        kpSessionResult = await gamificationAPI.getRankSessionResult(
+          completedStudySessionId,
+        );
+      } catch (err) {
+        console.error("[StudySession] Failed to fetch KP session result:", err);
       }
     }
 
@@ -505,7 +574,7 @@ const StudySession = () => {
 
     // If task-progression mode, transition to summary screen
     if (hasTaskProgression) {
-      finishSession();
+      finishSession({ kpResult: kpSessionResult });
     }
   };
 

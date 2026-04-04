@@ -12,6 +12,8 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [resending, setResending] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -20,6 +22,23 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
     setError("");
+    setUnverifiedEmail("");
+  };
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail || resending) return;
+    setResending(true);
+    try {
+      await authAPI.resendVerification(unverifiedEmail);
+      setError("Verification email sent. Please check your inbox.");
+    } catch (err) {
+      setError(
+        err.response?.data?.error ||
+          "Failed to resend verification email. Please try again.",
+      );
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -49,6 +68,12 @@ const Login = () => {
         navigate("/dashboard");
       }
     } catch (err) {
+      const code = err.response?.data?.code;
+      if (code === "EMAIL_NOT_VERIFIED") {
+        setUnverifiedEmail(
+          err.response?.data?.email || formData.email.trim().toLowerCase(),
+        );
+      }
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
@@ -123,6 +148,19 @@ const Login = () => {
               >
                 {error}
               </motion.div>
+            )}
+
+            {unverifiedEmail && (
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={resending}
+                className="w-full border border-border text-foreground font-semibold py-2 px-4 hover:bg-muted transition-colors disabled:opacity-50"
+              >
+                {resending
+                  ? "SENDING VERIFICATION..."
+                  : "RESEND VERIFICATION EMAIL"}
+              </button>
             )}
 
             {/* Submit Button */}

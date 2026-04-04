@@ -252,7 +252,7 @@ const useSessionStore = create((set, get) => ({
   },
 
   // Finish session and show summary
-  finishSession: async () => {
+  finishSession: async (options = {}) => {
     const { activeSession, taskProgress } = get();
     if (!activeSession) return;
 
@@ -269,6 +269,7 @@ const useSessionStore = create((set, get) => ({
     const completedCount = tasks.filter((t) => t.status === "completed").length;
     const skippedCount = tasks.filter((t) => t.status === "skipped").length;
     const totalXP = tasks.reduce((sum, t) => sum + (t.xpEarned || 0), 0);
+    const kpResult = options.kpResult || null;
 
     set({
       step: "summary",
@@ -277,6 +278,8 @@ const useSessionStore = create((set, get) => ({
         completedTasks: completedCount,
         skippedTasks: skippedCount,
         totalXP,
+        totalKP: kpResult?.totalKP || 0,
+        kpResult,
         xpMultiplier: activeSession.xpMultiplier || 1.0,
         duration: activeSession.duration || 0,
         courseTitle: get().selectedCourse?.title || "Study Session",
