@@ -45,7 +45,9 @@ const Dashboard = () => {
     } catch (err) {
       const status = err.response?.status;
       if (status !== 404) {
-        setError(`Failed to load dashboard - ${status === 401 ? "Please log in again" : "Server error"}`);
+        setError(
+          `Failed to load dashboard - ${status === 401 ? "Please log in again" : "Server error"}`,
+        );
       }
     } finally {
       setLoading(false);
@@ -159,7 +161,9 @@ const Dashboard = () => {
                             {task.title}
                           </h3>
                           <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                            <span className="uppercase">{task.status || "todo"}</span>
+                            <span className="uppercase">
+                              {task.status || "todo"}
+                            </span>
                             {task.priority && (
                               <span className="uppercase">{task.priority}</span>
                             )}
@@ -184,7 +188,6 @@ const Dashboard = () => {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
             {/* Quest Panel - Left */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -280,7 +283,14 @@ const Dashboard = () => {
 };
 
 // Theme-aware StatCard
-const StatCard = ({ title, value, subtitle, icon, onClick, clickable = false }) => {
+const StatCard = ({
+  title,
+  value,
+  subtitle,
+  icon,
+  onClick,
+  clickable = false,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

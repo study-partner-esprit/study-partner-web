@@ -45,7 +45,9 @@ export default function AdminCoupons() {
         targetTier: form.targetTier,
         durationDays: Number(form.durationDays || 30),
         maxUses: Number(form.maxUses || 1),
-        expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : null,
+        expiresAt: form.expiresAt
+          ? new Date(form.expiresAt).toISOString()
+          : null,
       });
       setSuccess("Coupon created successfully.");
       setForm(initialForm);
@@ -91,13 +93,17 @@ export default function AdminCoupons() {
         >
           <input
             value={form.code}
-            onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, code: e.target.value }))
+            }
             placeholder="Custom code (optional)"
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
           <select
             value={form.targetTier}
-            onChange={(e) => setForm((prev) => ({ ...prev, targetTier: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, targetTier: e.target.value }))
+            }
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
           >
             <option value="trial">Trial</option>
@@ -110,7 +116,9 @@ export default function AdminCoupons() {
             min="1"
             max="365"
             value={form.durationDays}
-            onChange={(e) => setForm((prev) => ({ ...prev, durationDays: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, durationDays: e.target.value }))
+            }
             placeholder="Duration days"
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
@@ -118,14 +126,18 @@ export default function AdminCoupons() {
             type="number"
             min="1"
             value={form.maxUses}
-            onChange={(e) => setForm((prev) => ({ ...prev, maxUses: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, maxUses: e.target.value }))
+            }
             placeholder="Max uses"
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
           <input
             type="datetime-local"
             value={form.expiresAt}
-            onChange={(e) => setForm((prev) => ({ ...prev, expiresAt: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, expiresAt: e.target.value }))
+            }
             className="rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
           <button
@@ -152,13 +164,19 @@ export default function AdminCoupons() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="p-4 text-center text-muted-foreground"
+                  >
                     Loading coupons...
                   </td>
                 </tr>
               ) : coupons.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="p-4 text-center text-muted-foreground"
+                  >
                     No coupons found.
                   </td>
                 </tr>
@@ -169,9 +187,12 @@ export default function AdminCoupons() {
                     <td className="p-3 uppercase">{coupon.targetTier}</td>
                     <td className="p-3">{coupon.durationDays} days</td>
                     <td className="p-3">
-                      {coupon.usageCount}/{coupon.maxUses === -1 ? "∞" : coupon.maxUses}
+                      {coupon.usageCount}/
+                      {coupon.maxUses === -1 ? "∞" : coupon.maxUses}
                     </td>
-                    <td className="p-3">{coupon.isActive ? "Active" : "Inactive"}</td>
+                    <td className="p-3">
+                      {coupon.isActive ? "Active" : "Inactive"}
+                    </td>
                     <td className="p-3">
                       {coupon.isActive && (
                         <button

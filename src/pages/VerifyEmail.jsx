@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
 import { motion } from "framer-motion";
 import { authAPI } from "../services/api";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
@@ -73,7 +78,9 @@ export default function VerifyEmail() {
       setResendCooldown(60);
     } catch (err) {
       setStatus("error");
-      setMessage(err.response?.data?.error || "Failed to resend verification email.");
+      setMessage(
+        err.response?.data?.error || "Failed to resend verification email.",
+      );
     } finally {
       setResending(false);
     }
@@ -96,11 +103,16 @@ export default function VerifyEmail() {
         <div className="card-valorant p-8 text-center">
           {status === "idle" && (
             <>
-              <h2 className="text-xl font-bold text-foreground mb-2">Verify with OTP</h2>
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Verify with OTP
+              </h2>
               <p className="text-muted-foreground mb-6">
                 Enter your email and 6-digit verification code.
               </p>
-              <form onSubmit={handleOtpVerification} className="space-y-3 text-left">
+              <form
+                onSubmit={handleOtpVerification}
+                className="space-y-3 text-left"
+              >
                 <input
                   type="email"
                   value={email}
@@ -142,7 +154,10 @@ export default function VerifyEmail() {
 
           {status === "verifying" && (
             <>
-              <Loader2 className="mx-auto text-primary animate-spin mb-4" size={48} />
+              <Loader2
+                className="mx-auto text-primary animate-spin mb-4"
+                size={48}
+              />
               <h2 className="text-xl font-bold text-foreground mb-2">
                 Verifying your email...
               </h2>
@@ -152,7 +167,9 @@ export default function VerifyEmail() {
           {status === "success" && (
             <>
               <CheckCircle className="mx-auto text-green-500 mb-4" size={48} />
-              <h2 className="text-xl font-bold text-foreground mb-2">Email Verified!</h2>
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Email Verified!
+              </h2>
               <p className="text-muted-foreground mb-6">{message}</p>
               <button
                 onClick={() => navigate("/login")}
@@ -166,7 +183,9 @@ export default function VerifyEmail() {
           {status === "error" && (
             <>
               <XCircle className="mx-auto text-destructive mb-4" size={48} />
-              <h2 className="text-xl font-bold text-foreground mb-2">Verification Failed</h2>
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Verification Failed
+              </h2>
               <p className="text-muted-foreground mb-6">{message}</p>
               <div className="space-y-3">
                 <button

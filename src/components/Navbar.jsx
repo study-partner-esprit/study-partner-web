@@ -51,7 +51,11 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
       ? [
           { path: "/admin/dashboard", label: "Dashboard", icon: Shield },
           { path: "/admin/users", label: "Users", icon: Users },
-          { path: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
+          {
+            path: "/admin/subscriptions",
+            label: "Subscriptions",
+            icon: CreditCard,
+          },
           { path: "/admin/coupons", label: "Coupons", icon: Ticket },
           { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
         ]

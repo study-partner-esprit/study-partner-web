@@ -11,7 +11,9 @@ export default function useChatWebSocket({ sessionId, userId, onMessage }) {
   useEffect(() => {
     if (!sessionId || !userId) return undefined;
 
-    const ws = new WebSocket(`${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`);
+    const ws = new WebSocket(
+      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,
+    );
     socketRef.current = ws;
 
     ws.onopen = () => {

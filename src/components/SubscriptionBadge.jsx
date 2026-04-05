@@ -40,7 +40,9 @@ export default function SubscriptionBadge({ user, tier = "normal" }) {
         {badge.label}
       </span>
       {hasActiveSubscription && (
-        <span className={daysRemaining <= 5 ? "text-amber-300" : "text-slate-300"}>
+        <span
+          className={daysRemaining <= 5 ? "text-amber-300" : "text-slate-300"}
+        >
           {daysRemaining}d left
         </span>
       )}

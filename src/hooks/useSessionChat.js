@@ -27,7 +27,9 @@ export default function useSessionChat({ sessionId, userId }) {
     if (payload.type === "chat_result") {
       setMessages((prev) => [
         {
-          _id: payload.messageId || `result-${payload.userId}-${payload.createdAt}`,
+          _id:
+            payload.messageId ||
+            `result-${payload.userId}-${payload.createdAt}`,
           messageType: "result",
           userId: payload.userId,
           content: payload.answer,
@@ -59,7 +61,9 @@ export default function useSessionChat({ sessionId, userId }) {
     setError("");
 
     try {
-      const response = await sessionChatAPI.getHistory(sessionId, { limit: 100 });
+      const response = await sessionChatAPI.getHistory(sessionId, {
+        limit: 100,
+      });
       setMessages(response.data?.items || []);
     } catch (err) {
       setError(err.response?.data?.error || "Failed to load chat history");
@@ -106,7 +110,10 @@ export default function useSessionChat({ sessionId, userId }) {
   );
 
   const sortedMessages = useMemo(
-    () => [...messages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+    () =>
+      [...messages].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      ),
     [messages],
   );
 

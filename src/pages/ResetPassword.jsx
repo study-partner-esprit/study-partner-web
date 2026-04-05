@@ -57,75 +57,81 @@ export default function ResetPassword() {
         </div>
 
         <div className="card-valorant p-8">
-        {status === "success" ? (
-          <div className="text-center">
-            <CheckCircle className="mx-auto text-green-500 mb-4" size={48} />
-            <h2 className="text-xl font-bold text-foreground mb-2">
-              Password Reset!
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Your password has been updated. You can now log in.
-            </p>
-            <button
-              onClick={() => navigate("/login")}
-              className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors"
-            >
-              Go to Login
-            </button>
-          </div>
-        ) : status === "error" && !error ? (
-          <div className="text-center">
-            <XCircle className="mx-auto text-destructive mb-4" size={48} />
-            <h2 className="text-xl font-bold text-foreground mb-2">Reset Failed</h2>
-            <p className="text-muted-foreground mb-6">This link may have expired.</p>
-            <button
-              onClick={() => navigate("/forgot-password")}
-              className="w-full border border-border text-foreground font-bold py-3 px-4 transition-colors hover:bg-muted"
-            >
-              Request New Link
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center gap-2 mb-6">
-              <Lock className="text-primary" size={24} />
-              <h2 className="text-xl font-bold text-foreground">Set New Password</h2>
-            </div>
-
-            {error && (
-              <div className="mb-4 p-3 bg-destructive/10 border border-destructive text-destructive text-sm">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="New password"
-                required
-                minLength={8}
-                className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
-              />
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm new password"
-                required
-                className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
-              />
+          {status === "success" ? (
+            <div className="text-center">
+              <CheckCircle className="mx-auto text-green-500 mb-4" size={48} />
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Password Reset!
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Your password has been updated. You can now log in.
+              </p>
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors disabled:opacity-50"
+                onClick={() => navigate("/login")}
+                className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors"
               >
-                {loading ? "Resetting..." : "Reset Password"}
+                Go to Login
               </button>
-            </form>
-          </>
-        )}
+            </div>
+          ) : status === "error" && !error ? (
+            <div className="text-center">
+              <XCircle className="mx-auto text-destructive mb-4" size={48} />
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                Reset Failed
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                This link may have expired.
+              </p>
+              <button
+                onClick={() => navigate("/forgot-password")}
+                className="w-full border border-border text-foreground font-bold py-3 px-4 transition-colors hover:bg-muted"
+              >
+                Request New Link
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 mb-6">
+                <Lock className="text-primary" size={24} />
+                <h2 className="text-xl font-bold text-foreground">
+                  Set New Password
+                </h2>
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-destructive/10 border border-destructive text-destructive text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="New password"
+                  required
+                  minLength={8}
+                  className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                />
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  required
+                  className="w-full px-4 py-3 bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-primary hover:bg-primary text-primary-foreground font-bold py-3 px-4 transition-colors disabled:opacity-50"
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
+                </button>
+              </form>
+            </>
+          )}
         </div>
       </motion.div>
     </div>

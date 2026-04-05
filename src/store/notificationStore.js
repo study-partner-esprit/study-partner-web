@@ -51,7 +51,9 @@ const useNotificationStore = create((set, get) => ({
           isLoading: false,
           // Back off polling briefly when notifications service is degraded.
           unavailableUntil:
-            status === 503 ? Date.now() + 2 * 60 * 1000 : get().unavailableUntil,
+            status === 503
+              ? Date.now() + 2 * 60 * 1000
+              : get().unavailableUntil,
         });
       }
     }

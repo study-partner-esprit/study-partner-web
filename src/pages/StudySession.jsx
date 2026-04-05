@@ -84,8 +84,12 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
 
   const totalKP = Number(kpResult?.totalKP || summary?.totalKP || 0);
   const difficultyMult = Number(primaryBreakdown?.multipliers?.difficulty || 1);
-  const performanceMult = Number(primaryBreakdown?.multipliers?.performance || 1);
-  const consistencyMult = Number(primaryBreakdown?.multipliers?.consistency || 1);
+  const performanceMult = Number(
+    primaryBreakdown?.multipliers?.performance || 1,
+  );
+  const consistencyMult = Number(
+    primaryBreakdown?.multipliers?.consistency || 1,
+  );
   const formulaFinal = Number(primaryBreakdown?.finalKP || 0);
 
   return (
@@ -145,7 +149,9 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
               <div className="mb-3 rounded-lg bg-[#0f1923] border border-[#ffffff10] p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400">Knowledge Points Gained</span>
-                  <span className="text-lg font-black text-[#0fb8ce]">+{totalKP} KP</span>
+                  <span className="text-lg font-black text-[#0fb8ce]">
+                    +{totalKP} KP
+                  </span>
                 </div>
 
                 {primaryBreakdown && (
@@ -547,7 +553,8 @@ const StudySession = () => {
         await gamificationAPI.awardXP({
           action: "perfect_focus_session",
           metadata: {
-            sessionId: focusSessionIdRef.current || completedStudySessionId || null,
+            sessionId:
+              focusSessionIdRef.current || completedStudySessionId || null,
             focusScore: focusSummary?.avgFocusLevel || focusScore || 0,
           },
         });
@@ -941,7 +948,9 @@ const StudySession = () => {
 
                   {sessionActive && (
                     <ChatWindow
-                      sessionId={activeSession?._id || studySessionIdRef.current}
+                      sessionId={
+                        activeSession?._id || studySessionIdRef.current
+                      }
                       userId={user?._id}
                     />
                   )}

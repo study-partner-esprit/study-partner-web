@@ -38,25 +38,25 @@ const CTASection = () => {
       tl.fromTo(
         cardRef.current,
         { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+        { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" },
       )
         .fromTo(
           badgeRef.current,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" },
-          "-=0.4"
+          "-=0.4",
         )
         .fromTo(
           titleRef.current,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.4"
+          "-=0.4",
         )
         .fromTo(
           descriptionRef.current,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.6"
+          "-=0.6",
         )
         .fromTo(
           rewardsRef.current.children,
@@ -68,19 +68,19 @@ const CTASection = () => {
             stagger: 0.1,
             ease: "power3.out",
           },
-          "-=0.4"
+          "-=0.4",
         )
         .fromTo(
           ctaButtonRef.current,
           { opacity: 0, scale: 0.9 },
           { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.5)" },
-          "-=0.2"
+          "-=0.2",
         )
         .fromTo(
           footerRef.current,
           { opacity: 0 },
           { opacity: 1, duration: 0.8 },
-          "-=0.4"
+          "-=0.4",
         );
 
       // Continuous floating animation for badge icons
@@ -101,7 +101,6 @@ const CTASection = () => {
         ease: "sine.inOut",
         delay: 0.5,
       });
-
     }, containerRef);
 
     return () => ctx.revert();
@@ -135,7 +134,10 @@ const CTASection = () => {
   ];
 
   return (
-    <section ref={containerRef} className="relative min-h-[calc(100vh-5rem)] w-full px-0 overflow-hidden flex items-center overflow-x-hidden">
+    <section
+      ref={containerRef}
+      className="relative min-h-[calc(100vh-5rem)] w-full px-0 overflow-hidden flex items-center overflow-x-hidden"
+    >
       {/* Light rays removed */}
 
       <div className="relative w-full z-10">
@@ -176,8 +178,8 @@ const CTASection = () => {
               className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
             >
               Start your gamified learning journey today and unlock your full
-              academic potential. Join thousands of students already leveling
-              up their grades!
+              academic potential. Join thousands of students already leveling up
+              their grades!
             </p>
 
             {/* Enhanced Reward Grid */}
@@ -208,9 +210,7 @@ const CTASection = () => {
             {/* Enhanced CTA Button */}
             <div ref={ctaButtonRef} className="mb-8">
               <Link to="/register">
-                <button
-                  className="group relative inline-flex items-center px-10 py-5 text-xl font-bold text-white valo-btn bg-primary hover:bg-primary/90 shadow-2xl hover:shadow-primary/50 transition-all duration-500 overflow-hidden transform hover:scale-105 active:scale-98"
-                >
+                <button className="group relative inline-flex items-center px-10 py-5 text-xl font-bold text-white valo-btn bg-primary hover:bg-primary/90 shadow-2xl hover:shadow-primary/50 transition-all duration-500 overflow-hidden transform hover:scale-105 active:scale-98">
                   {/* Button Background Animation */}
                   <div className="absolute inset-0 bg-primary/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
 

@@ -11,7 +11,8 @@ export default function CheckoutCancel() {
         <XCircle className="mx-auto mb-4 text-yellow-400" size={52} />
         <h1 className="text-2xl font-bold mb-2">Checkout canceled</h1>
         <p className="text-gray-400 mb-6">
-          No charge was made. You can continue on your current plan or try again.
+          No charge was made. You can continue on your current plan or try
+          again.
         </p>
 
         <div className="flex items-center justify-center gap-3">

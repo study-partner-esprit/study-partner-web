@@ -26,7 +26,10 @@ export default function AdminAnalytics() {
 
   const maxRevenue = React.useMemo(() => {
     const rows = data?.monthly || [];
-    return rows.reduce((max, row) => Math.max(max, Number(row.revenueCents || 0)), 0);
+    return rows.reduce(
+      (max, row) => Math.max(max, Number(row.revenueCents || 0)),
+      0,
+    );
   }, [data]);
 
   const exportCsv = React.useCallback(() => {
@@ -38,10 +41,14 @@ export default function AdminAnalytics() {
       const revenueCents = Number(row?.revenueCents || 0);
       const revenueUsd = (revenueCents / 100).toFixed(2);
       const transactions = Number(row?.count || 0);
-      lines.push([year, month, revenueCents, revenueUsd, transactions].join(","));
+      lines.push(
+        [year, month, revenueCents, revenueUsd, transactions].join(","),
+      );
     });
 
-    const blob = new Blob([`${lines.join("\n")}\n`], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([`${lines.join("\n")}\n`], {
+      type: "text/csv;charset=utf-8",
+    });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `revenue-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
@@ -55,10 +62,14 @@ export default function AdminAnalytics() {
     <div className="min-h-screen bg-background text-foreground px-6 py-8">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Admin Analytics</h1>
-        <p className="text-muted-foreground mb-6">Revenue analytics and recurring revenue indicators.</p>
+        <p className="text-muted-foreground mb-6">
+          Revenue analytics and recurring revenue indicators.
+        </p>
 
         {error && (
-          <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">{error}</div>
+          <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">
+            {error}
+          </div>
         )}
 
         {loading ? (
@@ -67,16 +78,28 @@ export default function AdminAnalytics() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">Total Revenue</div>
-                <div className="text-2xl font-bold">{centsToUsd(data?.totalRevenueCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  Total Revenue
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(data?.totalRevenueCents)}
+                </div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">Monthly Average</div>
-                <div className="text-2xl font-bold">{centsToUsd(data?.avgMonthlyRevenueCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  Monthly Average
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(data?.avgMonthlyRevenueCents)}
+                </div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">ARR</div>
-                <div className="text-2xl font-bold">{centsToUsd(data?.arrCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  ARR
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(data?.arrCents)}
+                </div>
               </div>
             </div>
 
@@ -95,17 +118,24 @@ export default function AdminAnalytics() {
               <div className="space-y-2 mb-4">
                 {(data?.monthly || []).map((row) => {
                   const revenue = Number(row.revenueCents || 0);
-                  const width = maxRevenue > 0 ? Math.max(4, Math.round((revenue / maxRevenue) * 100)) : 4;
+                  const width =
+                    maxRevenue > 0
+                      ? Math.max(4, Math.round((revenue / maxRevenue) * 100))
+                      : 4;
                   return (
                     <div key={`bar-${row._id.year}-${row._id.month}`}>
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                         <span>
-                          {row._id.year}-{String(row._id.month).padStart(2, "0")}
+                          {row._id.year}-
+                          {String(row._id.month).padStart(2, "0")}
                         </span>
                         <span>{centsToUsd(revenue)}</span>
                       </div>
                       <div className="w-full h-2 rounded bg-muted">
-                        <div className="h-2 rounded bg-primary" style={{ width: `${width}%` }} />
+                        <div
+                          className="h-2 rounded bg-primary"
+                          style={{ width: `${width}%` }}
+                        />
                       </div>
                     </div>
                   );
@@ -122,8 +152,13 @@ export default function AdminAnalytics() {
                 </thead>
                 <tbody>
                   {(data?.monthly || []).map((row) => (
-                    <tr key={`${row._id.year}-${row._id.month}`} className="border-t border-border">
-                      <td className="py-2">{row._id.year}-{String(row._id.month).padStart(2, "0")}</td>
+                    <tr
+                      key={`${row._id.year}-${row._id.month}`}
+                      className="border-t border-border"
+                    >
+                      <td className="py-2">
+                        {row._id.year}-{String(row._id.month).padStart(2, "0")}
+                      </td>
                       <td className="py-2">{centsToUsd(row.revenueCents)}</td>
                       <td className="py-2">{row.count}</td>
                     </tr>

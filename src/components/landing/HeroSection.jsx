@@ -32,25 +32,25 @@ const HeroSection = () => {
       tl.fromTo(
         badgeRef.current,
         { opacity: 0, scale: 0.5 },
-        { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" }
+        { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" },
       )
         .fromTo(
           titleRef.current,
           { opacity: 0, y: 50 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.4"
+          "-=0.4",
         )
         .fromTo(
           descriptionRef.current,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.6"
+          "-=0.6",
         )
         .fromTo(
           buttonsRef.current,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.6"
+          "-=0.6",
         )
         .fromTo(
           statsRef.current.children,
@@ -62,7 +62,7 @@ const HeroSection = () => {
             stagger: 0.1,
             ease: "power3.out",
           },
-          "-=0.4"
+          "-=0.4",
         );
 
       // Parallax effect on scroll
@@ -76,7 +76,7 @@ const HeroSection = () => {
         y: -50,
         // Removed opacity: 0 to prevent conflict with entrance animation
       });
-      
+
       gsap.to(statsRef.current, {
         scrollTrigger: {
           trigger: containerRef.current,
@@ -87,7 +87,6 @@ const HeroSection = () => {
         y: -100,
         // Removed opacity fade out to be safe
       });
-
     }, containerRef);
 
     return () => ctx.revert();
@@ -121,7 +120,10 @@ const HeroSection = () => {
   ];
 
   return (
-    <section ref={containerRef} className="relative min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden pt-0 mt-0">
+    <section
+      ref={containerRef}
+      className="relative min-h-[calc(100vh-80px)] w-full flex items-center justify-center p-0 md:p-0 overflow-hidden overflow-x-hidden pt-0 mt-0"
+    >
       <div className="relative w-full z-10 h-full flex items-center">
         <TiltCard className="w-full min-h-[80vh] p-0 !bg-transparent !border-transparent !shadow-none !backdrop-blur-none">
           <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full min-h-[80vh]">
@@ -165,15 +167,11 @@ const HeroSection = () => {
               className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16"
             >
               <Link to="/register">
-                <button
-                  className="valo-btn inline-flex items-center bg-primary/90 backdrop-blur-md border border-white/20 hover:bg-primary text-white shadow-xl shadow-primary/20 rounded-xl px-8 py-4 transition-transform hover:scale-105 active:scale-95"
-                >
+                <button className="valo-btn inline-flex items-center bg-primary/90 backdrop-blur-md border border-white/20 hover:bg-primary text-white shadow-xl shadow-primary/20 rounded-xl px-8 py-4 transition-transform hover:scale-105 active:scale-95">
                   Start Your Journey <ChevronRight className="ml-3 w-6 h-6" />
                 </button>
               </Link>
-              <button
-                className="valo-btn inline-flex items-center border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 text-foreground shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-xl px-8 py-4 transition-transform hover:scale-105 active:scale-95"
-              >
+              <button className="valo-btn inline-flex items-center border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 text-foreground shadow-[0_4px_30px_rgba(0,0,0,0.1)] rounded-xl px-8 py-4 transition-transform hover:scale-105 active:scale-95">
                 <Target className="mr-2 w-6 h-6" />
                 View Demo
               </button>

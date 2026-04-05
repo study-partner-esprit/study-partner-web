@@ -29,7 +29,9 @@ export default function CheckoutSuccess() {
           useAuthStore.getState().updateUser(user);
         }
       } catch (err) {
-        setError(err.response?.data?.error || "Unable to refresh account status.");
+        setError(
+          err.response?.data?.error || "Unable to refresh account status.",
+        );
       } finally {
         setLoading(false);
       }
@@ -47,7 +49,11 @@ export default function CheckoutSuccess() {
           Your subscription has been activated. Your new tier is now applied.
         </p>
 
-        {loading && <p className="text-sm text-gray-500 mb-4">Refreshing account status...</p>}
+        {loading && (
+          <p className="text-sm text-gray-500 mb-4">
+            Refreshing account status...
+          </p>
+        )}
         {error && <p className="text-sm text-red-300 mb-4">{error}</p>}
 
         <div className="flex items-center justify-center gap-3">

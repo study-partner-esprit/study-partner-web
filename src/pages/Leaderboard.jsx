@@ -89,15 +89,20 @@ const Leaderboard = () => {
   const [userStatuses, setUserStatuses] = useState({});
 
   const fetchOnlineStatuses = async (entries) => {
-    const userIds = (entries || []).map((entry) => entry.userId).filter(Boolean);
+    const userIds = (entries || [])
+      .map((entry) => entry.userId)
+      .filter(Boolean);
     if (!userIds.length) return;
 
     try {
       const response = await profileAPI.getOnlineStatusBatch(userIds);
-      const statusMap = (response.data?.statuses || []).reduce((acc, status) => {
-        acc[status.userId] = status;
-        return acc;
-      }, {});
+      const statusMap = (response.data?.statuses || []).reduce(
+        (acc, status) => {
+          acc[status.userId] = status;
+          return acc;
+        },
+        {},
+      );
       setUserStatuses(statusMap);
     } catch {
       // non-critical for leaderboard rendering
@@ -114,8 +119,7 @@ const Leaderboard = () => {
           rankProfileResult,
           seasonResult,
           rankProgressResult,
-        ] =
-          await Promise.allSettled([
+        ] = await Promise.allSettled([
           gamificationAPI.getLeaderboard(20),
           gamificationAPI.getProfile(),
           gamificationAPI.getRankLeaderboard({ limit: 20, scope: "all" }),
@@ -229,7 +233,8 @@ const Leaderboard = () => {
         </p>
         {viewMode === "rank" && currentSeason && (
           <p className="text-xs text-muted-foreground mt-2 uppercase tracking-wider">
-            {currentSeason.name || currentSeason.seasonCode} • Soft reset each season
+            {currentSeason.name || currentSeason.seasonCode} • Soft reset each
+            season
           </p>
         )}
         <div className="flex justify-center mt-4 gap-2 flex-wrap">
@@ -366,30 +371,34 @@ const Leaderboard = () => {
       )}
 
       {/* Achievements Section */}
-      {viewMode === "xp" && myProfile?.achievements && myProfile.achievements.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
-        >
-          <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-            <Award className="w-5 h-5 text-primary" /> Your Achievements
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {myProfile.achievements.map((ach) => (
-              <div
-                key={ach.id}
-                className="px-4 py-2 rounded-xl bg-card border border-border flex items-center gap-2 text-sm"
-                title={ach.description}
-              >
-                <span className="text-lg">{ach.icon}</span>
-                <span className="font-medium text-foreground">{ach.name}</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
+      {viewMode === "xp" &&
+        myProfile?.achievements &&
+        myProfile.achievements.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <Award className="w-5 h-5 text-primary" /> Your Achievements
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {myProfile.achievements.map((ach) => (
+                <div
+                  key={ach.id}
+                  className="px-4 py-2 rounded-xl bg-card border border-border flex items-center gap-2 text-sm"
+                  title={ach.description}
+                >
+                  <span className="text-lg">{ach.icon}</span>
+                  <span className="font-medium text-foreground">
+                    {ach.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
       {/* Leaderboard Table */}
       <motion.div
@@ -497,7 +506,7 @@ const Leaderboard = () => {
                     </td>
                     <td className="px-6 py-4 text-center text-muted-foreground">
                       {viewMode === "rank"
-                        ? entry.seasonPeakRankIndex ?? "-"
+                        ? (entry.seasonPeakRankIndex ?? "-")
                         : entry.stats?.coursesUploaded || 0}
                     </td>
                   </motion.tr>

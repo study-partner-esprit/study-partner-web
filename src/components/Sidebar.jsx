@@ -60,7 +60,11 @@ const Sidebar = ({ topOffset = 80 }) => {
       items: [
         { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { path: "/admin/users", label: "Users", icon: Shield },
-        { path: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
+        {
+          path: "/admin/subscriptions",
+          label: "Subscriptions",
+          icon: CreditCard,
+        },
         { path: "/admin/coupons", label: "Coupons", icon: Ticket },
         { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
       ],

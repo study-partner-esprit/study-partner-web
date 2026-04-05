@@ -39,7 +39,9 @@ const eventLabels = {
 
 const StatCard = ({ label, value, hint }) => (
   <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-sm p-5">
-    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+    <p className="text-xs uppercase tracking-wider text-muted-foreground">
+      {label}
+    </p>
     <p className="text-3xl font-black mt-2 text-foreground">{value}</p>
     {hint && <p className="text-xs mt-2 text-muted-foreground">{hint}</p>}
   </div>
@@ -57,11 +59,13 @@ export default function Analytics() {
       setLoading(true);
       setError("");
       try {
-        const [summaryRes, insightsRes, timelineRes] = await Promise.allSettled([
-          retryRequest(() => analyticsAPI.getSummary({})),
-          retryRequest(() => analyticsAPI.getInsights({ days: 30 })),
-          retryRequest(() => analyticsAPI.getTimeline({ limit: 20 })),
-        ]);
+        const [summaryRes, insightsRes, timelineRes] = await Promise.allSettled(
+          [
+            retryRequest(() => analyticsAPI.getSummary({})),
+            retryRequest(() => analyticsAPI.getInsights({ days: 30 })),
+            retryRequest(() => analyticsAPI.getTimeline({ limit: 20 })),
+          ],
+        );
 
         const summaryData =
           summaryRes.status === "fulfilled" ? summaryRes.value?.data || {} : {};
@@ -93,7 +97,11 @@ export default function Analytics() {
             );
           } else if (statusCodes.includes(401)) {
             setError("Session expired. Please log in again.");
-          } else if (!summaryData.totalEvents && !insightsData && !timelineData.length) {
+          } else if (
+            !summaryData.totalEvents &&
+            !insightsData &&
+            !timelineData.length
+          ) {
             setError("Failed to load analytics data.");
           }
         }
@@ -103,7 +111,9 @@ export default function Analytics() {
         } else if (err?.response?.status === 401) {
           setError("Session expired. Please log in again.");
         } else {
-          setError(err?.response?.data?.error || "Failed to load analytics data.");
+          setError(
+            err?.response?.data?.error || "Failed to load analytics data.",
+          );
         }
       } finally {
         setLoading(false);
@@ -122,12 +132,21 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen px-6 py-8 max-w-7xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-4xl font-black tracking-tight text-foreground">Learning Analytics</h1>
-        <p className="text-muted-foreground mt-2">30-day behavior, consistency, and productivity trends.</p>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-4xl font-black tracking-tight text-foreground">
+          Learning Analytics
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          30-day behavior, consistency, and productivity trends.
+        </p>
       </motion.div>
 
-      {loading && <p className="mt-8 text-muted-foreground">Loading analytics...</p>}
+      {loading && (
+        <p className="mt-8 text-muted-foreground">Loading analytics...</p>
+      )}
       {error && <p className="mt-8 text-destructive">{error}</p>}
 
       {!loading && !error && (
@@ -135,19 +154,40 @@ export default function Analytics() {
           <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             <StatCard label="Total Events" value={summary?.totalEvents || 0} />
             <StatCard label="Active Days" value={summary?.activeDays || 0} />
-            <StatCard label="Current Streak" value={summary?.currentStreak || 0} hint="days" />
-            <StatCard label="Longest Streak" value={summary?.longestStreak || 0} hint="days" />
+            <StatCard
+              label="Current Streak"
+              value={summary?.currentStreak || 0}
+              hint="days"
+            />
+            <StatCard
+              label="Longest Streak"
+              value={summary?.longestStreak || 0}
+              hint="days"
+            />
           </section>
 
           <section className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div className="rounded-2xl border border-border bg-card/80 p-5">
-              <h2 className="text-lg font-bold text-foreground">Top Activities</h2>
+              <h2 className="text-lg font-bold text-foreground">
+                Top Activities
+              </h2>
               <div className="mt-4 space-y-3">
-                {topEvents.length === 0 && <p className="text-sm text-muted-foreground">No events yet.</p>}
+                {topEvents.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No events yet.
+                  </p>
+                )}
                 {topEvents.map(([eventType, count]) => (
-                  <div key={eventType} className="flex items-center justify-between">
-                    <span className="text-sm text-foreground">{eventLabels[eventType] || eventType}</span>
-                    <span className="text-sm font-bold text-primary">{count}</span>
+                  <div
+                    key={eventType}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-sm text-foreground">
+                      {eventLabels[eventType] || eventType}
+                    </span>
+                    <span className="text-sm font-bold text-primary">
+                      {count}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -157,33 +197,61 @@ export default function Analytics() {
               <h2 className="text-lg font-bold text-foreground">Insights</h2>
               <div className="mt-4 space-y-2 text-sm">
                 <p className="text-foreground">
-                  Study Sessions: <span className="font-bold">{insights?.studySessions || 0}</span>
+                  Study Sessions:{" "}
+                  <span className="font-bold">
+                    {insights?.studySessions || 0}
+                  </span>
                 </p>
                 <p className="text-foreground">
-                  Completed Tasks: <span className="font-bold">{insights?.completedTasks || 0}</span>
+                  Completed Tasks:{" "}
+                  <span className="font-bold">
+                    {insights?.completedTasks || 0}
+                  </span>
                 </p>
                 <p className="text-foreground">
-                  Total Study Time: <span className="font-bold">{insights?.totalStudyTime || 0} min</span>
+                  Total Study Time:{" "}
+                  <span className="font-bold">
+                    {insights?.totalStudyTime || 0} min
+                  </span>
                 </p>
                 <p className="text-foreground">
-                  Peak Study Hour: <span className="font-bold">{insights?.peakStudyHour || "N/A"}</span>
+                  Peak Study Hour:{" "}
+                  <span className="font-bold">
+                    {insights?.peakStudyHour || "N/A"}
+                  </span>
                 </p>
                 <p className="text-foreground">
-                  Weekly Consistency: <span className="font-bold">{insights?.weeklyConsistency || 0}%</span>
+                  Weekly Consistency:{" "}
+                  <span className="font-bold">
+                    {insights?.weeklyConsistency || 0}%
+                  </span>
                 </p>
               </div>
             </div>
           </section>
 
           <section className="rounded-2xl border border-border bg-card/80 p-5">
-            <h2 className="text-lg font-bold text-foreground">Recent Activity</h2>
+            <h2 className="text-lg font-bold text-foreground">
+              Recent Activity
+            </h2>
             <div className="mt-4 divide-y divide-border">
-              {timeline.length === 0 && <p className="text-sm text-muted-foreground">No timeline events yet.</p>}
+              {timeline.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No timeline events yet.
+                </p>
+              )}
               {timeline.map((event) => (
-                <div key={event._id} className="py-3 flex items-center justify-between gap-4">
+                <div
+                  key={event._id}
+                  className="py-3 flex items-center justify-between gap-4"
+                >
                   <div>
-                    <p className="text-sm text-foreground">{eventLabels[event.eventType] || event.eventType}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(event.timestamp).toLocaleString()}</p>
+                    <p className="text-sm text-foreground">
+                      {eventLabels[event.eventType] || event.eventType}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(event.timestamp).toLocaleString()}
+                    </p>
                   </div>
                 </div>
               ))}

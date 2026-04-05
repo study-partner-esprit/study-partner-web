@@ -109,11 +109,12 @@ const Register = () => {
         },
       });
 
-      navigate(`/verify-email?email=${encodeURIComponent(formData.email.trim())}`);
+      navigate(
+        `/verify-email?email=${encodeURIComponent(formData.email.trim())}`,
+      );
     } catch (err) {
       setError(
-        err.response?.data?.error ||
-          "Registration failed. Please try again.",
+        err.response?.data?.error || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -156,9 +157,14 @@ const Register = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {step === 1 && (
               <>
-                <h2 className="text-lg font-semibold text-foreground">Account Details</h2>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Account Details
+                </h2>
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Full Name
                   </label>
                   <input
@@ -174,7 +180,10 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Email Address
                   </label>
                   <input
@@ -190,7 +199,10 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Password
                   </label>
                   <input
@@ -209,7 +221,10 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Confirm Password
                   </label>
                   <input
@@ -228,9 +243,14 @@ const Register = () => {
 
             {step === 2 && (
               <>
-                <h2 className="text-lg font-semibold text-foreground">Learning Profile</h2>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Learning Profile
+                </h2>
                 <div>
-                  <label htmlFor="studyGoalsInput" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="studyGoalsInput"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Study Goals (comma-separated)
                   </label>
                   <input
@@ -245,7 +265,10 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="preferredSubjectsInput" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="preferredSubjectsInput"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Preferred Subjects (comma-separated)
                   </label>
                   <input
@@ -261,7 +284,10 @@ const Register = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="weeklyHours" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="weeklyHours"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Weekly Study Hours
                     </label>
                     <input
@@ -278,7 +304,10 @@ const Register = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="studyLevel" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="studyLevel"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Current Level
                     </label>
                     <select
@@ -299,11 +328,16 @@ const Register = () => {
 
             {step === 3 && (
               <>
-                <h2 className="text-lg font-semibold text-foreground">Preferences</h2>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Preferences
+                </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="studyTime" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="studyTime"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Preferred Study Time
                     </label>
                     <select
@@ -321,7 +355,10 @@ const Register = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="language" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="language"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Language
                     </label>
                     <input
@@ -337,7 +374,10 @@ const Register = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="timezone" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="timezone"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Timezone
                   </label>
                   <input
@@ -418,7 +458,10 @@ const Register = () => {
           <div className="mt-6 text-center">
             <p className="text-muted-foreground">
               Already have an account?{" "}
-              <Link to="/login" className="text-primary hover:text-primary transition-colors">
+              <Link
+                to="/login"
+                className="text-primary hover:text-primary transition-colors"
+              >
                 Sign in
               </Link>
             </p>
@@ -426,7 +469,10 @@ const Register = () => {
         </div>
 
         <div className="text-center mt-6">
-          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            to="/"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
             ← Back to Home
           </Link>
         </div>

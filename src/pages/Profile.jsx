@@ -155,11 +155,15 @@ const Profile = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
               <span className="text-muted-foreground">Current Plan:</span>{" "}
-              <span className="font-semibold uppercase">{user?.tier || "normal"}</span>
+              <span className="font-semibold uppercase">
+                {user?.tier || "normal"}
+              </span>
             </div>
             <div>
               <span className="text-muted-foreground">Days Remaining:</span>{" "}
-              <span className={`font-semibold ${Number(user?.daysRemaining || 0) <= 5 ? "text-amber-300" : ""}`}>
+              <span
+                className={`font-semibold ${Number(user?.daysRemaining || 0) <= 5 ? "text-amber-300" : ""}`}
+              >
                 {Number(user?.daysRemaining || 0)}
               </span>
             </div>
@@ -182,10 +186,13 @@ const Profile = () => {
           </div>
           <div className="mt-3 text-xs">
             {user?.canChangePlan ? (
-              <span className="text-green-400">Plan change is available now.</span>
+              <span className="text-green-400">
+                Plan change is available now.
+              </span>
             ) : (
               <span className="text-muted-foreground">
-                Plan change will unlock in {Number(user?.daysUntilCanChange || 0)} day(s).
+                Plan change will unlock in{" "}
+                {Number(user?.daysUntilCanChange || 0)} day(s).
               </span>
             )}
           </div>

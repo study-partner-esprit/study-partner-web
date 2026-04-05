@@ -55,7 +55,7 @@ const HowItWorks = () => {
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       // Line Drawing Animation
@@ -70,7 +70,7 @@ const HowItWorks = () => {
             end: "bottom 80%",
             scrub: 1,
           },
-        }
+        },
       );
 
       // Steps Stagger Animation
@@ -92,7 +92,7 @@ const HowItWorks = () => {
               start: "top 85%",
               toggleActions: "play none none reverse",
             },
-          }
+          },
         );
       });
     }, containerRef);
@@ -118,10 +118,7 @@ const HowItWorks = () => {
           ></div>
 
           {steps.map((step, index) => (
-            <div
-              key={index}
-              className="flex items-start mb-16 relative"
-            >
+            <div key={index} className="flex items-start mb-16 relative">
               {/* Timeline Node - Diamond shape */}
               <div className="absolute left-8 top-8 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-background border-2 border-primary rotate-45 z-10 shadow-[0_0_15px_rgba(var(--primary),0.5)] flex items-center justify-center transition-transform hover:scale-125 duration-300">
                 <div className="w-1.5 h-1.5 bg-primary" />

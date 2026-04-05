@@ -36,7 +36,9 @@ export default function AdminSubscriptions() {
     <div className="min-h-screen bg-background text-foreground px-6 py-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Admin Subscriptions</h1>
-        <p className="text-muted-foreground mb-6">Monitor active paid subscriptions and cancel if needed.</p>
+        <p className="text-muted-foreground mb-6">
+          Monitor active paid subscriptions and cancel if needed.
+        </p>
 
         {error && (
           <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">
@@ -60,11 +62,21 @@ export default function AdminSubscriptions() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-4 text-center text-muted-foreground">Loading subscriptions...</td>
+                  <td
+                    colSpan={7}
+                    className="p-4 text-center text-muted-foreground"
+                  >
+                    Loading subscriptions...
+                  </td>
                 </tr>
               ) : subscriptions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-4 text-center text-muted-foreground">No subscriptions found.</td>
+                  <td
+                    colSpan={7}
+                    className="p-4 text-center text-muted-foreground"
+                  >
+                    No subscriptions found.
+                  </td>
                 </tr>
               ) : (
                 subscriptions.map((s) => (
@@ -72,9 +84,13 @@ export default function AdminSubscriptions() {
                     <td className="p-3">{s.userId?.email || "Unknown user"}</td>
                     <td className="p-3 uppercase">{s.tier}</td>
                     <td className="p-3">{s.durationMonths || 1} month(s)</td>
-                    <td className="p-3">${((s.amount || 0) / 100).toFixed(2)}</td>
+                    <td className="p-3">
+                      ${((s.amount || 0) / 100).toFixed(2)}
+                    </td>
                     <td className="p-3 capitalize">{s.status}</td>
-                    <td className="p-3">{new Date(s.createdAt).toLocaleDateString()}</td>
+                    <td className="p-3">
+                      {new Date(s.createdAt).toLocaleDateString()}
+                    </td>
                     <td className="p-3">
                       {s.status !== "canceled" && (
                         <button

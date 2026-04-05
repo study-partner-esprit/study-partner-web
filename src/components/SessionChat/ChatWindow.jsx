@@ -25,15 +25,25 @@ export default function ChatWindow({ sessionId, userId }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 text-white">
           <MessageSquare size={16} />
-          <h3 className="text-sm font-bold tracking-wide uppercase">Session Search Chat</h3>
+          <h3 className="text-sm font-bold tracking-wide uppercase">
+            Session Search Chat
+          </h3>
         </div>
         <div className="text-xs text-gray-300 flex items-center gap-1">
-          {connected ? <Wifi size={14} className="text-green-400" /> : <WifiOff size={14} className="text-yellow-300" />}
+          {connected ? (
+            <Wifi size={14} className="text-green-400" />
+          ) : (
+            <WifiOff size={14} className="text-yellow-300" />
+          )}
           {connected ? "Live" : "Fallback"}
         </div>
       </div>
 
-      <ChatHistory messages={messages} currentUserId={userId} loading={loadingHistory} />
+      <ChatHistory
+        messages={messages}
+        currentUserId={userId}
+        loading={loadingHistory}
+      />
 
       {error && <div className="mt-2 text-xs text-red-300">{error}</div>}
 

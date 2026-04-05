@@ -2,7 +2,11 @@ import React from "react";
 
 export default function ParticipantList({ participants = [] }) {
   if (!participants.length) {
-    return <p className="text-xs text-gray-500">No other participants connected yet.</p>;
+    return (
+      <p className="text-xs text-gray-500">
+        No other participants connected yet.
+      </p>
+    );
   }
 
   return (
@@ -14,8 +18,14 @@ export default function ParticipantList({ participants = [] }) {
         >
           <span className="text-gray-200">{participant.userId}</span>
           <div className="flex items-center gap-2">
-            <span className="text-gray-400">{participant.connectionState || "connected"}</span>
-            <span className={participant.isMuted ? "text-yellow-300" : "text-green-400"}>
+            <span className="text-gray-400">
+              {participant.connectionState || "connected"}
+            </span>
+            <span
+              className={
+                participant.isMuted ? "text-yellow-300" : "text-green-400"
+              }
+            >
               {participant.isMuted ? "Muted" : "Live"}
             </span>
           </div>

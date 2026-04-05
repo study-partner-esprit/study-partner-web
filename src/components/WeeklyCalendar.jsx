@@ -20,11 +20,14 @@ const TOTAL_SLOTS = (END_HOUR - START_HOUR) * SLOTS_PER_HOUR;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 const toMinutesFromClock = (clockValue) => {
-  const [hours, minutes] = String(clockValue || "00:00").split(":").map(Number);
+  const [hours, minutes] = String(clockValue || "00:00")
+    .split(":")
+    .map(Number);
   return (hours || 0) * 60 + (minutes || 0);
 };
 
-const slotIndexToMinutes = (slotIndex) => START_HOUR * 60 + slotIndex * SLOT_MINUTES;
+const slotIndexToMinutes = (slotIndex) =>
+  START_HOUR * 60 + slotIndex * SLOT_MINUTES;
 
 const slotIndexToClock = (slotIndex) => {
   const minutes = slotIndexToMinutes(slotIndex);
@@ -34,7 +37,9 @@ const slotIndexToClock = (slotIndex) => {
 };
 
 const formatClock = (clockValue) => {
-  const [rawH, rawM] = String(clockValue || "00:00").split(":").map(Number);
+  const [rawH, rawM] = String(clockValue || "00:00")
+    .split(":")
+    .map(Number);
   const h12 = rawH % 12 === 0 ? 12 : rawH % 12;
   const suffix = rawH >= 12 ? "PM" : "AM";
   return `${h12}:${String(rawM || 0).padStart(2, "0")} ${suffix}`;
@@ -69,21 +74,33 @@ export default function WeeklyCalendar({
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
   const [dragSelection, setDragSelection] = useState(null);
   const [zoomDrag, setZoomDrag] = useState(null);
-  const [createRange, setCreateRange] = useState({ startIndex: 0, endIndex: 1 });
+  const [createRange, setCreateRange] = useState({
+    startIndex: 0,
+    endIndex: 1,
+  });
   const [selectedTimezone] = useState(() => {
     try {
-      return localStorage.getItem("calendar.timezone") || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      return (
+        localStorage.getItem("calendar.timezone") ||
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      );
     } catch {
       return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
   });
 
-  const slotIndexes = useMemo(() => Array.from({ length: TOTAL_SLOTS }, (_, i) => i), []);
+  const slotIndexes = useMemo(
+    () => Array.from({ length: TOTAL_SLOTS }, (_, i) => i),
+    [],
+  );
 
   useEffect(() => {
     const mappedAvailability = availability.map((av) => {
       const startIndex = timeToSlotIndex(av.start_time);
-      const endIndex = Math.max(startIndex + 1, timeToEndSlotIndex(av.end_time));
+      const endIndex = Math.max(
+        startIndex + 1,
+        timeToEndSlotIndex(av.end_time),
+      );
       return {
         id: av._id,
         day: av.day_of_week,
@@ -157,7 +174,11 @@ export default function WeeklyCalendar({
 
     const handleMouseMove = (event) => {
       const delta = zoomDrag.startY - event.clientY;
-      const computed = clamp(zoomDrag.startHeight + Math.round(delta / 3), 14, 38);
+      const computed = clamp(
+        zoomDrag.startHeight + Math.round(delta / 3),
+        14,
+        38,
+      );
       setRowHeight(computed);
     };
 
@@ -193,8 +214,15 @@ export default function WeeklyCalendar({
 
   const openCreateModalFromSelection = (selection) => {
     const startIndex = Math.min(selection.startIndex, selection.endIndex);
-    const endIndexInclusive = Math.max(selection.startIndex, selection.endIndex);
-    const endIndexExclusive = clamp(endIndexInclusive + 1, startIndex + 1, TOTAL_SLOTS);
+    const endIndexInclusive = Math.max(
+      selection.startIndex,
+      selection.endIndex,
+    );
+    const endIndexExclusive = clamp(
+      endIndexInclusive + 1,
+      startIndex + 1,
+      TOTAL_SLOTS,
+    );
 
     setCreateRange({ startIndex, endIndex: endIndexExclusive });
     setModalData({
@@ -216,7 +244,10 @@ export default function WeeklyCalendar({
 
     const blockedSlot = findBlockedAt(dayIndex, slotIndex);
     if (blockedSlot) {
-      setCreateRange({ startIndex: blockedSlot.startIndex, endIndex: blockedSlot.endIndex });
+      setCreateRange({
+        startIndex: blockedSlot.startIndex,
+        endIndex: blockedSlot.endIndex,
+      });
       setLabel(blockedSlot.label || "");
       setIsRecurring(true);
       setModalData({ type: "edit", slot: blockedSlot, week, dayIndex });
@@ -234,7 +265,8 @@ export default function WeeklyCalendar({
 
   const handleCellMouseEnter = (week, dayIndex, slotIndex) => {
     if (!dragSelection) return;
-    if (dragSelection.week !== week || dragSelection.dayIndex !== dayIndex) return;
+    if (dragSelection.week !== week || dragSelection.dayIndex !== dayIndex)
+      return;
 
     setDragSelection((prev) =>
       prev
@@ -323,7 +355,8 @@ export default function WeeklyCalendar({
 
   const isCellSelectedByDrag = (week, dayIndex, slotIndex) => {
     if (!dragSelection) return false;
-    if (dragSelection.week !== week || dragSelection.dayIndex !== dayIndex) return false;
+    if (dragSelection.week !== week || dragSelection.dayIndex !== dayIndex)
+      return false;
 
     const minIndex = Math.min(dragSelection.startIndex, dragSelection.endIndex);
     const maxIndex = Math.max(dragSelection.startIndex, dragSelection.endIndex);
@@ -360,7 +393,9 @@ export default function WeeklyCalendar({
   const getCellLabel = (week, dayIndex, slotIndex) => {
     const eventSlot = eventSlots.find(
       (slot) =>
-        slot.week === week && slot.dayIndex === dayIndex && slot.startIndex === slotIndex,
+        slot.week === week &&
+        slot.dayIndex === dayIndex &&
+        slot.startIndex === slotIndex,
     );
     if (eventSlot) return eventSlot.label;
 
@@ -395,10 +430,13 @@ export default function WeeklyCalendar({
         color: slot.backgroundColor,
       }));
 
-    return [...eventItems, ...blockedItems].sort((a, b) => a.timeRange.localeCompare(b.timeRange));
+    return [...eventItems, ...blockedItems].sort((a, b) =>
+      a.timeRange.localeCompare(b.timeRange),
+    );
   }, [selectedDayIndex, selectedSlots, eventSlots]);
 
-  const slotDurationMinutes = (createRange.endIndex - createRange.startIndex) * SLOT_MINUTES;
+  const slotDurationMinutes =
+    (createRange.endIndex - createRange.startIndex) * SLOT_MINUTES;
 
   return (
     <div className="weekly-calendar">
@@ -416,7 +454,10 @@ export default function WeeklyCalendar({
           </button>
           <span className="timezone-chip">{selectedTimezone}</span>
           {selectedDayIndex !== null && (
-            <button className="focus-reset-btn" onClick={() => setSelectedDayIndex(null)}>
+            <button
+              className="focus-reset-btn"
+              onClick={() => setSelectedDayIndex(null)}
+            >
               Back to Week
             </button>
           )}
@@ -426,91 +467,120 @@ export default function WeeklyCalendar({
       <div className="calendar-layout">
         <div className="calendar-main">
           {Array.from({ length: 1 }, (_, weekIndex) => (
-        <div key={weekIndex} className="week-section">
-          <div className="week-header">
-            Week {weekIndex + 1}:{" "}
-            {(() => {
-              const weekStart = new Date(currentWeekStart);
-              weekStart.setDate(weekStart.getDate() + weekIndex * 7);
-              const weekEnd = new Date(weekStart);
-              weekEnd.setDate(weekEnd.getDate() + 6);
-              return `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
-            })()}
-          </div>
+            <div key={weekIndex} className="week-section">
+              <div className="week-header">
+                Week {weekIndex + 1}:{" "}
+                {(() => {
+                  const weekStart = new Date(currentWeekStart);
+                  weekStart.setDate(weekStart.getDate() + weekIndex * 7);
+                  const weekEnd = new Date(weekStart);
+                  weekEnd.setDate(weekEnd.getDate() + 6);
+                  return `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+                })()}
+              </div>
 
-          <div className="calendar-grid">
-            <div className="time-column">
-              <div className="corner-cell">Time</div>
-              {slotIndexes.map((slotIndex) => {
-                const isHourStart = slotIndex % SLOTS_PER_HOUR === 0;
-                const label = isHourStart ? formatClock(slotIndexToClock(slotIndex)) : "";
-                return (
-                  <div
-                    key={`time-${slotIndex}`}
-                    className={`time-cell ${isHourStart ? "hour-start" : ""}`}
-                    style={{ height: `${rowHeight}px` }}
-                  >
-                    {label}
-                  </div>
-                );
-              })}
-            </div>
-
-            {DAYS.map((day, dayIndex) => {
-              if (selectedDayIndex !== null && selectedDayIndex !== dayIndex) {
-                return null;
-              }
-
-              const date = new Date(currentWeekStart);
-              date.setDate(date.getDate() + weekIndex * 7 + dayIndex);
-              const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-              const isToday = date.toDateString() === new Date().toDateString();
-
-              return (
-                <div key={`${weekIndex}-${day}`} className="day-column">
-                  <div
-                    className={`day-header ${isToday ? "today" : ""} ${selectedDayIndex === dayIndex ? "focused" : ""}`}
-                    onClick={() => setSelectedDayIndex(dayIndex)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        setSelectedDayIndex(dayIndex);
-                      }
-                    }}
-                  >
-                    {day}
-                    <br />
-                    {dateStr}
-                  </div>
-
+              <div className="calendar-grid">
+                <div className="time-column">
+                  <div className="corner-cell">Time</div>
                   {slotIndexes.map((slotIndex) => {
-                    const isEvent = Boolean(findEventAt(weekIndex, dayIndex, slotIndex));
-                    const isBlocked = Boolean(findBlockedAt(dayIndex, slotIndex));
-
+                    const isHourStart = slotIndex % SLOTS_PER_HOUR === 0;
+                    const label = isHourStart
+                      ? formatClock(slotIndexToClock(slotIndex))
+                      : "";
                     return (
                       <div
-                        key={`${weekIndex}-${dayIndex}-${slotIndex}`}
-                        className={`time-slot ${isBlocked ? "blocked" : ""} ${isEvent ? "event-slot" : ""}`}
-                        style={{ ...getCellStyle(weekIndex, dayIndex, slotIndex), height: `${rowHeight}px` }}
-                        onMouseDown={() => handleCellMouseDown(weekIndex, dayIndex, slotIndex)}
-                        onMouseEnter={() => handleCellMouseEnter(weekIndex, dayIndex, slotIndex)}
-                        onMouseUp={handleCellMouseUp}
-                        title={
-                          findEventAt(weekIndex, dayIndex, slotIndex)?.meta?.title ||
-                          findBlockedAt(dayIndex, slotIndex)?.label ||
-                          undefined
-                        }
+                        key={`time-${slotIndex}`}
+                        className={`time-cell ${isHourStart ? "hour-start" : ""}`}
+                        style={{ height: `${rowHeight}px` }}
                       >
-                        {getCellLabel(weekIndex, dayIndex, slotIndex)}
+                        {label}
                       </div>
                     );
                   })}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+
+                {DAYS.map((day, dayIndex) => {
+                  if (
+                    selectedDayIndex !== null &&
+                    selectedDayIndex !== dayIndex
+                  ) {
+                    return null;
+                  }
+
+                  const date = new Date(currentWeekStart);
+                  date.setDate(date.getDate() + weekIndex * 7 + dayIndex);
+                  const dateStr = date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                  const isToday =
+                    date.toDateString() === new Date().toDateString();
+
+                  return (
+                    <div key={`${weekIndex}-${day}`} className="day-column">
+                      <div
+                        className={`day-header ${isToday ? "today" : ""} ${selectedDayIndex === dayIndex ? "focused" : ""}`}
+                        onClick={() => setSelectedDayIndex(dayIndex)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            setSelectedDayIndex(dayIndex);
+                          }
+                        }}
+                      >
+                        {day}
+                        <br />
+                        {dateStr}
+                      </div>
+
+                      {slotIndexes.map((slotIndex) => {
+                        const isEvent = Boolean(
+                          findEventAt(weekIndex, dayIndex, slotIndex),
+                        );
+                        const isBlocked = Boolean(
+                          findBlockedAt(dayIndex, slotIndex),
+                        );
+
+                        return (
+                          <div
+                            key={`${weekIndex}-${dayIndex}-${slotIndex}`}
+                            className={`time-slot ${isBlocked ? "blocked" : ""} ${isEvent ? "event-slot" : ""}`}
+                            style={{
+                              ...getCellStyle(weekIndex, dayIndex, slotIndex),
+                              height: `${rowHeight}px`,
+                            }}
+                            onMouseDown={() =>
+                              handleCellMouseDown(
+                                weekIndex,
+                                dayIndex,
+                                slotIndex,
+                              )
+                            }
+                            onMouseEnter={() =>
+                              handleCellMouseEnter(
+                                weekIndex,
+                                dayIndex,
+                                slotIndex,
+                              )
+                            }
+                            onMouseUp={handleCellMouseUp}
+                            title={
+                              findEventAt(weekIndex, dayIndex, slotIndex)?.meta
+                                ?.title ||
+                              findBlockedAt(dayIndex, slotIndex)?.label ||
+                              undefined
+                            }
+                          >
+                            {getCellLabel(weekIndex, dayIndex, slotIndex)}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </div>
 
@@ -521,8 +591,14 @@ export default function WeeklyCalendar({
             {selectedDayDetail && selectedDayDetail.length > 0 ? (
               <div className="day-detail-list">
                 {selectedDayDetail.map((item) => (
-                  <div key={`${item.kind}-${item.id}`} className="day-detail-item">
-                    <span className="day-detail-dot" style={{ backgroundColor: item.color }} />
+                  <div
+                    key={`${item.kind}-${item.id}`}
+                    className="day-detail-item"
+                  >
+                    <span
+                      className="day-detail-dot"
+                      style={{ backgroundColor: item.color }}
+                    />
                     <div>
                       <p className="day-detail-label">{item.label}</p>
                       <p className="day-detail-meta">
@@ -533,7 +609,9 @@ export default function WeeklyCalendar({
                 ))}
               </div>
             ) : (
-              <p className="panel-empty">No sessions or blocked ranges for this day.</p>
+              <p className="panel-empty">
+                No sessions or blocked ranges for this day.
+              </p>
             )}
           </aside>
         )}
@@ -603,13 +681,16 @@ export default function WeeklyCalendar({
                           {formatClock(slotIndexToClock(slotIndex))}
                         </option>
                       ))}
-                    <option value={TOTAL_SLOTS}>{formatClock(slotIndexToClock(TOTAL_SLOTS))}</option>
+                    <option value={TOTAL_SLOTS}>
+                      {formatClock(slotIndexToClock(TOTAL_SLOTS))}
+                    </option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label>Duration</label>
                   <p className="text-sm text-muted-foreground">
-                    {slotDurationMinutes} minutes ({(slotDurationMinutes / 60).toFixed(1)} hours)
+                    {slotDurationMinutes} minutes (
+                    {(slotDurationMinutes / 60).toFixed(1)} hours)
                   </p>
                 </div>
                 <div className="modal-actions">
@@ -682,7 +763,9 @@ export default function WeeklyCalendar({
                           {formatClock(slotIndexToClock(slotIndex))}
                         </option>
                       ))}
-                    <option value={TOTAL_SLOTS}>{formatClock(slotIndexToClock(TOTAL_SLOTS))}</option>
+                    <option value={TOTAL_SLOTS}>
+                      {formatClock(slotIndexToClock(TOTAL_SLOTS))}
+                    </option>
                   </select>
                 </div>
                 <div className="modal-actions">
@@ -701,7 +784,8 @@ export default function WeeklyCalendar({
               <>
                 <h3>Delete Time Block</h3>
                 <p>
-                  Remove <strong>{modalData.slot.label}</strong> on <strong>{modalData.slot.day}</strong>?
+                  Remove <strong>{modalData.slot.label}</strong> on{" "}
+                  <strong>{modalData.slot.day}</strong>?
                 </p>
                 <div className="modal-actions">
                   <button className="btn-cancel" onClick={closeModal}>
@@ -719,7 +803,7 @@ export default function WeeklyCalendar({
                   <strong>{modalData.slot.label}</strong>
                 </p>
                 <p className="muted">
-                  {new Date(modalData.slot.meta.startTime).toLocaleString()} — {" "}
+                  {new Date(modalData.slot.meta.startTime).toLocaleString()} —{" "}
                   {new Date(modalData.slot.meta.endTime).toLocaleTimeString()}
                 </p>
                 <div className="modal-actions">

@@ -39,7 +39,9 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background text-foreground px-6 py-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-muted-foreground mb-6">Overview of users, subscriptions, and revenue.</p>
+        <p className="text-muted-foreground mb-6">
+          Overview of users, subscriptions, and revenue.
+        </p>
 
         {error && (
           <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">
@@ -53,20 +55,34 @@ export default function AdminDashboard() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">Total Users</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  Total Users
+                </div>
                 <div className="text-2xl font-bold">{stats?.total ?? 0}</div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">ARR</div>
-                <div className="text-2xl font-bold">{centsToUsd(revenue?.arrCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  ARR
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(revenue?.arrCents)}
+                </div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">Year Revenue</div>
-                <div className="text-2xl font-bold">{centsToUsd(revenue?.totalRevenueCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  Year Revenue
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(revenue?.totalRevenueCents)}
+                </div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-xs text-muted-foreground uppercase">Monthly Avg</div>
-                <div className="text-2xl font-bold">{centsToUsd(revenue?.avgMonthlyRevenueCents)}</div>
+                <div className="text-xs text-muted-foreground uppercase">
+                  Monthly Avg
+                </div>
+                <div className="text-2xl font-bold">
+                  {centsToUsd(revenue?.avgMonthlyRevenueCents)}
+                </div>
               </div>
             </div>
 
@@ -74,12 +90,14 @@ export default function AdminDashboard() {
               <div className="rounded-xl border border-border bg-card p-4">
                 <h2 className="font-semibold mb-3">Plan Distribution</h2>
                 <div className="space-y-2 text-sm">
-                  {Object.entries(stats?.distribution || {}).map(([tier, count]) => (
-                    <div key={tier} className="flex justify-between">
-                      <span className="uppercase">{tier}</span>
-                      <span>{count}</span>
-                    </div>
-                  ))}
+                  {Object.entries(stats?.distribution || {}).map(
+                    ([tier, count]) => (
+                      <div key={tier} className="flex justify-between">
+                        <span className="uppercase">{tier}</span>
+                        <span>{count}</span>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
 
@@ -87,7 +105,9 @@ export default function AdminDashboard() {
                 <h2 className="font-semibold mb-3">Recent Subscriptions</h2>
                 <div className="space-y-2 text-sm">
                   {subscriptions.length === 0 ? (
-                    <div className="text-muted-foreground">No recent subscriptions.</div>
+                    <div className="text-muted-foreground">
+                      No recent subscriptions.
+                    </div>
                   ) : (
                     subscriptions.map((s) => (
                       <div key={s._id} className="flex justify-between">
@@ -101,10 +121,30 @@ export default function AdminDashboard() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link to="/admin/users" className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold">View Users</Link>
-              <Link to="/admin/subscriptions" className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold">View Subscriptions</Link>
-              <Link to="/admin/coupons" className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold">Manage Coupons</Link>
-              <Link to="/admin/analytics" className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold">Analytics</Link>
+              <Link
+                to="/admin/users"
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold"
+              >
+                View Users
+              </Link>
+              <Link
+                to="/admin/subscriptions"
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold"
+              >
+                View Subscriptions
+              </Link>
+              <Link
+                to="/admin/coupons"
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold"
+              >
+                Manage Coupons
+              </Link>
+              <Link
+                to="/admin/analytics"
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground font-semibold"
+              >
+                Analytics
+              </Link>
             </div>
           </>
         )}

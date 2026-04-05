@@ -76,7 +76,10 @@ api.interceptors.response.use(
     }
 
     // Do not trigger refresh/logout flow on public auth requests.
-    if (error.response?.status === 401 && isPublicAuthRequest(originalRequest?.url)) {
+    if (
+      error.response?.status === 401 &&
+      isPublicAuthRequest(originalRequest?.url)
+    ) {
       return Promise.reject(error);
     }
 
@@ -129,7 +132,8 @@ export const authAPI = {
   confirmCheckout: (sessionId) =>
     api.post("/api/v1/auth/stripe/confirm", { sessionId }),
   verifyEmail: (token) => api.post("/api/v1/auth/verify-email", { token }),
-  verifyOtp: (email, otp) => api.post("/api/v1/auth/verify-otp", { email, otp }),
+  verifyOtp: (email, otp) =>
+    api.post("/api/v1/auth/verify-otp", { email, otp }),
   resendVerification: (email) =>
     api.post("/api/v1/auth/resend-verification", { email }),
   forgotPassword: (email) =>
@@ -146,17 +150,23 @@ export const authAPI = {
 export const adminAPI = {
   getUsers: (params = {}) => api.get("/api/v1/auth/admin/users", { params }),
   getUserById: (userId) => api.get(`/api/v1/auth/admin/users/${userId}`),
-  updateUser: (userId, data) => api.put(`/api/v1/auth/admin/users/${userId}`, data),
+  updateUser: (userId, data) =>
+    api.put(`/api/v1/auth/admin/users/${userId}`, data),
   deactivateUser: (userId) => api.delete(`/api/v1/auth/admin/users/${userId}`),
   getStats: () => api.get("/api/v1/auth/admin/stats"),
   getRevenueAnalytics: () => api.get("/api/v1/auth/admin/analytics/revenue"),
-  getSubscriptions: (params = {}) => api.get("/api/v1/auth/admin/subscriptions", { params }),
-  cancelSubscription: (paymentId) => api.put(`/api/v1/auth/admin/subscriptions/${paymentId}/cancel`),
+  getSubscriptions: (params = {}) =>
+    api.get("/api/v1/auth/admin/subscriptions", { params }),
+  cancelSubscription: (paymentId) =>
+    api.put(`/api/v1/auth/admin/subscriptions/${paymentId}/cancel`),
   getCoupons: () => api.get("/api/v1/auth/admin/coupons"),
   createCoupon: (data) => api.post("/api/v1/auth/admin/coupons", data),
-  updateCoupon: (couponId, data) => api.put(`/api/v1/auth/admin/coupons/${couponId}`, data),
-  deactivateCoupon: (couponId) => api.delete(`/api/v1/auth/admin/coupons/${couponId}`),
-  getCouponUsage: (couponId) => api.get(`/api/v1/auth/admin/coupons/${couponId}/usage`),
+  updateCoupon: (couponId, data) =>
+    api.put(`/api/v1/auth/admin/coupons/${couponId}`, data),
+  deactivateCoupon: (couponId) =>
+    api.delete(`/api/v1/auth/admin/coupons/${couponId}`),
+  getCouponUsage: (couponId) =>
+    api.get(`/api/v1/auth/admin/coupons/${couponId}/usage`),
 };
 
 // Profile API
@@ -322,7 +332,9 @@ export const gamificationAPI = {
       .get("/api/v1/users/gamification/rank/leaderboard", { params })
       .then((res) => res.data),
   getCurrentSeason: () =>
-    api.get("/api/v1/users/gamification/rank/seasons/current").then((res) => res.data),
+    api
+      .get("/api/v1/users/gamification/rank/seasons/current")
+      .then((res) => res.data),
   getRankHistory: (limit = 20) =>
     api
       .get("/api/v1/users/gamification/rank/history", { params: { limit } })

@@ -40,8 +40,12 @@ export default function VoiceButton({ sessionId, userId }) {
   return (
     <div className={`${styles.panel} p-3 text-white`}>
       <div className="flex items-center justify-between gap-2 mb-2">
-        <h3 className="text-xs font-bold tracking-wide uppercase">Team Voice Chat</h3>
-        <span className="text-xs text-gray-300">{connected ? "Connected" : "Offline"}</span>
+        <h3 className="text-xs font-bold tracking-wide uppercase">
+          Team Voice Chat
+        </h3>
+        <span className="text-xs text-gray-300">
+          {connected ? "Connected" : "Offline"}
+        </span>
       </div>
 
       <VoiceNotification message={notice || error} />

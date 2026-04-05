@@ -303,12 +303,12 @@ const StudyPlanner = () => {
           >
             Previous
           </button>
-            <button
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors"
-              onClick={goToCurrentWeek}
-            >
-              Current Week
-            </button>
+          <button
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium transition-colors"
+            onClick={goToCurrentWeek}
+          >
+            Current Week
+          </button>
           <button
             className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/20 text-white font-medium transition-colors"
             onClick={goToNextWeek}

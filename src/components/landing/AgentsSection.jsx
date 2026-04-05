@@ -66,7 +66,7 @@ const AgentsSection = () => {
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       // Cards Stagger Animation
@@ -84,7 +84,7 @@ const AgentsSection = () => {
             start: "top 75%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
     }, containerRef);
 
@@ -104,7 +104,10 @@ const AgentsSection = () => {
           </p>
         </div>
 
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {agents.map((agent, index) => (
             <div key={index} className="h-full">
               <TiltCard className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">

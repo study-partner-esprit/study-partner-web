@@ -46,7 +46,9 @@ export default function AdminUsers() {
     <div className="min-h-screen bg-background text-foreground px-6 py-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Admin Users</h1>
-        <p className="text-muted-foreground mb-6">Manage user tiers and account status.</p>
+        <p className="text-muted-foreground mb-6">
+          Manage user tiers and account status.
+        </p>
 
         <div className="mb-4 flex gap-2">
           <input
@@ -84,11 +86,21 @@ export default function AdminUsers() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">Loading users...</td>
+                  <td
+                    colSpan={6}
+                    className="p-4 text-center text-muted-foreground"
+                  >
+                    Loading users...
+                  </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">No users found.</td>
+                  <td
+                    colSpan={6}
+                    className="p-4 text-center text-muted-foreground"
+                  >
+                    No users found.
+                  </td>
                 </tr>
               ) : (
                 users.map((u) => (
@@ -99,7 +111,9 @@ export default function AdminUsers() {
                     <td className="p-3">
                       <select
                         value={u.tier}
-                        onChange={(e) => handleTierChange(u._id, e.target.value)}
+                        onChange={(e) =>
+                          handleTierChange(u._id, e.target.value)
+                        }
                         className="rounded border border-border bg-background px-2 py-1"
                       >
                         <option value="trial">trial</option>
@@ -108,7 +122,9 @@ export default function AdminUsers() {
                         <option value="vip_plus">vip_plus</option>
                       </select>
                     </td>
-                    <td className="p-3">{u.isActive === false ? "Inactive" : "Active"}</td>
+                    <td className="p-3">
+                      {u.isActive === false ? "Inactive" : "Active"}
+                    </td>
                     <td className="p-3">
                       {u.isActive !== false && (
                         <button

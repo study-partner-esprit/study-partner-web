@@ -69,7 +69,9 @@ describe("TrialBanner Component", () => {
   it("renders nothing for non-trial users", () => {
     mockTierState.tier = "vip";
     renderBanner();
-    expect(screen.queryByText(/day.*left in your free trial/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/day.*left in your free trial/i),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/trial has expired/i)).not.toBeInTheDocument();
     expect(screen.queryByText("Upgrade")).not.toBeInTheDocument();
   });
@@ -77,7 +79,9 @@ describe("TrialBanner Component", () => {
   it("renders nothing for normal tier", () => {
     mockTierState.tier = "normal";
     renderBanner();
-    expect(screen.queryByText(/day.*left in your free trial/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/day.*left in your free trial/i),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/trial has expired/i)).not.toBeInTheDocument();
     expect(screen.queryByText("Upgrade")).not.toBeInTheDocument();
   });

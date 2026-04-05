@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPeerConnection, defaultIceServers } from "@/services/webrtcService";
+import {
+  createPeerConnection,
+  defaultIceServers,
+} from "@/services/webrtcService";
 
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
@@ -14,7 +17,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
   const [participants, setParticipants] = useState([]);
 
   const addParticipant = useCallback((participantId) => {
-    setParticipants((prev) => (prev.includes(participantId) ? prev : [...prev, participantId]));
+    setParticipants((prev) =>
+      prev.includes(participantId) ? prev : [...prev, participantId],
+    );
   }, []);
 
   const removeParticipant = useCallback((participantId) => {
@@ -49,7 +54,8 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
 
   const createOrGetPeer = useCallback(
     (peerUserId) => {
-      if (peersRef.current.has(peerUserId)) return peersRef.current.get(peerUserId);
+      if (peersRef.current.has(peerUserId))
+        return peersRef.current.get(peerUserId);
 
       const peer = createPeerConnection({
         iceServers: defaultIceServers,
@@ -68,7 +74,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
       });
 
       if (localStream) {
-        localStream.getTracks().forEach((track) => peer.addTrack(track, localStream));
+        localStream
+          .getTracks()
+          .forEach((track) => peer.addTrack(track, localStream));
       }
 
       peersRef.current.set(peerUserId, peer);
@@ -91,7 +99,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
   useEffect(() => {
     if (!enabled || !sessionId || !userId || !localStream) return undefined;
 
-    const ws = new WebSocket(`${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`);
+    const ws = new WebSocket(
+      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,
+    );
     const peers = peersRef.current;
     const remoteAudios = remoteAudioRef.current;
     wsRef.current = ws;
@@ -136,7 +146,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
       const peer = createOrGetPeer(peerUserId);
 
       if (payload.signalType === "offer") {
-        await peer.setRemoteDescription(new RTCSessionDescription(payload.signal));
+        await peer.setRemoteDescription(
+          new RTCSessionDescription(payload.signal),
+        );
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         sendSignal("answer", answer, peerUserId);
@@ -144,7 +156,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
       }
 
       if (payload.signalType === "answer") {
-        await peer.setRemoteDescription(new RTCSessionDescription(payload.signal));
+        await peer.setRemoteDescription(
+          new RTCSessionDescription(payload.signal),
+        );
         return;
       }
 
@@ -164,7 +178,17 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
       remoteAudios.clear();
       setParticipants([]);
     };
-  }, [enabled, sessionId, userId, localStream, addParticipant, removeParticipant, createOrGetPeer, createOfferTo, sendSignal]);
+  }, [
+    enabled,
+    sessionId,
+    userId,
+    localStream,
+    addParticipant,
+    removeParticipant,
+    createOrGetPeer,
+    createOfferTo,
+    sendSignal,
+  ]);
 
   const sendMute = useCallback((isMuted) => {
     const ws = wsRef.current;

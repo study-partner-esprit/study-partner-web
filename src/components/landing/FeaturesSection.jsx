@@ -101,7 +101,7 @@ const FeaturesSection = () => {
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       // Cards Stagger Animation
@@ -120,7 +120,7 @@ const FeaturesSection = () => {
             start: "top 75%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       // Achievement Banner Animation
@@ -138,7 +138,7 @@ const FeaturesSection = () => {
             start: "top 85%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
     }, containerRef);
 
@@ -165,7 +165,10 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {features.map((feature, index) => (
             <TiltCard key={index} className="h-full group">
               {/* Glossy sheen overlay */}

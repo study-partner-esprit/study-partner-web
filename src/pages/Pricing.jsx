@@ -91,7 +91,10 @@ export default function Pricing() {
   const [couponTier, setCouponTier] = React.useState(null);
   const [couponCode, setCouponCode] = React.useState("");
   const [redeemingTier, setRedeemingTier] = React.useState(null);
-  const [selectedMonths, setSelectedMonths] = React.useState({ vip: 1, vip_plus: 1 });
+  const [selectedMonths, setSelectedMonths] = React.useState({
+    vip: 1,
+    vip_plus: 1,
+  });
   const [error, setError] = React.useState("");
   const [success, setSuccess] = React.useState("");
   const [couponInfo, setCouponInfo] = React.useState(null);
@@ -120,7 +123,8 @@ export default function Pricing() {
     return { months, monthly, base, discountPct, total };
   };
 
-  const hasActivePaidPlan = ["vip", "vip_plus"].includes(currentTier) &&
+  const hasActivePaidPlan =
+    ["vip", "vip_plus"].includes(currentTier) &&
     Number(user?.daysRemaining || 0) > 0;
   const canChangePlan = user?.canChangePlan !== false;
   const isPlanChangeLocked = hasActivePaidPlan && !canChangePlan;
@@ -149,7 +153,7 @@ export default function Pricing() {
 
     if (isPlanChangeLocked) {
       setError(
-        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`
+        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`,
       );
       return;
     }
@@ -160,7 +164,9 @@ export default function Pricing() {
     }
 
     if (stripeUnavailable) {
-      setError("Payments are temporarily unavailable. Please try again later or contact support.");
+      setError(
+        "Payments are temporarily unavailable. Please try again later or contact support.",
+      );
       return;
     }
 
@@ -181,7 +187,9 @@ export default function Pricing() {
       const status = err?.response?.status;
       if (status === 503) {
         setStripeUnavailable(true);
-        setError("Payments are temporarily unavailable. Please try again later or contact support.");
+        setError(
+          "Payments are temporarily unavailable. Please try again later or contact support.",
+        );
       } else {
         setError(err.response?.data?.error || "Failed to start checkout flow.");
       }
@@ -192,7 +200,7 @@ export default function Pricing() {
   const handleRedeemCoupon = async (tierId) => {
     if (isPlanChangeLocked) {
       setError(
-        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`
+        `Plan change is locked. You can change in ${user?.daysUntilCanChange ?? "a few"} day(s).`,
       );
       return;
     }
@@ -212,12 +220,14 @@ export default function Pricing() {
       if (updatedUser) {
         updateUser(updatedUser);
       }
-      setSuccess(`Coupon applied. Plan changed to ${response.data?.tier || tierId}.`);
+      setSuccess(
+        `Coupon applied. Plan changed to ${response.data?.tier || tierId}.`,
+      );
       const expiresAt = response.data?.couponExpiresAt;
       if (expiresAt) {
         const daysLeft = Math.max(
           0,
-          Math.ceil((new Date(expiresAt) - new Date()) / (1000 * 60 * 60 * 24))
+          Math.ceil((new Date(expiresAt) - new Date()) / (1000 * 60 * 60 * 24)),
         );
         setCouponInfo({ expiresAt, daysLeft });
       }
@@ -279,7 +289,8 @@ export default function Pricing() {
         )}
         {couponInfo && (
           <div className="mb-8 rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
-            Coupon access expires on {new Date(couponInfo.expiresAt).toLocaleDateString()}.
+            Coupon access expires on{" "}
+            {new Date(couponInfo.expiresAt).toLocaleDateString()}.
             {couponInfo.daysLeft < 5 && (
               <span className="ml-2 font-semibold text-yellow-200">
                 Warning: less than 5 days left.
@@ -339,7 +350,10 @@ export default function Pricing() {
                         <button
                           key={m}
                           onClick={() =>
-                            setSelectedMonths((prev) => ({ ...prev, [tier.id]: m }))
+                            setSelectedMonths((prev) => ({
+                              ...prev,
+                              [tier.id]: m,
+                            }))
                           }
                           className={`rounded-lg py-1.5 text-xs font-semibold border transition ${
                             pricing.months === m
@@ -354,7 +368,9 @@ export default function Pricing() {
                     <div className="mt-2 text-xs text-gray-300">
                       Total: ${pricing.total.toFixed(2)}
                       {pricing.discountPct > 0 && (
-                        <span className="ml-2 text-green-400">({pricing.discountPct}% OFF)</span>
+                        <span className="ml-2 text-green-400">
+                          ({pricing.discountPct}% OFF)
+                        </span>
                       )}
                     </div>
                   </div>
@@ -395,7 +411,8 @@ export default function Pricing() {
                   </button>
                 ) : isPlanChangeLocked && tier.id !== currentTier ? (
                   <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
-                    Plan locked until last 5 days. Remaining: {user?.daysRemaining ?? 0} day(s).
+                    Plan locked until last 5 days. Remaining:{" "}
+                    {user?.daysRemaining ?? 0} day(s).
                   </div>
                 ) : tier.id === "normal" ? (
                   <button
@@ -428,11 +445,15 @@ export default function Pricing() {
 
                     <button
                       onClick={() => {
-                        setCouponTier((prev) => (prev === tier.id ? null : tier.id));
+                        setCouponTier((prev) =>
+                          prev === tier.id ? null : tier.id,
+                        );
                         setError("");
                         setSuccess("");
                       }}
-                      disabled={checkoutTier === tier.id || redeemingTier === tier.id}
+                      disabled={
+                        checkoutTier === tier.id || redeemingTier === tier.id
+                      }
                       className="w-full rounded-xl py-3 font-semibold bg-gray-700/60 hover:bg-gray-700 text-white"
                     >
                       Use Coupon
@@ -451,7 +472,9 @@ export default function Pricing() {
                           disabled={redeemingTier === tier.id}
                           className="mt-2 w-full rounded-lg bg-green-600 hover:bg-green-500 px-3 py-2 text-sm font-semibold text-white"
                         >
-                          {redeemingTier === tier.id ? "Applying..." : "Apply Coupon"}
+                          {redeemingTier === tier.id
+                            ? "Applying..."
+                            : "Apply Coupon"}
                         </button>
                       </div>
                     )}
