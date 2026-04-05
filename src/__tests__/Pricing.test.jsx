@@ -10,7 +10,9 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("../services/api", () => ({
   authAPI: {
-    getStripeConfig: vi.fn().mockResolvedValue({ data: { stripeConfigured: true } }),
+    getStripeConfig: vi
+      .fn()
+      .mockResolvedValue({ data: { stripeConfigured: true } }),
     subscribe: vi.fn(),
     validateCoupon: vi.fn(),
   },
