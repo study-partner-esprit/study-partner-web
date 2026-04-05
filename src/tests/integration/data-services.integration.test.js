@@ -55,7 +55,11 @@ describe("Data Services API Integration", () => {
         data: {
           subjects: [
             { _id: "subj1", name: "Mathematics", description: "Math basics" },
-            { _id: "subj2", name: "Physics", description: "Physics fundamentals" },
+            {
+              _id: "subj2",
+              name: "Physics",
+              description: "Physics fundamentals",
+            },
           ],
         },
       });

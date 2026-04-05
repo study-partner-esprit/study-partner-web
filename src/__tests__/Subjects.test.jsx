@@ -58,7 +58,13 @@ describe("Subjects Page", () => {
             description: "Numbers",
             image: null,
           },
-          { id: "s2", _id: "s2", name: "Physics", description: "Forces", image: null },
+          {
+            id: "s2",
+            _id: "s2",
+            name: "Physics",
+            description: "Forces",
+            image: null,
+          },
         ],
       },
     });

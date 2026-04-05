@@ -90,7 +90,19 @@ describe("SubjectDetail Page", () => {
       data: { courses: [{ _id: "c1", title: "Algebra 101", files: [] }] },
     });
     courseAPI.list.mockResolvedValue({
-      data: { courses: [{ id: "c1", _id: "c1", title: "Algebra 101", files: [], status: "completed", uploaded_at: new Date().toISOString(), filesCount: 0 }] },
+      data: {
+        courses: [
+          {
+            id: "c1",
+            _id: "c1",
+            title: "Algebra 101",
+            files: [],
+            status: "completed",
+            uploaded_at: new Date().toISOString(),
+            filesCount: 0,
+          },
+        ],
+      },
     });
   });
 

@@ -29,7 +29,7 @@ describe("Auth API Integration", () => {
     expect(result.user).toHaveProperty("_id");
     expect(authAPI.login).toHaveBeenCalledWith(
       "test@example.com",
-      "password123"
+      "password123",
     );
   });
 
@@ -42,7 +42,7 @@ describe("Auth API Integration", () => {
     const result = await authAPI.register(
       "newuser@example.com",
       "Password123!",
-      "New User"
+      "New User",
     );
 
     expect(result.requiresVerification).toBe(true);

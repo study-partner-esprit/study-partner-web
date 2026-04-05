@@ -88,10 +88,10 @@ describe("ReviewCenter Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     reviewAPI.getPending.mockResolvedValue({ reviews: mockReviews });
-    reviewAPI.getStats.mockResolvedValue({ 
-      totalReviews: 100, 
-      pending: 2, 
-      avgEase: 2.5 
+    reviewAPI.getStats.mockResolvedValue({
+      totalReviews: 100,
+      pending: 2,
+      avgEase: 2.5,
     });
     reviewAPI.recordResult.mockResolvedValue({});
   });
