@@ -15,6 +15,7 @@ const PUBLIC_AUTH_PATHS = [
   "/api/v1/auth/refresh",
   "/api/v1/auth/stripe/config",
   "/api/v1/auth/verify-email",
+  "/api/v1/auth/verify-otp",
   "/api/v1/auth/resend-verification",
   "/api/v1/auth/forgot-password",
   "/api/v1/auth/reset-password",
@@ -313,6 +314,26 @@ export const gamificationAPI = {
   getLeaderboard: (limit = 10) =>
     api
       .get("/api/v1/users/gamification/leaderboard", { params: { limit } })
+      .then((res) => res.data),
+  getRankProfile: () =>
+    api.get("/api/v1/users/gamification/rank/profile").then((res) => res.data),
+  getRankLeaderboard: (params = {}) =>
+    api
+      .get("/api/v1/users/gamification/rank/leaderboard", { params })
+      .then((res) => res.data),
+  getCurrentSeason: () =>
+    api.get("/api/v1/users/gamification/rank/seasons/current").then((res) => res.data),
+  getRankHistory: (limit = 20) =>
+    api
+      .get("/api/v1/users/gamification/rank/history", { params: { limit } })
+      .then((res) => res.data),
+  getRankProgress: () =>
+    api.get("/api/v1/users/gamification/rank/progress").then((res) => res.data),
+  getRankSessionResult: (sessionId) =>
+    api
+      .get("/api/v1/users/gamification/rank/session-result", {
+        params: sessionId ? { sessionId } : {},
+      })
       .then((res) => res.data),
 };
 

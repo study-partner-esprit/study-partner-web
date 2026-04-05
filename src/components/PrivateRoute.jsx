@@ -17,6 +17,11 @@ const PrivateRoute = ({
     return <Navigate to="/login" replace />;
   }
 
+  if (user && user.isVerified === false) {
+    const email = user.email ? encodeURIComponent(user.email) : "";
+    return <Navigate to={`/verify-email${email ? `?email=${email}` : ""}`} replace />;
+  }
+
   if (requireAdmin && user?.role !== "admin" && !user?.isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }

@@ -5,8 +5,16 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 vi.mock("../services/api", () => ({
-  gamificationAPI: { getLeaderboard: vi.fn(), getProfile: vi.fn() },
+  gamificationAPI: {
+    getLeaderboard: vi.fn(),
+    getProfile: vi.fn(),
+    getRankLeaderboard: vi.fn(),
+    getRankProfile: vi.fn(),
+    getCurrentSeason: vi.fn(),
+    getRankProgress: vi.fn(),
+  },
   friendsAPI: { getAll: vi.fn() },
+  profileAPI: { getOnlineStatusBatch: vi.fn() },
 }));
 
 vi.mock("../store/authStore", () => ({
@@ -53,12 +61,30 @@ vi.mock("framer-motion", () => ({
 }));
 
 import Leaderboard from "../pages/Leaderboard";
-import { gamificationAPI, friendsAPI } from "../services/api";
+import { gamificationAPI, friendsAPI, profileAPI } from "../services/api";
 
 const mockLeaderboard = [
-  { userId: "u1", name: "Test", level: 5, xp: 500, streak: 3, rank: 1 },
-  { userId: "u2", name: "Alice", level: 4, xp: 400, streak: 2, rank: 2 },
-  { userId: "u3", name: "Bob", level: 3, xp: 300, streak: 1, rank: 3 },
+  {
+    userId: "u1",
+    nickname: "Test",
+    level: 5,
+    totalXp: 500,
+    stats: { tasksCompleted: 8, coursesUploaded: 2 },
+  },
+  {
+    userId: "u2",
+    nickname: "Alice",
+    level: 4,
+    totalXp: 400,
+    stats: { tasksCompleted: 6, coursesUploaded: 1 },
+  },
+  {
+    userId: "u3",
+    nickname: "Bob",
+    level: 3,
+    totalXp: 300,
+    stats: { tasksCompleted: 4, coursesUploaded: 1 },
+  },
 ];
 
 const renderLeaderboard = () =>
@@ -71,14 +97,23 @@ const renderLeaderboard = () =>
 describe("Leaderboard Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    gamificationAPI.getLeaderboard.mockResolvedValue({
-      data: { leaderboard: mockLeaderboard },
-    });
+    gamificationAPI.getLeaderboard.mockResolvedValue(mockLeaderboard);
     gamificationAPI.getProfile.mockResolvedValue({
-      data: { level: 5, xp: 500, streak: 3 },
+      level: 5,
+      total_xp: 500,
+      stats: { tasksCompleted: 8, coursesUploaded: 2 },
+    });
+    gamificationAPI.getRankLeaderboard.mockResolvedValue({ leaderboard: [] });
+    gamificationAPI.getRankProfile.mockResolvedValue({ profile: null });
+    gamificationAPI.getCurrentSeason.mockResolvedValue({ season: null });
+    gamificationAPI.getRankProgress.mockResolvedValue({
+      progress: { kpToNextRank: 100 },
     });
     friendsAPI.getAll.mockResolvedValue({
-      data: { friends: [{ _id: "f1", friend: { _id: "u2" } }] },
+      friends: [{ friendId: "u2" }],
+    });
+    profileAPI.getOnlineStatusBatch.mockResolvedValue({
+      data: { statuses: [] },
     });
   });
 
@@ -100,7 +135,7 @@ describe("Leaderboard Page", () => {
   it("highlights current user", async () => {
     renderLeaderboard();
     await waitFor(() => {
-      expect(screen.getByText("Test")).toBeInTheDocument();
+      expect(screen.getByText("You")).toBeInTheDocument();
     });
   });
 
