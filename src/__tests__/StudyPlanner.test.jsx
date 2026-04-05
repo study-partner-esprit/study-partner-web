@@ -1,7 +1,6 @@
 /* eslint-disable import/first */
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 const mockNavigate = vi.fn();
@@ -113,6 +112,8 @@ describe("StudyPlanner Page", () => {
     renderPlanner();
     await waitFor(() => {
       expect(availabilityAPI.get).toHaveBeenCalled();
+    });
+    await waitFor(() => {
       expect(tasksAPI.getAll).toHaveBeenCalled();
     });
   });

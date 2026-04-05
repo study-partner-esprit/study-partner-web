@@ -48,7 +48,7 @@ describe("Landing Page", () => {
   });
 
   it("has correct container structure", () => {
-    const { container } = renderLanding();
-    expect(container.querySelector(".min-h-screen")).toBeInTheDocument();
+    renderLanding();
+    expect(screen.getAllByTestId("hero-section")).toHaveLength(1);
   });
 });

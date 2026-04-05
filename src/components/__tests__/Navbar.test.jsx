@@ -106,11 +106,9 @@ const renderNavbar = () =>
 describe("Navbar Component", () => {
   it("renders nav links", async () => {
     renderNavbar();
-    await waitFor(() => {
-      expect(screen.getByText("Dashboard")).toBeInTheDocument();
-      expect(screen.getByText("Subjects")).toBeInTheDocument();
-      expect(screen.getByText("Tasks")).toBeInTheDocument();
-    });
+    expect(await screen.findByText("Dashboard")).toBeInTheDocument();
+    expect(await screen.findByText("Subjects")).toBeInTheDocument();
+    expect(await screen.findByText("Tasks")).toBeInTheDocument();
   });
 
   it("renders Friends nav item", async () => {

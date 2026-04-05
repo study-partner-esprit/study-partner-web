@@ -24,14 +24,12 @@ describe("WebcamCapture Component", () => {
 
   it("renders video element", () => {
     render(<WebcamCapture onFrameCapture={vi.fn()} enabled={false} />);
-    const video = document.querySelector("video");
-    expect(video).toBeInTheDocument();
+    expect(screen.getByTestId("webcam-video")).toBeInTheDocument();
   });
 
   it("renders canvas element", () => {
     render(<WebcamCapture onFrameCapture={vi.fn()} enabled={false} />);
-    const canvas = document.querySelector("canvas");
-    expect(canvas).toBeInTheDocument();
+    expect(screen.getByTestId("webcam-canvas")).toBeInTheDocument();
   });
 
   it("requests webcam when enabled", async () => {

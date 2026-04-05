@@ -1,7 +1,6 @@
 /* eslint-disable import/first */
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 vi.mock("../services/api", () => ({
@@ -126,10 +125,8 @@ describe("Leaderboard Page", () => {
 
   it("renders leaderboard entries", async () => {
     renderLeaderboard();
-    await waitFor(() => {
-      expect(screen.getByText("Alice")).toBeInTheDocument();
-      expect(screen.getByText("Bob")).toBeInTheDocument();
-    });
+    expect(await screen.findByText("Alice")).toBeInTheDocument();
+    expect(await screen.findByText("Bob")).toBeInTheDocument();
   });
 
   it("highlights current user", async () => {

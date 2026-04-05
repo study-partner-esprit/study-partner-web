@@ -126,9 +126,14 @@ const WebcamCapture = ({
           autoPlay
           playsInline
           muted
+          data-testid="webcam-video"
           className="webcam-video"
         />
-        <canvas ref={canvasRef} style={{ display: "none" }} />
+        <canvas
+          ref={canvasRef}
+          data-testid="webcam-canvas"
+          style={{ display: "none" }}
+        />
 
         {isStreaming && (
           <div className="webcam-indicator">

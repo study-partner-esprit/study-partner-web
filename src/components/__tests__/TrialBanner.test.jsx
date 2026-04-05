@@ -55,7 +55,7 @@ describe("TrialBanner Component", () => {
 
   it("shows urgent styling for 3 days or less", () => {
     mockTierState.daysRemaining = 2;
-    const { container } = renderBanner();
+    renderBanner();
     expect(screen.getByText(/2 days left/i)).toBeInTheDocument();
   });
 
@@ -68,13 +68,17 @@ describe("TrialBanner Component", () => {
 
   it("renders nothing for non-trial users", () => {
     mockTierState.tier = "vip";
-    const { container } = renderBanner();
-    expect(container.firstChild).toBeNull();
+    renderBanner();
+    expect(screen.queryByText(/day.*left in your free trial/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/trial has expired/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Upgrade")).not.toBeInTheDocument();
   });
 
   it("renders nothing for normal tier", () => {
     mockTierState.tier = "normal";
-    const { container } = renderBanner();
-    expect(container.firstChild).toBeNull();
+    renderBanner();
+    expect(screen.queryByText(/day.*left in your free trial/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/trial has expired/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Upgrade")).not.toBeInTheDocument();
   });
 });

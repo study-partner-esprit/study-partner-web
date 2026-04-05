@@ -1,7 +1,6 @@
 /* eslint-disable import/first */
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 vi.mock("../services/api", () => ({
@@ -90,6 +89,8 @@ describe("Profile Page", () => {
     renderProfile();
     await waitFor(() => {
       expect(profileAPI.get).toHaveBeenCalled();
+    });
+    await waitFor(() => {
       expect(gamificationAPI.getProfile).toHaveBeenCalled();
     });
   });

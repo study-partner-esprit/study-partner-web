@@ -95,6 +95,8 @@ describe("SubjectDetail Page", () => {
     renderSubjectDetail();
     await waitFor(() => {
       expect(subjectAPI.get).toHaveBeenCalledWith("s1");
+    });
+    await waitFor(() => {
       expect(courseAPI.getBySubject).toHaveBeenCalledWith("s1");
     });
   });

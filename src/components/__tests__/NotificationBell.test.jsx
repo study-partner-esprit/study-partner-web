@@ -53,8 +53,8 @@ describe("NotificationBell with zero unread", () => {
       }),
     }));
     const { default: Bell } = await import("../NotificationBell");
-    const { container } = render(<Bell />);
-    // Badge span should not exist
-    expect(container.querySelector(".bg-red-500")).toBeNull();
+    render(<Bell />);
+    expect(screen.queryByText("0")).not.toBeInTheDocument();
+    expect(screen.queryByText("99+")).not.toBeInTheDocument();
   });
 });

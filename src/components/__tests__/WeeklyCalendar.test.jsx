@@ -38,13 +38,13 @@ describe("WeeklyCalendar Component", () => {
   });
 
   it("renders with default props", () => {
-    const { container } = render(
+    render(
       <WeeklyCalendar
         currentWeekStart={mockCurrentWeekStart}
         onSave={vi.fn()}
       />,
     );
-    expect(container.firstChild).toBeInTheDocument();
+    expect(screen.getByText(/Monday/i)).toBeInTheDocument();
   });
 
   it("shows events when provided", () => {

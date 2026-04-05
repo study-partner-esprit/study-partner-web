@@ -75,8 +75,8 @@ describe("Register Page", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
-      expect(authAPI.register).not.toHaveBeenCalled();
     });
+    expect(authAPI.register).not.toHaveBeenCalled();
   });
 
   it("should call authAPI.register on valid submit", async () => {
@@ -111,6 +111,8 @@ describe("Register Page", () => {
 
     await waitFor(() => {
       expect(authAPI.register).toHaveBeenCalled();
+    });
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith(
         "/verify-email?email=test%40example.com",
       );

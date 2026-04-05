@@ -72,10 +72,8 @@ describe("Subjects Page", () => {
 
   it("renders subject names after loading", async () => {
     renderSubjects();
-    await waitFor(() => {
-      expect(screen.getByText("Mathematics")).toBeInTheDocument();
-      expect(screen.getByText("Physics")).toBeInTheDocument();
-    });
+    expect(await screen.findByText("Mathematics")).toBeInTheDocument();
+    expect(await screen.findByText("Physics")).toBeInTheDocument();
   });
 
   it("filters subjects by search term", async () => {

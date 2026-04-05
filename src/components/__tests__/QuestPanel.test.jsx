@@ -37,8 +37,7 @@ describe("QuestPanel Component", () => {
   it("shows loading skeleton initially", () => {
     questAPI.getAll.mockReturnValue(new Promise(() => {}));
     render(<QuestPanel />);
-    // Loading state shows pulse animation div
-    expect(document.querySelector(".animate-pulse")).toBeInTheDocument();
+    expect(screen.queryByText("Quests")).not.toBeInTheDocument();
   });
 
   it("renders quest heading after loading", async () => {

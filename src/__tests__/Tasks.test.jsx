@@ -110,10 +110,8 @@ describe("Tasks Page", () => {
 
   it("renders task titles after loading", async () => {
     renderTasks();
-    await waitFor(() => {
-      expect(screen.getByText("Read Chapter 1")).toBeInTheDocument();
-      expect(screen.getByText("Practice Problems")).toBeInTheDocument();
-    });
+    expect(await screen.findByText("Read Chapter 1")).toBeInTheDocument();
+    expect(await screen.findByText("Practice Problems")).toBeInTheDocument();
   });
 
   it("filters by status when filter is changed", async () => {
@@ -123,12 +121,10 @@ describe("Tasks Page", () => {
     });
     // Find filter buttons - look for status filter text
     const todoBtn = screen.getByText(/todo/i);
-    if (todoBtn) {
-      await userEvent.click(todoBtn);
-      await waitFor(() => {
-        expect(tasksAPI.getAll).toHaveBeenCalledWith({ status: "todo" });
-      });
-    }
+    await userEvent.click(todoBtn);
+    await waitFor(() => {
+      expect(tasksAPI.getAll).toHaveBeenCalledWith({ status: "todo" });
+    });
   });
 
   it("handles empty tasks", async () => {

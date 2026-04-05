@@ -85,10 +85,8 @@ describe("Lobby Page", () => {
 
   it("renders mode selection options", async () => {
     renderLobby();
-    await waitFor(() => {
-      expect(screen.getByText(/DEEP FOCUS/i)).toBeInTheDocument();
-      expect(screen.getByText(/POMODORO/i)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(/DEEP FOCUS/i)).toBeInTheDocument();
+    expect(await screen.findByText(/POMODORO/i)).toBeInTheDocument();
   });
 
   it("shows lock in button", async () => {
