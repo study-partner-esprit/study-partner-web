@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { studyPlanAPI, tasksAPI, availabilityAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import WeeklyCalendar from "../components/WeeklyCalendar";

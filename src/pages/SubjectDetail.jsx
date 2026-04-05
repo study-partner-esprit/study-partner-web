@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { subjectAPI, courseAPI, studyPlanAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";

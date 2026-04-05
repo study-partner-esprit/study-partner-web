@@ -20,6 +20,7 @@ vi.mock("../services/api", () => ({
     create: vi.fn(),
     schedule: vi.fn(),
     scheduleTasks: vi.fn(),
+    getCalendar: vi.fn(),
   },
   tasksAPI: { getAll: vi.fn() },
   availabilityAPI: { get: vi.fn(), getCalendarEntries: vi.fn() },
@@ -106,6 +107,7 @@ describe("StudyPlanner Page", () => {
     });
     tasksAPI.getAll.mockResolvedValue({ data: { tasks: [] } });
     studyPlanAPI.getAll.mockResolvedValue({ data: { plans: [] } });
+    studyPlanAPI.getCalendar.mockResolvedValue({ data: { entries: [] } });
   });
 
   it("fetches availability and tasks on mount", async () => {
@@ -121,7 +123,7 @@ describe("StudyPlanner Page", () => {
   it("renders the page heading", async () => {
     renderPlanner();
     await waitFor(() => {
-      expect(screen.getByText(/STUDY PLANNER|Study Plan/i)).toBeInTheDocument();
+      expect(screen.getByText(/STUDY SCHEDULE/i)).toBeInTheDocument();
     });
   });
 
@@ -142,7 +144,7 @@ describe("StudyPlanner Page", () => {
     });
     renderPlanner();
     await waitFor(() => {
-      expect(screen.getByText("Math HW")).toBeInTheDocument();
+      expect(screen.getByText(/Schedule your 1 pending task/i)).toBeInTheDocument();
     });
   });
 });

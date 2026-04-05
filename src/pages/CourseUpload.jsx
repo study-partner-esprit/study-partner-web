@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { courseAPI, subjectAPI, gamificationAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
