@@ -144,7 +144,9 @@ describe("StudyPlanner Page", () => {
     });
     renderPlanner();
     await waitFor(() => {
-      expect(screen.getByText(/Schedule your 1 pending task/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Schedule your 1 pending task/i),
+      ).toBeInTheDocument();
     });
   });
 });
