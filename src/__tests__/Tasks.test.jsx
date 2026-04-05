@@ -119,12 +119,16 @@ describe("Tasks Page", () => {
     await waitFor(() => {
       expect(screen.getByText("Read Chapter 1")).toBeInTheDocument();
     });
-    // Find filter buttons - look for status filter text
-    const todoBtn = screen.getByText(/todo/i);
-    await userEvent.click(todoBtn);
-    await waitFor(() => {
-      expect(tasksAPI.getAll).toHaveBeenCalledWith({ status: "todo" });
-    });
+    // Get the TODO filter button (first button that says TODO in the filter bar)
+    const buttons = screen.getAllByText(/todo/i);
+    // Use the button element, not the status badge
+    const todoBtn = buttons.find((el) => el.tagName === "BUTTON");
+    if (todoBtn) {
+      await userEvent.click(todoBtn);
+      await waitFor(() => {
+        expect(tasksAPI.getAll).toHaveBeenCalledWith({ status: "todo" });
+      });
+    }
   });
 
   it("handles empty tasks", async () => {

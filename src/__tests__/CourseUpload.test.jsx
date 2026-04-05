@@ -11,7 +11,7 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("../services/api", () => ({
   aiAPI: { ingestCourse: vi.fn() },
-  courseAPI: { create: vi.fn(), addFiles: vi.fn() },
+  courseAPI: { create: vi.fn(), addFiles: vi.fn(), list: vi.fn() },
   subjectAPI: { list: vi.fn(), create: vi.fn() },
   gamificationAPI: { awardXP: vi.fn() },
 }));
@@ -124,6 +124,9 @@ describe("CourseUpload Page", () => {
     subjectAPI.list.mockResolvedValue({
       data: { subjects: [{ _id: "s1", name: "Math" }] },
     });
+    courseAPI.list.mockResolvedValue({
+      data: { courses: [] },
+    });
   });
 
   it("loads existing subjects on mount", async () => {
@@ -136,7 +139,7 @@ describe("CourseUpload Page", () => {
   it("renders the upload heading", async () => {
     renderUpload();
     await waitFor(() => {
-      expect(screen.getByText(/UPLOAD|Course Upload/i)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
   });
 

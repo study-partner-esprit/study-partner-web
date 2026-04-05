@@ -105,7 +105,8 @@ describe("AISearch Page", () => {
     renderSearch();
     const input = screen.getByPlaceholderText(/search|ask|query/i);
     await userEvent.type(input, "What is quantum physics?");
-    const submitBtn = screen.getByRole("button", { name: /search/i });
+    // Find the submit button (it's a type="submit" button in the form)
+    const submitBtn = screen.getByRole("button", { type: "submit" });
     await userEvent.click(submitBtn);
     await waitFor(() => {
       expect(aiAPI.search).toHaveBeenCalled();
@@ -114,6 +115,7 @@ describe("AISearch Page", () => {
 
   it("renders search heading", () => {
     renderSearch();
-    expect(screen.getByText(/SEARCH|AI Search/i)).toBeInTheDocument();
+    const heading = screen.getByRole("heading", { name: /AI Search/i });
+    expect(heading).toBeInTheDocument();
   });
 });

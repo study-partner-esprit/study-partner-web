@@ -14,7 +14,7 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("../services/api", () => ({
   availabilityAPI: { get: vi.fn(), getCalendarEntries: vi.fn() },
-  studyPlanAPI: { getAll: vi.fn() },
+  studyPlanAPI: { getAll: vi.fn(), getCalendar: vi.fn() },
 }));
 
 vi.mock("../store/authStore", () => ({
@@ -61,7 +61,7 @@ vi.mock("framer-motion", () => ({
 }));
 
 import Calendar from "../pages/Calendar";
-import { availabilityAPI } from "../services/api";
+import { availabilityAPI, studyPlanAPI } from "../services/api";
 
 const renderCalendar = () =>
   render(
@@ -73,10 +73,9 @@ const renderCalendar = () =>
 describe("Calendar Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    availabilityAPI.get.mockResolvedValue({
-      data: { availability: { slots: [] } },
-    });
-    availabilityAPI.getCalendarEntries.mockResolvedValue({
+    // availabilityAPI.get() should return an array directly
+    availabilityAPI.get.mockResolvedValue([]);
+    studyPlanAPI.getCalendar.mockResolvedValue({
       data: { entries: [] },
     });
   });
@@ -91,34 +90,33 @@ describe("Calendar Page", () => {
   it("fetches calendar entries on mount", async () => {
     renderCalendar();
     await waitFor(() => {
-      expect(availabilityAPI.getCalendarEntries).toHaveBeenCalled();
+      expect(studyPlanAPI.getCalendar).toHaveBeenCalled();
     });
   });
 
   it("renders the calendar heading", async () => {
     renderCalendar();
     await waitFor(() => {
-      expect(screen.getByText(/CALENDAR|Calendar/i)).toBeInTheDocument();
+      expect(screen.getByText(/Weekly Schedule/i)).toBeInTheDocument();
     });
   });
 
   it("shows scheduled events when available", async () => {
-    availabilityAPI.getCalendarEntries.mockResolvedValue({
+    studyPlanAPI.getCalendar.mockResolvedValue({
       data: {
         entries: [
           {
             _id: "e1",
             title: "Study Math",
-            dayOfWeek: 1,
-            startHour: 10,
-            endHour: 11,
+            startTime: "2024-01-15T10:00:00Z",
+            endTime: "2024-01-15T11:00:00Z",
           },
         ],
       },
     });
     renderCalendar();
     await waitFor(() => {
-      expect(availabilityAPI.getCalendarEntries).toHaveBeenCalled();
+      expect(studyPlanAPI.getCalendar).toHaveBeenCalled();
     });
   });
 });

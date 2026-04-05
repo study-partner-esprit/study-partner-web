@@ -87,11 +87,13 @@ const renderReview = () =>
 describe("ReviewCenter Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    reviewAPI.getPending.mockResolvedValue({ data: { reviews: mockReviews } });
-    reviewAPI.getStats.mockResolvedValue({
-      data: { stats: { totalReviews: 100, pending: 2, avgEase: 2.5 } },
+    reviewAPI.getPending.mockResolvedValue({ reviews: mockReviews });
+    reviewAPI.getStats.mockResolvedValue({ 
+      totalReviews: 100, 
+      pending: 2, 
+      avgEase: 2.5 
     });
-    reviewAPI.recordResult.mockResolvedValue({ data: {} });
+    reviewAPI.recordResult.mockResolvedValue({});
   });
 
   it("fetches pending reviews on mount", async () => {
@@ -111,7 +113,7 @@ describe("ReviewCenter Page", () => {
   it("renders review heading", async () => {
     renderReview();
     await waitFor(() => {
-      expect(screen.getByText(/REVIEW|Review Center/i)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
   });
 

@@ -10,7 +10,7 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("../services/api", () => ({
   subjectAPI: { get: vi.fn() },
-  courseAPI: { getBySubject: vi.fn(), addFiles: vi.fn() },
+  courseAPI: { getBySubject: vi.fn(), addFiles: vi.fn(), list: vi.fn() },
   studyPlanAPI: { create: vi.fn() },
 }));
 
@@ -89,6 +89,9 @@ describe("SubjectDetail Page", () => {
     courseAPI.getBySubject.mockResolvedValue({
       data: { courses: [{ _id: "c1", title: "Algebra 101", files: [] }] },
     });
+    courseAPI.list.mockResolvedValue({
+      data: { courses: [{ id: "c1", _id: "c1", title: "Algebra 101", files: [], status: "completed", uploaded_at: new Date().toISOString(), filesCount: 0 }] },
+    });
   });
 
   it("fetches subject details and courses on mount", async () => {
@@ -97,7 +100,8 @@ describe("SubjectDetail Page", () => {
       expect(subjectAPI.get).toHaveBeenCalledWith("s1");
     });
     await waitFor(() => {
-      expect(courseAPI.getBySubject).toHaveBeenCalledWith("s1");
+      // Component calls courseAPI.list(subjectId), not getBySubject
+      expect(courseAPI.list).toHaveBeenCalledWith("s1");
     });
   });
 

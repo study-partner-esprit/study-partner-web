@@ -203,8 +203,8 @@ describe("Auth Store", () => {
     const state = useAuthStore.getState();
     const perms = state.getTierPermissions();
     expect(perms).toBeTruthy();
-    expect(state.hasTierPermission("ai_coach")).toBe(true);
-    expect(state.hasTierPermission("ai_search")).toBe(true);
+    expect(state.hasTierPermission("aiCoach")).toBe(true);
+    expect(state.hasTierPermission("aiSearch")).toBe(true);
   });
 
   it("should deny AI permissions for normal tier", () => {

@@ -52,12 +52,13 @@ describe("Subjects Page", () => {
       data: {
         subjects: [
           {
+            id: "s1",
             _id: "s1",
             name: "Mathematics",
             description: "Numbers",
             image: null,
           },
-          { _id: "s2", name: "Physics", description: "Forces", image: null },
+          { id: "s2", _id: "s2", name: "Physics", description: "Forces", image: null },
         ],
       },
     });

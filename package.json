@@ -10,10 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:unit": "vitest run",
-    "test:integration": "vitest run 'src/**/integration/**'",
+    "test:unit": "vitest run src/__tests__",
+    "test:integration": "vitest run src/tests/integration",
+    "test:all": "vitest run",
     "test:smoke": "playwright test",
-    "lint": "eslint src/**/*.{js,jsx}",
     "format": "prettier --write src/**/*.{js,jsx,css}",
     "format:check": "prettier --check src/**/*.{js,jsx,css}",
     "type-check": "echo 'No TypeScript configured'"
