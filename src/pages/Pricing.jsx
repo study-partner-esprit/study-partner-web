@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuthStore } from "@/store/authStore";
-import { authAPI } from "@/services/api";
+import { useAuthStore } from "../store/authStore";
+import { authAPI } from "../services/api";
 import { Check, X, Sparkles, Crown, Star, Zap } from "lucide-react";
 
 const tiers = [

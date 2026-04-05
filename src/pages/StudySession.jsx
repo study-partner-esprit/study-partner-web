@@ -23,7 +23,7 @@ import {
 import { useAuthStore } from "../store/authStore";
 import useSessionStore from "../store/sessionStore";
 import WebcamCapture from "../components/WebcamCapture";
-import ChatWindow from "@/components/SessionChat/ChatWindow";
+import ChatWindow from "../components/SessionChat/ChatWindow";
 import "./StudySession.css";
 
 // ─── Task Progress Bar ───────────────────────────────────────────────
