@@ -2,7 +2,7 @@
 # Web Frontend CI/CD Pipeline (React/Next.js)
 # =============================================================================
 # Triggers: push to main/develop, pull requests
-# Stages: Lint → Test → Build → Containerize → Deploy → Smoke Test
+# Stages: Lint → Test → Build → Containerize → Smoke Test
 # =============================================================================
 
 name: Web Frontend CI/CD
