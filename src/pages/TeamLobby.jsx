@@ -59,20 +59,30 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
       animate={{ opacity: 1, y: 0 }}
       className="w-full aspect-[3/4] bg-gradient-to-b from-[#1a2633] to-[#0f1923] border-2 rounded-xl relative overflow-hidden group"
       style={{
-        borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
+        borderColor:
+          "color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)",
       }}
     >
       {/* Glow effect */}
-      <div className="absolute inset-0 to-transparent" style={{
-        backgroundImage: 'linear-gradient(to top, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), transparent)'
-      }} />
+      <div
+        className="absolute inset-0 to-transparent"
+        style={{
+          backgroundImage:
+            "linear-gradient(to top, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), transparent)",
+        }}
+      />
 
       {/* Player Avatar */}
       <div className="absolute inset-0 flex items-center justify-center pt-4">
-        <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden border-2" style={{
-          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
-          borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)',
-        }}>
+        <div
+          className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden border-2"
+          style={{
+            backgroundColor:
+              "color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)",
+            borderColor:
+              "color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)",
+          }}
+        >
           {player.avatar ? (
             <img
               src={player.avatar}
@@ -80,7 +90,10 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-2xl font-black" style={{ color: 'var(--accent-color-dynamic)' }}>
+            <span
+              className="text-2xl font-black"
+              style={{ color: "var(--accent-color-dynamic)" }}
+            >
               {(player.name || "?")[0].toUpperCase()}
             </span>
           )}
@@ -90,7 +103,10 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
       {/* Leader crown */}
       {isLeader && (
         <div className="absolute top-3 left-3 z-10">
-          <Crown size={20} className="text-[var(--accent-color-dynamic)] drop-shadow-lg" />
+          <Crown
+            size={20}
+            className="text-[var(--accent-color-dynamic)] drop-shadow-lg"
+          />
         </div>
       )}
 
@@ -103,10 +119,14 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
       <div className="absolute bottom-0 w-full p-4 text-center bg-gradient-to-t from-black/80 to-transparent">
         <h3 className="font-bold text-base truncate">{player.name}</h3>
         <div className="flex items-center justify-center gap-2 mt-1">
-          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{
-            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
-            color: 'var(--accent-color-dynamic)',
-          }}>
+          <span
+            className="text-xs px-2 py-0.5 rounded-full font-bold"
+            style={{
+              backgroundColor:
+                "color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)",
+              color: "var(--accent-color-dynamic)",
+            }}
+          >
             {isLeader ? "LEADER" : "MEMBER"}
           </span>
         </div>
@@ -249,9 +269,12 @@ const TeamLobby = () => {
       <div className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a2633] to-[#0f1923]" />
         <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[200px]" style={{
-            backgroundColor: 'var(--accent-color-dynamic)',
-          }} />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[200px]"
+            style={{
+              backgroundColor: "var(--accent-color-dynamic)",
+            }}
+          />
         </div>
         <motion.div
           key={countdown}
@@ -260,14 +283,20 @@ const TeamLobby = () => {
           exit={{ scale: 0, opacity: 0 }}
           className="z-20 text-center"
         >
-          <h1 className="text-[200px] font-black text-white" style={{
-            textShadow: '0 0 30px var(--accent-color-dynamic)',
-          }}>
+          <h1
+            className="text-[200px] font-black text-white"
+            style={{
+              textShadow: "0 0 30px var(--accent-color-dynamic)",
+            }}
+          >
             {countdown}
           </h1>
-          <p className="font-bold tracking-[0.5em] text-xl uppercase" style={{
-            color: 'var(--accent-color-dynamic)',
-          }}>
+          <p
+            className="font-bold tracking-[0.5em] text-xl uppercase"
+            style={{
+              color: "var(--accent-color-dynamic)",
+            }}
+          >
             SESSION STARTING
           </p>
         </motion.div>
@@ -287,9 +316,12 @@ const TeamLobby = () => {
 
       {/* Ambient glow */}
       <div className="absolute inset-0 z-0 opacity-10">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[200px]" style={{
-          backgroundColor: 'var(--accent-color-dynamic)',
-        }} />
+        <div
+          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[200px]"
+          style={{
+            backgroundColor: "var(--accent-color-dynamic)",
+          }}
+        />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[var(--accent-color-dynamic)] rounded-full blur-[200px]" />
       </div>
 
@@ -301,9 +333,13 @@ const TeamLobby = () => {
         >
           <ArrowLeft size={20} />
         </button>
-        <Swords size={24} className="mr-3" style={{
-          color: 'var(--accent-color-dynamic)',
-        }} />
+        <Swords
+          size={24}
+          className="mr-3"
+          style={{
+            color: "var(--accent-color-dynamic)",
+          }}
+        />
         <h1 className="text-2xl font-bold tracking-wider uppercase">
           TEAM LOBBY
         </h1>
@@ -315,17 +351,28 @@ const TeamLobby = () => {
 
         {/* XP Multiplier Badge */}
         <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
-            backgroundImage: 'linear-gradient(to right, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), var(--accent-color-dynamic) 10%)',
-            borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
-            borderWidth: '1px',
-          }}>
-            <Zap size={16} style={{
-              color: 'var(--accent-color-dynamic)',
-            }} />
-            <span className="font-bold" style={{
-              color: 'var(--accent-color-dynamic)',
-            }}>
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-lg"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), var(--accent-color-dynamic) 10%)",
+              borderColor:
+                "color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)",
+              borderWidth: "1px",
+            }}
+          >
+            <Zap
+              size={16}
+              style={{
+                color: "var(--accent-color-dynamic)",
+              }}
+            />
+            <span
+              className="font-bold"
+              style={{
+                color: "var(--accent-color-dynamic)",
+              }}
+            >
               {currentMultiplier.label} XP
             </span>
             <span className="text-xs text-gray-500">
@@ -404,9 +451,12 @@ const TeamLobby = () => {
                     <p className="text-xs text-gray-500 font-bold tracking-wider uppercase">
                       INVITE CODE
                     </p>
-                    <p className="text-2xl font-mono font-bold tracking-[0.3em]" style={{
-                      color: 'var(--accent-color-dynamic)',
-                    }}>
+                    <p
+                      className="text-2xl font-mono font-bold tracking-[0.3em]"
+                      style={{
+                        color: "var(--accent-color-dynamic)",
+                      }}
+                    >
                       {inviteCode}
                     </p>
                   </div>
@@ -416,7 +466,10 @@ const TeamLobby = () => {
                     title="Copy invite code"
                   >
                     {copied ? (
-                      <Check size={20} className="text-[var(--accent-color-dynamic)]" />
+                      <Check
+                        size={20}
+                        className="text-[var(--accent-color-dynamic)]"
+                      />
                     ) : (
                       <Copy size={20} className="text-gray-400" />
                     )}
@@ -452,10 +505,11 @@ const TeamLobby = () => {
                 placeholder="Search friends..."
                 className="w-full bg-[#1a2633] border border-[#ffffff10] rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none"
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)';
+                  e.currentTarget.style.borderColor =
+                    "color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)";
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = '#ffffff10';
+                  e.currentTarget.style.borderColor = "#ffffff10";
                 }}
               />
             </div>
@@ -477,10 +531,14 @@ const TeamLobby = () => {
                     key={friendId}
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#ffffff05] transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{
-                      backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
-                      color: 'var(--accent-color-dynamic)',
-                    }}>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                      style={{
+                        backgroundColor:
+                          "color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)",
+                        color: "var(--accent-color-dynamic)",
+                      }}
+                    >
                       {(friend.name ||
                         friend.displayName ||
                         "?")[0].toUpperCase()}
@@ -499,8 +557,9 @@ const TeamLobby = () => {
                         onClick={() => handleInvite(friendId)}
                         className="px-3 py-1 text-xs rounded-lg hover:bg-[#ffffff05] transition-colors font-bold"
                         style={{
-                          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
-                          color: 'var(--accent-color-dynamic)',
+                          backgroundColor:
+                            "color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)",
+                          color: "var(--accent-color-dynamic)",
                         }}
                       >
                         Invite
@@ -581,7 +640,10 @@ const TeamLobby = () => {
             >
               <div className="flex items-center justify-between p-5 border-b border-[#ffffff10]">
                 <h3 className="font-bold text-lg flex items-center gap-2">
-                  <UserPlus size={20} className="text-[var(--accent-color-dynamic)]" />
+                  <UserPlus
+                    size={20}
+                    className="text-[var(--accent-color-dynamic)]"
+                  />
                   Invite Friends
                 </h3>
                 <button
@@ -607,7 +669,10 @@ const TeamLobby = () => {
                       className="p-2 hover:bg-[#ffffff10] rounded-lg transition-colors"
                     >
                       {copied ? (
-                        <Check size={16} className="text-[var(--accent-color-dynamic)]" />
+                        <Check
+                          size={16}
+                          className="text-[var(--accent-color-dynamic)]"
+                        />
                       ) : (
                         <Copy size={16} className="text-gray-400" />
                       )}

@@ -96,19 +96,25 @@
 }
 
 .text-glow {
-  text-shadow: 0 0 10px var(--accent-color-dynamic), 0 0 20px var(--accent-color-dynamic, rgba(79, 184, 206, 0.5));
+  text-shadow:
+    0 0 10px var(--accent-color-dynamic),
+    0 0 20px var(--accent-color-dynamic, rgba(79, 184, 206, 0.5));
   transition: text-shadow 0.3s ease;
 }
 
 .box-glow {
-  box-shadow: 0 0 20px var(--accent-color-dynamic), 0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.15));
+  box-shadow:
+    0 0 20px var(--accent-color-dynamic),
+    0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.15));
   transition: box-shadow 0.3s ease;
 }
 
 .border-glow {
   border-color: var(--accent-color-dynamic, rgba(79, 184, 206, 0.5));
   box-shadow: 0 0 10px var(--accent-color-dynamic, rgba(79, 184, 206, 0.2));
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Valorant-style Card */

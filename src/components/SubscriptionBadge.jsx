@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 const TIER_STYLES = {
   trial: {
     label: "TRIAL",
-    classes: "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
+    classes:
+      "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
   },
   normal: {
     label: "FREE",
@@ -12,11 +13,13 @@ const TIER_STYLES = {
   },
   vip: {
     label: "VIP",
-    classes: "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
+    classes:
+      "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
   },
   vip_plus: {
     label: "VIP+",
-    classes: "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
+    classes:
+      "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/40",
   },
 };
 
@@ -41,7 +44,11 @@ export default function SubscriptionBadge({ user, tier = "normal" }) {
       </span>
       {hasActiveSubscription && (
         <span
-          className={daysRemaining <= 5 ? "text-[var(--accent-color-dynamic)]" : "text-slate-300"}
+          className={
+            daysRemaining <= 5
+              ? "text-[var(--accent-color-dynamic)]"
+              : "text-slate-300"
+          }
         >
           {daysRemaining}d left
         </span>

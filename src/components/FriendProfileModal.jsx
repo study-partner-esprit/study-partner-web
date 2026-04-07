@@ -71,13 +71,19 @@ function FriendProfileModal({ onClose }) {
           )}
           {profile.level && (
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Trophy size={14} className="text-[var(--accent-color-dynamic)]" />
+              <Trophy
+                size={14}
+                className="text-[var(--accent-color-dynamic)]"
+              />
               <span className="text-sm text-gray-400">
                 Level {profile.level.current || profile.level}
               </span>
               {profile.streak > 0 && (
                 <>
-                  <Flame size={14} className="text-[var(--accent-color-dynamic)] ml-2" />
+                  <Flame
+                    size={14}
+                    className="text-[var(--accent-color-dynamic)] ml-2"
+                  />
                   <span className="text-sm text-gray-400">
                     {profile.streak} day streak
                   </span>
@@ -90,19 +96,28 @@ function FriendProfileModal({ onClose }) {
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-4 px-6 mt-6">
           <StatCard
-            icon={<Clock size={16} className="text-[var(--accent-color-dynamic)]" />}
+            icon={
+              <Clock size={16} className="text-[var(--accent-color-dynamic)]" />
+            }
             label="Study Hours"
             value={
               profile.totalStudyHours || profile.stats?.totalStudyHours || 0
             }
           />
           <StatCard
-            icon={<BookOpen size={16} className="text-[var(--accent-color-dynamic)]" />}
+            icon={
+              <BookOpen
+                size={16}
+                className="text-[var(--accent-color-dynamic)]"
+              />
+            }
             label="Sessions"
             value={profile.totalSessions || profile.stats?.totalSessions || 0}
           />
           <StatCard
-            icon={<Users size={16} className="text-[var(--accent-color-dynamic)]" />}
+            icon={
+              <Users size={16} className="text-[var(--accent-color-dynamic)]" />
+            }
             label="Friends"
             value={profile.friendCount || 0}
           />

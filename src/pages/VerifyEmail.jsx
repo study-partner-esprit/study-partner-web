@@ -166,7 +166,10 @@ export default function VerifyEmail() {
 
           {status === "success" && (
             <>
-              <CheckCircle className="mx-auto text-[var(--accent-color-dynamic)] mb-4" size={48} />
+              <CheckCircle
+                className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+                size={48}
+              />
               <h2 className="text-xl font-bold text-foreground mb-2">
                 Email Verified!
               </h2>

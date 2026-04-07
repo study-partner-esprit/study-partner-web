@@ -40,11 +40,14 @@ const LevelUpNotification = () => {
   const featureUnlock = levelUpData.unlockedFeature
     ? FEATURE_INFO[levelUpData.unlockedFeature]
     : null;
-  
+
   // Resolve dynamic color to actual value
-  const accentColor = featureUnlock?.color === "var(--accent-color-dynamic)" 
-    ? getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dynamic').trim() || "#4fb8ce"
-    : featureUnlock?.color || "var(--accent-color-dynamic)";
+  const accentColor =
+    featureUnlock?.color === "var(--accent-color-dynamic)"
+      ? getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-color-dynamic")
+          .trim() || "#4fb8ce"
+      : featureUnlock?.color || "var(--accent-color-dynamic)";
 
   return (
     <AnimatePresence>
@@ -90,10 +93,7 @@ const LevelUpNotification = () => {
                   background: `linear-gradient(135deg, ${accentColor}20, ${accentColor}40)`,
                 }}
               >
-                <Trophy
-                  size={28}
-                  style={{ color: accentColor }}
-                />
+                <Trophy size={28} style={{ color: accentColor }} />
               </motion.div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">
@@ -117,10 +117,7 @@ const LevelUpNotification = () => {
                   borderColor: `${accentColor}30`,
                 }}
               >
-                <featureUnlock.icon
-                  size={20}
-                  style={{ color: accentColor }}
-                />
+                <featureUnlock.icon size={20} style={{ color: accentColor }} />
                 <div>
                   <p
                     className="text-sm font-bold"
@@ -160,7 +157,10 @@ const LevelUpNotification = () => {
             animate={{ width: "0%" }}
             transition={{ duration: 8, ease: "linear" }}
             className="h-0.5"
-            style={{ backgroundColor: featureUnlock?.color || "var(--accent-color-dynamic)" }}
+            style={{
+              backgroundColor:
+                featureUnlock?.color || "var(--accent-color-dynamic)",
+            }}
           />
         </div>
       </motion.div>

@@ -45,7 +45,11 @@ export default function ChatWindow({ sessionId, userId }) {
         loading={loadingHistory}
       />
 
-      {error && <div className="mt-2 text-xs text-[var(--accent-color-dynamic)]">{error}</div>}
+      {error && (
+        <div className="mt-2 text-xs text-[var(--accent-color-dynamic)]">
+          {error}
+        </div>
+      )}
 
       <div className="mt-3">
         <ChatInput onSubmit={submitQuery} disabled={submitting} />

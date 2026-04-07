@@ -54,9 +54,59 @@ const WebcamCapture = ({
       }
     } catch (err) {
       console.error("Error accessing webcam:", err);
-      setError("Unable to access webcam. Please grant camera permissions.");
+      // Provide clearer guidance depending on the failure reason
+      if (typeof window !== "undefined" && !window.isSecureContext) {
+        setError(
+          "Camera access requires a secure context (HTTPS). If you're connecting over a LAN address (http://...), open the app over HTTPS or use a secure tunnel (e.g., ngrok).",
+        );
+      } else if (
+        err &&
+        (err.name === "NotAllowedError" || err.name === "PermissionDeniedError")
+      ) {
+        // If user denied, check Permissions API to give more actionable guidance
+        try {
+          if (navigator.permissions) {
+            const p = await navigator.permissions.query({ name: "camera" });
+            if (p.state === "denied") {
+              setError(
+                "Camera permission is blocked. Open your browser's site settings (click the padlock in the address bar) and allow Camera for this site, then retry.",
+              );
+            } else {
+              setError(
+                "Camera permissions denied. Please allow camera access in your browser settings.",
+              );
+            }
+          } else {
+            setError(
+              "Camera permissions denied. Please allow camera access in your browser settings.",
+            );
+          }
+        } catch (pe) {
+          setError(
+            "Camera permissions denied. Please allow camera access in your browser settings.",
+          );
+        }
+      } else if (err && err.name === "NotFoundError") {
+        setError("No camera found on this device.");
+      } else {
+        setError("Unable to access webcam. Please grant camera permissions.");
+      }
       setIsStreaming(false);
     }
+  };
+
+  const copyEnableCameraInstructions = async () => {
+    const text =
+      "Enable Camera: click the padlock (site controls) → Site settings → Camera → Allow. In Chrome you can also go to chrome://settings/content/camera.";
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      // ignore clipboard failures
+    }
+    // show a brief hint via the error area
+    setError(
+      "Permission instructions copied to clipboard. Follow them to enable the camera.",
+    );
   };
 
   const stopWebcam = () => {
@@ -117,6 +167,23 @@ const WebcamCapture = ({
         <div className="webcam-error">
           <span className="error-icon">⚠️</span>
           <span>{error}</span>
+          <div className="webcam-error-actions">
+            <button
+              className="retry-button"
+              onClick={() => {
+                // Retry requesting camera permission
+                startWebcam();
+              }}
+            >
+              Retry
+            </button>
+            <button
+              className="instructions-button"
+              onClick={() => copyEnableCameraInstructions()}
+            >
+              How to enable
+            </button>
+          </div>
         </div>
       )}
 

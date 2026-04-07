@@ -8,7 +8,10 @@ export default function CheckoutCancel() {
   return (
     <div className="min-h-screen bg-[#0f1923] text-white flex items-center justify-center px-4">
       <div className="max-w-lg w-full rounded-2xl border border-[#ffffff12] bg-[#1a2633] p-8 text-center">
-        <XCircle className="mx-auto mb-4 text-[var(--accent-color-dynamic)]" size={52} />
+        <XCircle
+          className="mx-auto mb-4 text-[var(--accent-color-dynamic)]"
+          size={52}
+        />
         <h1 className="text-2xl font-bold mb-2">Checkout canceled</h1>
         <p className="text-gray-400 mb-6">
           No charge was made. You can continue on your current plan or try

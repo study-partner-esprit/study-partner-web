@@ -87,7 +87,10 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
               <p className="text-sm font-medium truncate flex items-center gap-1">
                 {p.name}
                 {p.role === "host" && (
-                  <Crown size={12} className="text-[var(--accent-color-dynamic)]" />
+                  <Crown
+                    size={12}
+                    className="text-[var(--accent-color-dynamic)]"
+                  />
                 )}
               </p>
               <p className="text-xs text-gray-500 flex items-center gap-1">

@@ -183,21 +183,39 @@ const StudySessionSetup = () => {
               : "Confirm Session"}
         </h1>
         <div className="ml-auto flex items-center gap-4 text-sm font-bold tracking-widest text-gray-500">
-          <span className={step === "mode" ? "text-[var(--accent-color-dynamic)]" : ""}>MODE</span>
+          <span
+            className={
+              step === "mode" ? "text-[var(--accent-color-dynamic)]" : ""
+            }
+          >
+            MODE
+          </span>
           <ChevronRight size={14} />
-          <span className={step === "course" ? "text-[var(--accent-color-dynamic)]" : ""}>
+          <span
+            className={
+              step === "course" ? "text-[var(--accent-color-dynamic)]" : ""
+            }
+          >
             COURSE
           </span>{" "}
           {selectedType === "team" && (
             <>
               <ChevronRight size={14} />
-              <span className={step === "friends" ? "text-[var(--accent-color-dynamic)]" : ""}>
+              <span
+                className={
+                  step === "friends" ? "text-[var(--accent-color-dynamic)]" : ""
+                }
+              >
                 FRIENDS
               </span>
             </>
           )}{" "}
           <ChevronRight size={14} />
-          <span className={step === "confirm" ? "text-[var(--accent-color-dynamic)]" : ""}>
+          <span
+            className={
+              step === "confirm" ? "text-[var(--accent-color-dynamic)]" : ""
+            }
+          >
             START
           </span>
         </div>
@@ -233,7 +251,10 @@ const StudySessionSetup = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-color-dynamic)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative z-10">
                     <div className="w-16 h-16 bg-[var(--accent-color-dynamic)]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[var(--accent-color-dynamic)]/20 transition-colors">
-                      <User size={32} className="text-[var(--accent-color-dynamic)]" />
+                      <User
+                        size={32}
+                        className="text-[var(--accent-color-dynamic)]"
+                      />
                     </div>
                     <h3 className="text-2xl font-black uppercase tracking-wider mb-2">
                       SOLO
@@ -243,7 +264,10 @@ const StudySessionSetup = () => {
                       tracking. 1.0x XP multiplier.
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                      <Zap size={12} className="text-[var(--accent-color-dynamic)]" />
+                      <Zap
+                        size={12}
+                        className="text-[var(--accent-color-dynamic)]"
+                      />
                       <span>1.0x XP</span>
                     </div>
                   </div>
@@ -256,25 +280,37 @@ const StudySessionSetup = () => {
                   onClick={() => handleModeSelect("team")}
                   className="relative bg-[#1a2633] border-2 rounded-2xl p-8 text-left transition-all duration-300 group overflow-hidden"
                   style={{
-                    borderColor: '#ffffff10',
+                    borderColor: "#ffffff10",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--accent-color-dynamic)';
+                    e.currentTarget.style.borderColor =
+                      "var(--accent-color-dynamic)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#ffffff10';
+                    e.currentTarget.style.borderColor = "#ffffff10";
                   }}
                 >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
-                    backgroundImage: 'linear-gradient(to bottom right, color-mix(in srgb, var(--accent-color-dynamic) 5%, transparent), transparent)',
-                  }} />
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to bottom right, color-mix(in srgb, var(--accent-color-dynamic) 5%, transparent), transparent)",
+                    }}
+                  />
                   <div className="relative z-10">
-                    <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors" style={{
-                      backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
-                    }}>
-                      <Users size={32} style={{
-                        color: 'var(--accent-color-dynamic)',
-                      }} />
+                    <div
+                      className="w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors"
+                      style={{
+                        backgroundColor:
+                          "color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)",
+                      }}
+                    >
+                      <Users
+                        size={32}
+                        style={{
+                          color: "var(--accent-color-dynamic)",
+                        }}
+                      />
                     </div>
                     <h3 className="text-2xl font-black uppercase tracking-wider mb-2">
                       TEAM
@@ -284,9 +320,12 @@ const StudySessionSetup = () => {
                       multiplier up to 1.25x.
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                      <Zap size={12} style={{
-                        color: 'var(--accent-color-dynamic)',
-                      }} />
+                      <Zap
+                        size={12}
+                        style={{
+                          color: "var(--accent-color-dynamic)",
+                        }}
+                      />
                       <span>Up to 1.25x XP</span>
                     </div>
                   </div>
@@ -422,7 +461,10 @@ const StudySessionSetup = () => {
 
               {coursesLoading ? (
                 <div className="flex items-center justify-center py-20">
-                  <Loader2 className="animate-spin text-[var(--accent-color-dynamic)]" size={32} />
+                  <Loader2
+                    className="animate-spin text-[var(--accent-color-dynamic)]"
+                    size={32}
+                  />
                 </div>
               ) : usableCourses.length === 0 ? (
                 <div className="text-center py-20 text-gray-500">
@@ -517,10 +559,11 @@ const StudySessionSetup = () => {
                   onChange={(e) => setFriendSearch(e.target.value)}
                   className="w-full pl-9 pr-4 py-2.5 bg-[#1a2633] border border-[#ffffff10] rounded-lg text-sm text-white placeholder-gray-600 outline-none transition-colors"
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)';
+                    e.currentTarget.style.borderColor =
+                      "color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)";
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = '#ffffff10';
+                    e.currentTarget.style.borderColor = "#ffffff10";
                   }}
                 />
               </div>
@@ -547,25 +590,36 @@ const StudySessionSetup = () => {
                         onClick={() => !disabled && toggleFriend(fid)}
                         disabled={disabled}
                         className="w-full flex items-center gap-3 p-3 rounded-xl border transition-all"
-                        style={selected ? {
-                          borderColor: 'var(--accent-color-dynamic)',
-                          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
-                        } : disabled ? {
-                          borderColor: '#ffffff05',
-                          backgroundColor: '#1a2633',
-                          opacity: 0.4,
-                          cursor: 'not-allowed',
-                        } : {
-                          borderColor: '#ffffff10',
-                          backgroundColor: '#1a2633',
-                        }}
+                        style={
+                          selected
+                            ? {
+                                borderColor: "var(--accent-color-dynamic)",
+                                backgroundColor:
+                                  "color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)",
+                              }
+                            : disabled
+                              ? {
+                                  borderColor: "#ffffff05",
+                                  backgroundColor: "#1a2633",
+                                  opacity: 0.4,
+                                  cursor: "not-allowed",
+                                }
+                              : {
+                                  borderColor: "#ffffff10",
+                                  backgroundColor: "#1a2633",
+                                }
+                        }
                       >
                         {/* Avatar */}
                         <div className="relative shrink-0">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{
-                            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
-                            color: 'var(--accent-color-dynamic)',
-                          }}>
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
+                            style={{
+                              backgroundColor:
+                                "color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)",
+                              color: "var(--accent-color-dynamic)",
+                            }}
+                          >
                             {(friend.name || "?")[0].toUpperCase()}
                           </div>
                           <div
@@ -589,9 +643,12 @@ const StudySessionSetup = () => {
                         </div>
                         {/* Checkmark */}
                         {selected && (
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{
-                            backgroundColor: 'var(--accent-color-dynamic)',
-                          }}>
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                            style={{
+                              backgroundColor: "var(--accent-color-dynamic)",
+                            }}
+                          >
                             <Check size={14} className="text-white" />
                           </div>
                         )}
@@ -612,13 +669,15 @@ const StudySessionSetup = () => {
                   onClick={() => setLocalStep("confirm")}
                   className="px-6 py-3 text-white font-bold rounded-xl transition-colors tracking-wider text-sm uppercase"
                   style={{
-                    backgroundColor: 'var(--accent-color-dynamic)',
+                    backgroundColor: "var(--accent-color-dynamic)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--accent-color-dynamic) 85%, transparent)';
+                    e.currentTarget.style.backgroundColor =
+                      "color-mix(in srgb, var(--accent-color-dynamic) 85%, transparent)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--accent-color-dynamic)';
+                    e.currentTarget.style.backgroundColor =
+                      "var(--accent-color-dynamic)";
                   }}
                 >
                   {selectedFriends.size > 0
@@ -682,10 +741,12 @@ const StudySessionSetup = () => {
                           key={fid}
                           className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium"
                           style={{
-                            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
-                            borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
-                            color: 'var(--accent-color-dynamic)',
-                            borderWidth: '1px',
+                            backgroundColor:
+                              "color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)",
+                            borderColor:
+                              "color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)",
+                            color: "var(--accent-color-dynamic)",
+                            borderWidth: "1px",
                           }}
                         >
                           <Users size={11} />

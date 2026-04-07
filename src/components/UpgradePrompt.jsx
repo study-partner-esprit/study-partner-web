@@ -71,7 +71,10 @@ export default function UpgradePrompt({
 
             <div className="flex justify-center mb-4">
               <div className="rounded-full bg-[var(--accent-color-dynamic)]/20 p-4">
-                <Lock className="text-[var(--accent-color-dynamic)]" size={32} />
+                <Lock
+                  className="text-[var(--accent-color-dynamic)]"
+                  size={32}
+                />
               </div>
             </div>
 

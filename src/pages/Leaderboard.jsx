@@ -14,7 +14,11 @@ import {
   Users,
 } from "lucide-react";
 
-const RANK_COLORS = ["text-[var(--accent-color-dynamic)]", "text-gray-300", "text-[var(--accent-color-dynamic)]"];
+const RANK_COLORS = [
+  "text-[var(--accent-color-dynamic)]",
+  "text-gray-300",
+  "text-[var(--accent-color-dynamic)]",
+];
 const RANK_ICONS = [Crown, Medal, Award];
 const RANK_LADDER = [
   { name: "Novice III", minKp: 0 },

@@ -172,7 +172,10 @@ const Sessions = () => {
 
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-[var(--accent-color-dynamic)]">{"//"}</span> ACTIVE SESSION
+                <span className="text-[var(--accent-color-dynamic)]">
+                  {"//"}
+                </span>{" "}
+                ACTIVE SESSION
               </h2>
 
               {/* Timer */}
@@ -202,7 +205,8 @@ const Sessions = () => {
         {/* Session History */}
         <div className="bg-[#1a2633] border-2 border-[#2e3a4a] p-6">
           <h2 className="text-2xl font-bold mb-6">
-            <span className="text-[var(--accent-color-dynamic)]">{"//"}</span> SESSION HISTORY
+            <span className="text-[var(--accent-color-dynamic)]">{"//"}</span>{" "}
+            SESSION HISTORY
           </h2>
 
           {sessions.length === 0 ? (

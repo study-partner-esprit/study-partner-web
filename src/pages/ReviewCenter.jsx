@@ -298,8 +298,8 @@ const ReviewCenter = () => {
           {sessionResults.length > 0 && (
             <div className="max-w-xl mx-auto mb-8 p-6 rounded-2xl border border-border bg-card">
               <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center justify-center gap-2">
-                <CheckCircle className="w-5 h-5 text-[var(--accent-color-dynamic)]" /> Session
-                Complete!
+                <CheckCircle className="w-5 h-5 text-[var(--accent-color-dynamic)]" />{" "}
+                Session Complete!
               </h3>
               <div className="flex justify-center gap-6 mb-4">
                 <div>

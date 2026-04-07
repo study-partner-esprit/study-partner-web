@@ -59,7 +59,10 @@ export default function ResetPassword() {
         <div className="card-valorant p-8">
           {status === "success" ? (
             <div className="text-center">
-              <CheckCircle className="mx-auto text-[var(--accent-color-dynamic)] mb-4" size={48} />
+              <CheckCircle
+                className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+                size={48}
+              />
               <h2 className="text-xl font-bold text-foreground mb-2">
                 Password Reset!
               </h2>

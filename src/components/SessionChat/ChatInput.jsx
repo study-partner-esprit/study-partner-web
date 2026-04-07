@@ -20,10 +20,10 @@ export default function ChatInput({ onSubmit, disabled }) {
         maxLength={1000}
         disabled={disabled}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'var(--accent-color-dynamic)';
+          e.currentTarget.style.borderColor = "var(--accent-color-dynamic)";
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = '#ffffff20';
+          e.currentTarget.style.borderColor = "#ffffff20";
         }}
       />
       <button
@@ -31,8 +31,8 @@ export default function ChatInput({ onSubmit, disabled }) {
         disabled={disabled || !query.trim()}
         className="rounded-lg px-4 py-2 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60"
         style={{
-          backgroundColor: 'var(--accent-color-dynamic)',
-          color: '#0f1923',
+          backgroundColor: "var(--accent-color-dynamic)",
+          color: "#0f1923",
         }}
       >
         Send

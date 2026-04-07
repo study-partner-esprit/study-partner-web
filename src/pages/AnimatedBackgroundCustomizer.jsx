@@ -130,9 +130,12 @@ const AnimatedBackgroundCustomizer = () => {
     return (
       <div className="min-h-screen bg-[#0f1923] flex items-center justify-center text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[200px]" style={{
-            backgroundColor: 'var(--accent-color-dynamic)',
-          }} />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[200px]"
+            style={{
+              backgroundColor: "var(--accent-color-dynamic)",
+            }}
+          />
         </div>
         <div className="relative z-10 text-center max-w-md p-8">
           <Lock size={64} className="mx-auto text-gray-600 mb-6" />
@@ -141,9 +144,15 @@ const AnimatedBackgroundCustomizer = () => {
           </h1>
           <p className="text-gray-400 mb-4">
             Animated backgrounds unlock at{" "}
-            <span className="font-bold" style={{
-              color: 'var(--accent-color-dynamic)',
-            }}>Level 20</span>.
+            <span
+              className="font-bold"
+              style={{
+                color: "var(--accent-color-dynamic)",
+              }}
+            >
+              Level 20
+            </span>
+            .
           </p>
           <p className="text-gray-500 text-sm mb-8">
             You are currently{" "}
@@ -299,7 +308,10 @@ const AnimatedBackgroundCustomizer = () => {
                   onClick={() => fileInputRef.current?.click()}
                   className="w-full aspect-square bg-[#1a2633] border-2 border-dashed border-[var(--accent-color-dynamic)]/50 rounded-xl flex flex-col items-center justify-center gap-3 hover:border-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)]/5 transition-all"
                 >
-                  <Upload size={32} className="text-[var(--accent-color-dynamic)]" />
+                  <Upload
+                    size={32}
+                    className="text-[var(--accent-color-dynamic)]"
+                  />
                   <div className="text-center">
                     <p className="text-xs font-bold text-gray-400">
                       Click to upload
@@ -425,7 +437,9 @@ const AnimatedBackgroundCustomizer = () => {
                   setLocalSettings((p) => ({ ...p, loop: !p.loop }))
                 }
                 className={`w-10 h-5 rounded-full transition-colors relative ${
-                  localSettings.loop ? "bg-[var(--accent-color-dynamic)]" : "bg-gray-700"
+                  localSettings.loop
+                    ? "bg-[var(--accent-color-dynamic)]"
+                    : "bg-gray-700"
                 }`}
               >
                 <div
@@ -476,7 +490,10 @@ const AnimatedBackgroundCustomizer = () => {
               {/* Mock content overlay */}
               <div className="relative z-10 w-[80%] max-w-2xl">
                 <div className="bg-[#1a2633]/80 backdrop-blur-md border border-[#ffffff10] rounded-2xl p-8 text-center">
-                  <Film size={32} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
+                  <Film
+                    size={32}
+                    className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+                  />
                   <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">
                     LIVE PREVIEW
                   </h2>

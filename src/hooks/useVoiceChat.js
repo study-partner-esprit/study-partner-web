@@ -56,6 +56,23 @@ export default function useVoiceChat({ sessionId, userId }) {
     if (!sessionId || !userId) return;
 
     try {
+      // Pre-check microphone permission status where supported
+      try {
+        if (typeof navigator !== "undefined" && navigator.permissions) {
+          const micPerm = await navigator.permissions.query({
+            name: "microphone",
+          });
+          if (micPerm.state === "denied") {
+            setError(
+              "Microphone permission is denied. Ask participants to enable microphone in their browser site settings (click the padlock icon → Site settings → Microphone → Allow).",
+            );
+            return;
+          }
+        }
+      } catch (permErr) {
+        // Permissions API may not be available or may throw on some browsers — ignore
+      }
+
       const localStream = await startAudio();
       if (!localStream) {
         setError("Microphone access is required for voice chat.");

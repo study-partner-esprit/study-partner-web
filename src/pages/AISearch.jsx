@@ -172,7 +172,9 @@ const AISearch = () => {
         >
           {results.error ? (
             <div className="p-6 rounded-2xl border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/5 text-center">
-              <p className="text-[var(--accent-color-dynamic)]">{results.error}</p>
+              <p className="text-[var(--accent-color-dynamic)]">
+                {results.error}
+              </p>
             </div>
           ) : (
             <>

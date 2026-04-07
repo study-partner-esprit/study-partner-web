@@ -15,8 +15,10 @@ function ConfirmDialog({
   if (!open) return null;
 
   const variantStyles = {
-    danger: "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)]",
-    warning: "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)]",
+    danger:
+      "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)]",
+    warning:
+      "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)]",
     primary: "bg-primary hover:bg-primary/90",
   };
 

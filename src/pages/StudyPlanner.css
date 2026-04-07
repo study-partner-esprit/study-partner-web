@@ -245,7 +245,11 @@
 
 .schedule-plan-btn {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic-hover) 100%
+  );
   color: white;
   border: none;
   border-radius: 8px;
@@ -290,7 +294,11 @@
 .view-tasks-btn,
 .view-calendar-btn {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic) 100%
+  );
   color: white;
   border: none;
   border-radius: 8px;
@@ -303,7 +311,11 @@
 }
 
 .view-calendar-btn {
-  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic) 100%
+  );
 }
 
 .view-tasks-btn:hover,

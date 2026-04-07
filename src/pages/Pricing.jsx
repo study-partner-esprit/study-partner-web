@@ -36,7 +36,8 @@ const tiers = [
     price: "$9.99",
     period: "/month",
     icon: <Zap size={28} />,
-    color: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    color:
+      "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
     borderColor: "border-[var(--accent-color-dynamic)]/30",
     popular: false,
     features: {
@@ -61,7 +62,8 @@ const tiers = [
     price: "$19.99",
     period: "/month",
     icon: <Crown size={28} />,
-    color: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    color:
+      "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
     borderColor: "border-[var(--accent-color-dynamic)]/30",
     popular: true,
     features: {
@@ -250,7 +252,10 @@ export default function Pricing() {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-center gap-2 mb-4"
           >
-            <Sparkles className="text-[var(--accent-color-dynamic)]" size={24} />
+            <Sparkles
+              className="text-[var(--accent-color-dynamic)]"
+              size={24}
+            />
             <span className="text-[var(--accent-color-dynamic)] font-semibold uppercase tracking-wider text-sm">
               Choose Your Plan
             </span>
@@ -315,7 +320,9 @@ export default function Pricing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 * i }}
                 className={`relative rounded-2xl border ${tier.borderColor} bg-gray-900/80 backdrop-blur-sm p-8 flex flex-col ${
-                  tier.popular ? "ring-2 ring-[var(--accent-color-dynamic)]/50 scale-[1.02]" : ""
+                  tier.popular
+                    ? "ring-2 ring-[var(--accent-color-dynamic)]/50 scale-[1.02]"
+                    : ""
                 }`}
               >
                 {tier.popular && (

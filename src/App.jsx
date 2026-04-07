@@ -256,7 +256,9 @@ function App() {
   return (
     <ErrorBoundary>
       {/* Background layers — Static takes priority over Animated */}
-      {!isLandingPage && backgroundSettings?.enabled && backgroundSettings?.imageUrl ? (
+      {!isLandingPage &&
+      backgroundSettings?.enabled &&
+      backgroundSettings?.imageUrl ? (
         <div
           className="fixed inset-0 z-0 pointer-events-none"
           style={{
@@ -267,14 +269,14 @@ function App() {
                 : backgroundSettings.position || "cover",
             backgroundPosition: "center",
             backgroundRepeat:
-              backgroundSettings.position === "repeat"
-                ? "repeat"
-                : "no-repeat",
+              backgroundSettings.position === "repeat" ? "repeat" : "no-repeat",
             opacity: backgroundSettings.opacity || 0.15,
             filter: `blur(${backgroundSettings.blur || 2}px)`,
           }}
         />
-      ) : !isLandingPage && animatedBackgroundSettings?.enabled && animatedBackgroundSettings?.videoUrl ? (
+      ) : !isLandingPage &&
+        animatedBackgroundSettings?.enabled &&
+        animatedBackgroundSettings?.videoUrl ? (
         <video
           autoPlay
           muted
@@ -286,10 +288,7 @@ function App() {
             filter: `brightness(${100 + (animatedBackgroundSettings.brightness || 0)}%) saturate(${animatedBackgroundSettings.saturation || 80}%)`,
           }}
         >
-          <source
-            src={animatedBackgroundSettings.videoUrl}
-            type="video/mp4"
-          />
+          <source src={animatedBackgroundSettings.videoUrl} type="video/mp4" />
         </video>
       ) : null}
 

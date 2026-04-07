@@ -45,7 +45,10 @@ function TeamInviteModal({ sessionId, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
           <h3 className="font-semibold flex items-center gap-2">
-            <UserPlus size={18} className="text-[var(--accent-color-dynamic)]" />
+            <UserPlus
+              size={18}
+              className="text-[var(--accent-color-dynamic)]"
+            />
             Invite Friends
           </h3>
           <button

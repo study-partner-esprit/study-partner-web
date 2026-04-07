@@ -56,8 +56,8 @@ export default function VoiceButton({ sessionId, userId }) {
             onClick={handleStart}
             className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-bold"
             style={{
-              backgroundColor: 'var(--accent-color-dynamic)',
-              color: '#0f1923',
+              backgroundColor: "var(--accent-color-dynamic)",
+              color: "#0f1923",
             }}
           >
             <Mic size={14} /> Join Voice

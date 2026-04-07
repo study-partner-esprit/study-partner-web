@@ -3,9 +3,12 @@ import React from "react";
 export default function SearchResult({ result }) {
   return (
     <div className="rounded-md border border-[#ffffff12] bg-[#111f2d] p-2">
-      <div className="text-xs font-semibold truncate" style={{
-        color: 'var(--accent-color-dynamic)',
-      }}>
+      <div
+        className="text-xs font-semibold truncate"
+        style={{
+          color: "var(--accent-color-dynamic)",
+        }}
+      >
         {result.title || "Result"}
       </div>
       <p className="text-xs text-gray-300 mt-1 line-clamp-3">

@@ -43,7 +43,10 @@ export default function CheckoutSuccess() {
   return (
     <div className="min-h-screen bg-[#0f1923] text-white flex items-center justify-center px-4">
       <div className="max-w-lg w-full rounded-2xl border border-[#ffffff12] bg-[#1a2633] p-8 text-center">
-        <CheckCircle2 className="mx-auto mb-4 text-[var(--accent-color-dynamic)]" size={52} />
+        <CheckCircle2
+          className="mx-auto mb-4 text-[var(--accent-color-dynamic)]"
+          size={52}
+        />
         <h1 className="text-2xl font-bold mb-2">Payment successful</h1>
         <p className="text-gray-400 mb-6">
           Your subscription has been activated. Your new tier is now applied.
@@ -54,7 +57,11 @@ export default function CheckoutSuccess() {
             Refreshing account status...
           </p>
         )}
-        {error && <p className="text-sm text-[var(--accent-color-dynamic)] mb-4">{error}</p>}
+        {error && (
+          <p className="text-sm text-[var(--accent-color-dynamic)] mb-4">
+            {error}
+          </p>
+        )}
 
         <div className="flex items-center justify-center gap-3">
           <button

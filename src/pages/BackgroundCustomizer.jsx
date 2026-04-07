@@ -198,7 +198,9 @@ const BackgroundCustomizer = () => {
     } catch (error) {
       setUploadFile(null);
       setUploadPreview(null);
-      setUploadErrorMessage(error.message || "Failed to process image before upload");
+      setUploadErrorMessage(
+        error.message || "Failed to process image before upload",
+      );
     } finally {
       setIsOptimizingUpload(false);
       if (fileInputRef.current) {
@@ -245,7 +247,10 @@ const BackgroundCustomizer = () => {
           </h1>
           <p className="text-gray-400 mb-4">
             Custom wallpapers unlock at{" "}
-            <span className="text-[var(--accent-color-dynamic)] font-bold">Level 10</span>.
+            <span className="text-[var(--accent-color-dynamic)] font-bold">
+              Level 10
+            </span>
+            .
           </p>
           <p className="text-gray-500 text-sm mb-8">
             You are currently{" "}
@@ -302,7 +307,11 @@ const BackgroundCustomizer = () => {
             className="px-6 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[var(--accent-color-dynamic-hover)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
           >
             <Check size={14} />
-            {isOptimizingUpload ? "Optimizing..." : loading ? "Saving..." : "Apply"}
+            {isOptimizingUpload
+              ? "Optimizing..."
+              : loading
+                ? "Saving..."
+                : "Apply"}
           </button>
         </div>
       </div>
@@ -386,7 +395,9 @@ const BackgroundCustomizer = () => {
                   />
                 </div>
                 {uploadStatusMessage && (
-                  <p className="text-xs text-[var(--accent-color-dynamic)]">{uploadStatusMessage}</p>
+                  <p className="text-xs text-[var(--accent-color-dynamic)]">
+                    {uploadStatusMessage}
+                  </p>
                 )}
                 {(uploadErrorMessage || uploadApiError) && (
                   <div className="rounded-lg border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/10 px-3 py-2 text-xs text-[var(--accent-color-dynamic)]">
@@ -511,7 +522,10 @@ const BackgroundCustomizer = () => {
               {/* Mock dashboard overlay for preview */}
               <div className="relative z-10 w-[80%] max-w-2xl">
                 <div className="bg-[#1a2633]/80 backdrop-blur-md border border-[#ffffff10] rounded-2xl p-8 text-center">
-                  <Sparkles size={32} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
+                  <Sparkles
+                    size={32}
+                    className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+                  />
                   <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">
                     LIVE PREVIEW
                   </h2>

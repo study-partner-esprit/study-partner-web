@@ -108,7 +108,10 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
           animate={{ y: 0 }}
           className="text-center mb-8"
         >
-          <Trophy size={64} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
+          <Trophy
+            size={64}
+            className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+          />
           <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
             SESSION COMPLETE
           </h1>
@@ -118,7 +121,10 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
         <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 space-y-4 mb-8">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-              <CheckCircle2 size={24} className="mx-auto text-[var(--accent-color-dynamic)] mb-2" />
+              <CheckCircle2
+                size={24}
+                className="mx-auto text-[var(--accent-color-dynamic)] mb-2"
+              />
               <p className="text-2xl font-black text-white">
                 {summary.completedTasks}
               </p>
@@ -127,7 +133,10 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
               </p>
             </div>
             <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-              <SkipForward size={24} className="mx-auto text-[var(--accent-color-dynamic)] mb-2" />
+              <SkipForward
+                size={24}
+                className="mx-auto text-[var(--accent-color-dynamic)] mb-2"
+              />
               <p className="text-2xl font-black text-white">
                 {summary.skippedTasks}
               </p>
@@ -745,7 +754,10 @@ const StudySession = () => {
               >
                 <ArrowLeft size={18} />
               </button>
-              <BookOpen size={18} className="text-[var(--accent-color-dynamic)]" />
+              <BookOpen
+                size={18}
+                className="text-[var(--accent-color-dynamic)]"
+              />
               <span className="font-bold tracking-wider uppercase text-sm">
                 {selectedCourse?.title || "Study Session"}
               </span>
@@ -936,7 +948,10 @@ const StudySession = () => {
                           ) : task.status === "skipped" ? (
                             <SkipForward size={12} />
                           ) : idx === currentIdx ? (
-                            <Play size={12} className="text-[var(--accent-color-dynamic)]" />
+                            <Play
+                              size={12}
+                              className="text-[var(--accent-color-dynamic)]"
+                            />
                           ) : (
                             <div className="w-3 h-3 rounded-full border border-gray-600" />
                           )}
@@ -965,7 +980,10 @@ const StudySession = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-20"
               >
-                <Trophy size={64} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
+                <Trophy
+                  size={64}
+                  className="mx-auto text-[var(--accent-color-dynamic)] mb-4"
+                />
                 <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">
                   ALL TASKS COMPLETE!
                 </h2>

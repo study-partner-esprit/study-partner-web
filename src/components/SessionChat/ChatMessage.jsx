@@ -7,13 +7,18 @@ export default function ChatMessage({ message, currentUserId }) {
   return (
     <div
       className="rounded-lg border p-3"
-      style={mine ? {
-        borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)',
-        backgroundColor: '#0f2c33',
-      } : {
-        borderColor: '#ffffff14',
-        backgroundColor: '#13202d',
-      }}
+      style={
+        mine
+          ? {
+              borderColor:
+                "color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)",
+              backgroundColor: "#0f2c33",
+            }
+          : {
+              borderColor: "#ffffff14",
+              backgroundColor: "#13202d",
+            }
+      }
     >
       <div className="text-[11px] text-gray-400 mb-1">
         {message.messageType === "query" ? "Query" : "Search Result"}

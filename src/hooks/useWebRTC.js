@@ -54,8 +54,26 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
 
   const createOrGetPeer = useCallback(
     (peerUserId) => {
-      if (peersRef.current.has(peerUserId))
-        return peersRef.current.get(peerUserId);
+      if (peersRef.current.has(peerUserId)) {
+        const existing = peersRef.current.get(peerUserId);
+        // If localStream became available after peer creation, ensure tracks are added
+        if (localStream && existing.getSenders) {
+          const senders = existing.getSenders();
+          localStream.getTracks().forEach((track) => {
+            const already = senders.some(
+              (s) => s.track && s.track.kind === track.kind,
+            );
+            if (!already) {
+              try {
+                existing.addTrack(track, localStream);
+              } catch (e) {
+                // ignore addTrack errors
+              }
+            }
+          });
+        }
+        return existing;
+      }
 
       const peer = createPeerConnection({
         iceServers: defaultIceServers,
@@ -73,10 +91,25 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
         },
       });
 
+      // When negotiation is needed (e.g., tracks added), create and send an offer
+      peer.onnegotiationneeded = async () => {
+        try {
+          const offer = await peer.createOffer();
+          await peer.setLocalDescription(offer);
+          sendSignal("offer", offer, peerUserId);
+        } catch (e) {
+          // ignore negotiation errors for now
+        }
+      };
+
       if (localStream) {
-        localStream
-          .getTracks()
-          .forEach((track) => peer.addTrack(track, localStream));
+        try {
+          localStream
+            .getTracks()
+            .forEach((track) => peer.addTrack(track, localStream));
+        } catch (e) {
+          // ignore addTrack errors
+        }
       }
 
       peersRef.current.set(peerUserId, peer);
@@ -87,17 +120,57 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
 
   const createOfferTo = useCallback(
     async (peerUserId) => {
-      if (!localStream || peerUserId === userId) return;
+      if (peerUserId === userId) return;
       const peer = createOrGetPeer(peerUserId);
-      const offer = await peer.createOffer();
-      await peer.setLocalDescription(offer);
-      sendSignal("offer", offer, peerUserId);
+      try {
+        const offer = await peer.createOffer();
+        await peer.setLocalDescription(offer);
+        sendSignal("offer", offer, peerUserId);
+      } catch (e) {
+        // ignore offer creation errors; negotiation will occur when tracks are added
+      }
     },
     [createOrGetPeer, localStream, sendSignal, userId],
   );
 
+  // When localStream becomes available or changes, ensure tracks are attached to existing peers
   useEffect(() => {
-    if (!enabled || !sessionId || !userId || !localStream) return undefined;
+    if (!localStream) return;
+    const peers = peersRef.current;
+    peers.forEach(async (peer, peerUserId) => {
+      try {
+        const senders = peer.getSenders();
+        localStream.getTracks().forEach((track) => {
+          const already = senders.some(
+            (s) => s.track && s.track.kind === track.kind,
+          );
+          if (!already) {
+            try {
+              peer.addTrack(track, localStream);
+            } catch (e) {
+              // ignore
+            }
+          }
+        });
+
+        // Trigger negotiation after adding tracks
+        try {
+          const offer = await peer.createOffer();
+          await peer.setLocalDescription(offer);
+          sendSignal("offer", offer, peerUserId);
+        } catch (e) {
+          // ignore negotiation errors
+        }
+      } catch (e) {
+        // ignore per-peer errors
+      }
+    });
+  }, [localStream, sendSignal]);
+
+  useEffect(() => {
+    // Establish signaling channel even if localStream is not yet available so peers can
+    // be discovered and we can negotiate later when media becomes available.
+    if (!enabled || !sessionId || !userId) return undefined;
 
     const ws = new WebSocket(
       `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,

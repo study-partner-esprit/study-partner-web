@@ -1,6 +1,10 @@
 .calendar-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic) 100%
+  );
   padding: 24px;
 }
 
@@ -54,7 +58,11 @@
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

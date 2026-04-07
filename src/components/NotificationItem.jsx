@@ -21,27 +21,79 @@ const NotificationItem = ({ notification }) => {
 
     switch (type) {
       case "study_reminder":
-        return <Clock {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Clock
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "break_suggestion":
-        return <Zap {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Zap {...iconProps} className="text-[var(--accent-color-dynamic)]" />
+        );
       case "plan_generated":
-        return <Target {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Target
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "task_due":
-        return <Calendar {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Calendar
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "session_suspended":
-        return <AlertTriangle {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <AlertTriangle
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "fatigue_alert":
-        return <AlertTriangle {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <AlertTriangle
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "focus_drop":
-        return <BookOpen {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <BookOpen
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "achievement":
-        return <Trophy {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Trophy
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "schedule_change":
-        return <Calendar {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Calendar
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "team_invite":
-        return <Swords {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Swords
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       case "team_join":
-        return <Swords {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
+        return (
+          <Swords
+            {...iconProps}
+            className="text-[var(--accent-color-dynamic)]"
+          />
+        );
       default:
         return <Bell {...iconProps} className="text-gray-500" />;
     }
