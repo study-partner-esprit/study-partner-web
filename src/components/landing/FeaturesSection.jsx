@@ -23,7 +23,7 @@ const features = [
     description:
       "Turn studying into an engaging game with XP, levels, achievements, and leaderboards.",
     color: "text-primary",
-    bg: "bg-gradient-to-br from-primary/20 to-red-900/20 border-primary/30",
+    bg: "bg-gradient-to-br from-primary/20 to-[var(--accent-color-dynamic)]/20 border-primary/30",
     badge: "🎮",
     xp: "+50 XP",
   },
@@ -32,8 +32,8 @@ const features = [
     title: "Achievement System",
     description:
       "Unlock badges and rewards for milestones like study streaks, completed courses, and perfect scores.",
-    color: "text-yellow-500",
-    bg: "bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/30",
+    color: "text-[var(--accent-color-dynamic)]",
+    bg: "bg-gradient-to-br from-[var(--accent-color-dynamic)]/20 to-[var(--accent-color-dynamic)]/20 border-[var(--accent-color-dynamic)]/30",
     badge: "🏆",
     xp: "+100 XP",
   },
@@ -43,7 +43,7 @@ const features = [
     description:
       "Complete daily quests and challenges to maintain motivation and track progress.",
     color: "text-primary",
-    bg: "bg-gradient-to-br from-primary/20 to-red-900/20 border-primary/30",
+    bg: "bg-gradient-to-br from-primary/20 to-[var(--accent-color-dynamic)]/20 border-primary/30",
     badge: "🎯",
     xp: "+25 XP",
   },
@@ -53,7 +53,7 @@ const features = [
     description:
       "AI-powered study planning that adapts to your learning style and schedule constraints.",
     color: "text-primary",
-    bg: "bg-gradient-to-br from-primary/20 to-red-900/20 border-primary/30",
+    bg: "bg-gradient-to-br from-primary/20 to-[var(--accent-color-dynamic)]/20 border-primary/30",
     badge: "📅",
     xp: "+15 XP",
   },
@@ -63,7 +63,7 @@ const features = [
     description:
       "Get instant feedback and guidance during study sessions to optimize your learning.",
     color: "text-primary",
-    bg: "bg-gradient-to-br from-primary/20 to-red-900/20 border-primary/30",
+    bg: "bg-gradient-to-br from-primary/20 to-[var(--accent-color-dynamic)]/20 border-primary/30",
     badge: "🤖",
     xp: "+30 XP",
   },
@@ -72,8 +72,8 @@ const features = [
     title: "Focus Analytics",
     description:
       "Monitor your attention levels and prevent burnout with intelligent fatigue alerts.",
-    color: "text-red-500",
-    bg: "bg-gradient-to-br from-red-500/20 to-pink-500/20 border-red-500/30",
+    color: "text-[var(--accent-color-dynamic)]",
+    bg: "bg-gradient-to-br from-[var(--accent-color-dynamic)]/20 to-[var(--accent-color-dynamic)]/20 border-[var(--accent-color-dynamic)]/30",
     badge: "👁️",
     xp: "+20 XP",
   },
@@ -176,7 +176,7 @@ const FeaturesSection = () => {
 
               <div className="h-full p-8 relative overflow-hidden transition-transform duration-300 hover:-translate-y-2">
                 {/* XP Badge */}
-                <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/10 border-b border-l border-yellow-500/50 text-xs font-bold text-yellow-600 dark:text-yellow-400 font-valorant tracking-widest">
+                <div className="absolute top-0 right-0 px-4 py-1 bg-[var(--accent-color-dynamic)]/10 border-b border-l border-[var(--accent-color-dynamic)]/50 text-xs font-bold text-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)] font-valorant tracking-widest">
                   {feature.xp}
                 </div>
 
@@ -211,12 +211,12 @@ const FeaturesSection = () => {
 
         {/* Achievement Showcase */}
         <div ref={achievementRef} className="mt-16 text-center">
-          <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400/30 shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-shadow duration-500">
-            <Award className="w-5 h-5 text-yellow-500 animate-bounce" />
-            <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
+          <div className="inline-flex items-center gap-4 px-6 py-3 rounded-full bg-gradient-to-r from-[var(--accent-color-dynamic)]/20 to-[var(--accent-color-dynamic)]/20 border border-[var(--accent-color-dynamic)]/30 shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-shadow duration-500">
+            <Award className="w-5 h-5 text-[var(--accent-color-dynamic)] animate-bounce" />
+            <span className="text-sm font-semibold text-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]">
               🎉 Unlock 50+ unique achievements as you study!
             </span>
-            <Award className="w-5 h-5 text-yellow-500 animate-bounce" />
+            <Award className="w-5 h-5 text-[var(--accent-color-dynamic)] animate-bounce" />
           </div>
         </div>
       </div>

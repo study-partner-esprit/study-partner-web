@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 
-const RANK_COLORS = ["text-yellow-400", "text-gray-300", "text-amber-600"];
+const RANK_COLORS = ["text-[var(--accent-color-dynamic)]", "text-gray-300", "text-[var(--accent-color-dynamic)]"];
 const RANK_ICONS = [Crown, Medal, Award];
 const RANK_LADDER = [
   { name: "Novice III", minKp: 0 },
@@ -223,7 +223,7 @@ const Leaderboard = () => {
         className="text-center mb-10"
       >
         <div className="inline-flex items-center gap-3 mb-3">
-          <Trophy className="w-8 h-8 text-yellow-400" />
+          <Trophy className="w-8 h-8 text-[var(--accent-color-dynamic)]" />
           <h1 className="text-3xl font-bold text-foreground">Leaderboard</h1>
         </div>
         <p className="text-muted-foreground">
@@ -263,7 +263,7 @@ const Leaderboard = () => {
             onClick={() => setFriendsOnly(!friendsOnly)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
               friendsOnly
-                ? "bg-purple-600/20 text-purple-400 border-purple-500/30"
+                ? "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] border-[var(--accent-color-dynamic)]/30"
                 : "bg-muted/50 text-muted-foreground border-border hover:border-primary/30"
             }`}
           >
@@ -474,7 +474,7 @@ const Leaderboard = () => {
                             <span
                               className={`inline-block w-2 h-2 rounded-full ${
                                 userStatuses[entry.userId]?.isOnline
-                                  ? "bg-green-500"
+                                  ? "bg-[var(--accent-color-dynamic)]"
                                   : "bg-gray-400"
                               }`}
                             />

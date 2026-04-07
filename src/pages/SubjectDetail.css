@@ -191,7 +191,7 @@
 
 .status-badge {
   padding: 4px 12px;
-  background: #10b981;
+  background: var(--accent-color-dynamic);
   color: var(--primary-foreground);
   border-radius: 12px;
   font-size: 0.75rem;
@@ -620,17 +620,17 @@
 }
 
 .info-item .status-badge.processing {
-  background: #f59e0b;
+  background: var(--accent-color-dynamic);
   color: white;
 }
 
 .info-item .status-badge.completed {
-  background: #10b981;
+  background: var(--accent-color-dynamic);
   color: white;
 }
 
 .info-item .status-badge.failed {
-  background: #ef4444;
+  background: var(--accent-color-dynamic);
   color: white;
 }
 

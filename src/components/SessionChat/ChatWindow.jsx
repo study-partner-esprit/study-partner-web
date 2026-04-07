@@ -31,9 +31,9 @@ export default function ChatWindow({ sessionId, userId }) {
         </div>
         <div className="text-xs text-gray-300 flex items-center gap-1">
           {connected ? (
-            <Wifi size={14} className="text-green-400" />
+            <Wifi size={14} className="text-[var(--accent-color-dynamic)]" />
           ) : (
-            <WifiOff size={14} className="text-yellow-300" />
+            <WifiOff size={14} className="text-[var(--accent-color-dynamic)]" />
           )}
           {connected ? "Live" : "Fallback"}
         </div>
@@ -45,7 +45,7 @@ export default function ChatWindow({ sessionId, userId }) {
         loading={loadingHistory}
       />
 
-      {error && <div className="mt-2 text-xs text-red-300">{error}</div>}
+      {error && <div className="mt-2 text-xs text-[var(--accent-color-dynamic)]">{error}</div>}
 
       <div className="mt-3">
         <ChatInput onSubmit={submitQuery} disabled={submitting} />

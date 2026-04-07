@@ -46,7 +46,7 @@ function JoinSessionModal({ onClose, onJoined }) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
           <h3 className="font-semibold flex items-center gap-2">
-            <Users size={18} className="text-purple-400" />
+            <Users size={18} className="text-[var(--accent-color-dynamic)]" />
             Join Team Session
           </h3>
           <button
@@ -68,7 +68,7 @@ function JoinSessionModal({ onClose, onJoined }) {
               value={sessionId}
               onChange={(e) => setSessionId(e.target.value)}
               placeholder="Enter session ID"
-              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none text-sm"
+              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-[var(--accent-color-dynamic)] focus:outline-none text-sm"
             />
           </div>
 
@@ -82,12 +82,12 @@ function JoinSessionModal({ onClose, onJoined }) {
               onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
               placeholder="e.g., A1B2C3"
               maxLength={6}
-              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none font-mono tracking-wider text-center text-lg"
+              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:border-[var(--accent-color-dynamic)] focus:outline-none font-mono tracking-wider text-center text-lg"
             />
           </div>
 
           {error && (
-            <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+            <p className="text-[var(--accent-color-dynamic)] text-sm bg-[var(--accent-color-dynamic)]/10 border border-[var(--accent-color-dynamic)]/20 rounded-lg p-2">
               {error}
             </p>
           )}
@@ -95,7 +95,7 @@ function JoinSessionModal({ onClose, onJoined }) {
           <button
             onClick={handleJoin}
             disabled={loading || !inviteCode.trim() || !sessionId.trim()}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--accent-color-dynamic)] text-white rounded-lg hover:bg-[var(--accent-color-dynamic)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white" />

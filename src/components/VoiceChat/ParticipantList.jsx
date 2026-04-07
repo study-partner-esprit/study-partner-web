@@ -23,7 +23,7 @@ export default function ParticipantList({ participants = [] }) {
             </span>
             <span
               className={
-                participant.isMuted ? "text-yellow-300" : "text-green-400"
+                participant.isMuted ? "text-[var(--accent-color-dynamic)]" : "text-[var(--accent-color-dynamic)]"
               }
             >
               {participant.isMuted ? "Muted" : "Live"}

@@ -151,7 +151,7 @@ const Sessions = () => {
             {!activeSession && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] transition-all duration-300 font-bold tracking-wider"
+                className="px-6 py-3 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] transition-all duration-300 font-bold tracking-wider"
               >
                 + NEW SESSION
               </button>
@@ -166,17 +166,17 @@ const Sessions = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-[#1a2633] to-[#0f1923] border-4 border-[#ff4655] p-8 mb-8 relative overflow-hidden"
+            className="bg-gradient-to-r from-[#1a2633] to-[#0f1923] border-4 border-[var(--accent-color-dynamic)] p-8 mb-8 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 border-t-4 border-r-4 border-white/10"></div>
 
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-[#ff4655]">{"//"}</span> ACTIVE SESSION
+                <span className="text-[var(--accent-color-dynamic)]">{"//"}</span> ACTIVE SESSION
               </h2>
 
               {/* Timer */}
-              <div className="text-7xl font-bold tracking-wider mb-6 text-[#ff4655]">
+              <div className="text-7xl font-bold tracking-wider mb-6 text-[var(--accent-color-dynamic)]">
                 {formatTime(timer)}
               </div>
 
@@ -190,7 +190,7 @@ const Sessions = () => {
               <div className="flex gap-4 justify-center">
                 <button
                   onClick={endSession}
-                  className="px-8 py-4 bg-red-500 hover:bg-red-600 font-bold text-lg tracking-wider transition-all transform hover:scale-105"
+                  className="px-8 py-4 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] font-bold text-lg tracking-wider transition-all transform hover:scale-105"
                 >
                   END SESSION
                 </button>
@@ -202,7 +202,7 @@ const Sessions = () => {
         {/* Session History */}
         <div className="bg-[#1a2633] border-2 border-[#2e3a4a] p-6">
           <h2 className="text-2xl font-bold mb-6">
-            <span className="text-[#ff4655]">{"//"}</span> SESSION HISTORY
+            <span className="text-[var(--accent-color-dynamic)]">{"//"}</span> SESSION HISTORY
           </h2>
 
           {sessions.length === 0 ? (
@@ -212,7 +212,7 @@ const Sessions = () => {
               </p>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider"
+                className="px-6 py-3 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] font-bold tracking-wider"
               >
                 START YOUR FIRST SESSION
               </button>
@@ -250,8 +250,8 @@ const Sessions = () => {
                     <div
                       className={`px-4 py-2 text-sm font-bold ${
                         session.endTime
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-yellow-500/20 text-yellow-400"
+                          ? "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)]"
+                          : "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)]"
                       }`}
                     >
                       {session.endTime ? "COMPLETED" : "IN PROGRESS"}
@@ -324,7 +324,7 @@ const Sessions = () => {
                 <div className="flex gap-4">
                   <button
                     onClick={startSession}
-                    className="flex-1 px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider transition-all"
+                    className="flex-1 px-6 py-3 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] font-bold tracking-wider transition-all"
                   >
                     START SESSION
                   </button>

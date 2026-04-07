@@ -45,7 +45,7 @@ function TeamInviteModal({ sessionId, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
           <h3 className="font-semibold flex items-center gap-2">
-            <UserPlus size={18} className="text-purple-400" />
+            <UserPlus size={18} className="text-[var(--accent-color-dynamic)]" />
             Invite Friends
           </h3>
           <button
@@ -68,7 +68,7 @@ function TeamInviteModal({ sessionId, onClose }) {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder="Filter friends..."
-              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none"
+              className="w-full bg-gray-800/50 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-gray-500 focus:border-[var(--accent-color-dynamic)] focus:outline-none"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@ function TeamInviteModal({ sessionId, onClose }) {
                   className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-800/50"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 text-sm font-bold">
+                    <div className="w-8 h-8 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] text-sm font-bold">
                       {(friend.name ||
                         friend.displayName ||
                         "?")[0].toUpperCase()}
@@ -99,13 +99,13 @@ function TeamInviteModal({ sessionId, onClose }) {
                     </span>
                   </div>
                   {isInvited ? (
-                    <span className="text-green-400 text-xs flex items-center gap-1">
+                    <span className="text-[var(--accent-color-dynamic)] text-xs flex items-center gap-1">
                       <Check size={12} /> Invited
                     </span>
                   ) : (
                     <button
                       onClick={() => handleInvite(friendId)}
-                      className="px-3 py-1 text-xs bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      className="px-3 py-1 text-xs bg-[var(--accent-color-dynamic)] text-white rounded-lg hover:bg-[var(--accent-color-dynamic)] transition-colors"
                     >
                       Invite
                     </button>

@@ -162,7 +162,7 @@ const Profile = () => {
             <div>
               <span className="text-muted-foreground">Days Remaining:</span>{" "}
               <span
-                className={`font-semibold ${Number(user?.daysRemaining || 0) <= 5 ? "text-amber-300" : ""}`}
+                className={`font-semibold ${Number(user?.daysRemaining || 0) <= 5 ? "text-[var(--accent-color-dynamic)]" : ""}`}
               >
                 {Number(user?.daysRemaining || 0)}
               </span>
@@ -186,7 +186,7 @@ const Profile = () => {
           </div>
           <div className="mt-3 text-xs">
             {user?.canChangePlan ? (
-              <span className="text-green-400">
+              <span className="text-[var(--accent-color-dynamic)]">
                 Plan change is available now.
               </span>
             ) : (
@@ -278,7 +278,7 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="bg-muted/50 p-3 rounded-xl border border-border text-center">
-                    <div className="text-yellow-500 mb-1 flex justify-center">
+                    <div className="text-[var(--accent-color-dynamic)] mb-1 flex justify-center">
                       <Award className="w-5 h-5" />
                     </div>
                     <div className="text-xl font-bold">
@@ -289,7 +289,7 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="bg-muted/50 p-3 rounded-xl border border-border text-center">
-                    <div className="text-cyan-500 mb-1 flex justify-center">
+                    <div className="text-[var(--accent-color-dynamic)] mb-1 flex justify-center">
                       <Users className="w-5 h-5" />
                     </div>
                     <div className="text-xl font-bold">{friendCount}</div>

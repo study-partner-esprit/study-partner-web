@@ -17,37 +17,37 @@ const QUALITY_OPTIONS = [
   {
     value: 0,
     label: "Blackout",
-    color: "bg-red-500",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "No recall at all",
   },
   {
     value: 1,
     label: "Wrong",
-    color: "bg-red-400",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "Wrong answer, but recognized correct one",
   },
   {
     value: 2,
     label: "Hard",
-    color: "bg-orange-400",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "Correct with serious difficulty",
   },
   {
     value: 3,
     label: "OK",
-    color: "bg-yellow-400",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "Correct with some hesitation",
   },
   {
     value: 4,
     label: "Good",
-    color: "bg-green-400",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "Correct with minor hesitation",
   },
   {
     value: 5,
     label: "Perfect",
-    color: "bg-emerald-500",
+    color: "bg-[var(--accent-color-dynamic)]",
     desc: "Instant perfect recall",
   },
 ];
@@ -164,14 +164,14 @@ const ReviewCenter = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
         >
           <div className="p-4 rounded-xl border border-border bg-card text-center">
-            <Clock className="w-5 h-5 mx-auto mb-2 text-orange-400" />
+            <Clock className="w-5 h-5 mx-auto mb-2 text-[var(--accent-color-dynamic)]" />
             <p className="text-2xl font-bold text-foreground">
               {pendingReviews.length}
             </p>
             <p className="text-xs text-muted-foreground">Due Now</p>
           </div>
           <div className="p-4 rounded-xl border border-border bg-card text-center">
-            <CheckCircle className="w-5 h-5 mx-auto mb-2 text-green-400" />
+            <CheckCircle className="w-5 h-5 mx-auto mb-2 text-[var(--accent-color-dynamic)]" />
             <p className="text-2xl font-bold text-foreground">
               {stats.totalReviewed || 0}
             </p>
@@ -185,7 +185,7 @@ const ReviewCenter = () => {
             <p className="text-xs text-muted-foreground">Avg Quality</p>
           </div>
           <div className="p-4 rounded-xl border border-border bg-card text-center">
-            <Sparkles className="w-5 h-5 mx-auto mb-2 text-yellow-400" />
+            <Sparkles className="w-5 h-5 mx-auto mb-2 text-[var(--accent-color-dynamic)]" />
             <p className="text-2xl font-bold text-foreground">
               {stats.masteredCount || 0}
             </p>
@@ -298,7 +298,7 @@ const ReviewCenter = () => {
           {sessionResults.length > 0 && (
             <div className="max-w-xl mx-auto mb-8 p-6 rounded-2xl border border-border bg-card">
               <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center justify-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-400" /> Session
+                <CheckCircle className="w-5 h-5 text-[var(--accent-color-dynamic)]" /> Session
                 Complete!
               </h3>
               <div className="flex justify-center gap-6 mb-4">
@@ -309,13 +309,13 @@ const ReviewCenter = () => {
                   <p className="text-xs text-muted-foreground">Reviewed</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-green-400">
+                  <p className="text-2xl font-bold text-[var(--accent-color-dynamic)]">
                     {sessionResults.filter((r) => r.quality >= 3).length}
                   </p>
                   <p className="text-xs text-muted-foreground">Correct</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-red-400">
+                  <p className="text-2xl font-bold text-[var(--accent-color-dynamic)]">
                     {sessionResults.filter((r) => r.quality < 3).length}
                   </p>
                   <p className="text-xs text-muted-foreground">Needs Work</p>
@@ -327,7 +327,7 @@ const ReviewCenter = () => {
           {pendingReviews.length > 0 ? (
             <>
               <div className="mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 text-orange-400 text-sm font-medium mb-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)] text-sm font-medium mb-4">
                   <Clock className="w-4 h-4" />
                   {pendingReviews.length} review
                   {pendingReviews.length !== 1 ? "s" : ""} due
@@ -345,7 +345,7 @@ const ReviewCenter = () => {
             </>
           ) : (
             <div className="p-12 rounded-2xl border border-border bg-card">
-              <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
+              <CheckCircle className="w-12 h-12 text-[var(--accent-color-dynamic)] mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 All caught up!
               </h3>

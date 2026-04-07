@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  Image,
+  Image as ImageIcon,
   Upload,
   Palette,
   EyeOff,
@@ -21,6 +21,90 @@ const TABS = [
   { id: "settings", label: "Settings", icon: SlidersHorizontal },
 ];
 
+const MAX_BACKGROUND_UPLOAD_BYTES = 5 * 1024 * 1024;
+const MAX_BACKGROUND_UPLOAD_LABEL = "5MB";
+
+const fileToDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Failed to read image file"));
+    reader.readAsDataURL(file);
+  });
+
+const canvasToBlob = (canvas, type, quality) =>
+  new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), type, quality);
+  });
+
+const loadImageFromFile = (file) =>
+  new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new window.Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Could not decode the selected image"));
+    };
+
+    image.src = objectUrl;
+  });
+
+const formatFileSize = (bytes) => {
+  if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0}B`;
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${kb.toFixed(1)}KB`;
+  return `${(kb / 1024).toFixed(2)}MB`;
+};
+
+const optimizeImageForUpload = async (file) => {
+  if (file.size <= MAX_BACKGROUND_UPLOAD_BYTES) {
+    return file;
+  }
+
+  const image = await loadImageFromFile(file);
+  const qualitySteps = [0.9, 0.82, 0.74, 0.66, 0.58, 0.5];
+  const maxSideSteps = [1920, 1600, 1280, 960];
+  const baseName = (file.name || "background").replace(/\.[^/.]+$/, "");
+
+  for (const maxSide of maxSideSteps) {
+    const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+    const width = Math.max(1, Math.round(image.width * scale));
+    const height = Math.max(1, Math.round(image.height * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("Image optimization is not supported in this browser");
+    }
+
+    context.drawImage(image, 0, 0, width, height);
+
+    // Try gradually lower quality to stay under the backend cap.
+    for (const quality of qualitySteps) {
+      const blob = await canvasToBlob(canvas, "image/webp", quality);
+      if (blob && blob.size <= MAX_BACKGROUND_UPLOAD_BYTES) {
+        return new File([blob], `${baseName}.webp`, {
+          type: "image/webp",
+          lastModified: Date.now(),
+        });
+      }
+    }
+  }
+
+  throw new Error(
+    `Image is too large to optimize automatically. Please choose a smaller file (max ${MAX_BACKGROUND_UPLOAD_LABEL}).`,
+  );
+};
+
 const BackgroundCustomizer = () => {
   const navigate = useNavigate();
   const {
@@ -34,6 +118,8 @@ const BackgroundCustomizer = () => {
     disableBackground,
     hasFeature,
     loading,
+    error: uploadApiError,
+    clearError,
   } = useGamificationStore();
 
   const [activeTab, setActiveTab] = useState("presets");
@@ -45,6 +131,9 @@ const BackgroundCustomizer = () => {
   });
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(null);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState("");
+  const [uploadStatusMessage, setUploadStatusMessage] = useState("");
+  const [isOptimizingUpload, setIsOptimizingUpload] = useState(false);
   const fileInputRef = useRef(null);
 
   const unlocked = hasFeature("wallpaper");
@@ -84,30 +173,57 @@ const BackgroundCustomizer = () => {
     });
   };
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setUploadFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUploadPreview(reader.result);
-      setPreviewUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
+
+    clearError();
+    setUploadErrorMessage("");
+    setUploadStatusMessage("");
+    setIsOptimizingUpload(true);
+
+    try {
+      const optimizedFile = await optimizeImageForUpload(file);
+      const previewDataUrl = await fileToDataUrl(optimizedFile);
+
+      setUploadFile(optimizedFile);
+      setUploadPreview(previewDataUrl);
+      setPreviewUrl(previewDataUrl);
+
+      if (optimizedFile.size < file.size) {
+        setUploadStatusMessage(
+          `Optimized from ${formatFileSize(file.size)} to ${formatFileSize(optimizedFile.size)}.`,
+        );
+      }
+    } catch (error) {
+      setUploadFile(null);
+      setUploadPreview(null);
+      setUploadErrorMessage(error.message || "Failed to process image before upload");
+    } finally {
+      setIsOptimizingUpload(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   const handleUploadApply = async () => {
-    if (!uploadFile) return;
-    // Pass just the file; uploadBackground handles FormData creation
-    await uploadBackground(uploadFile);
-    // Apply settings after successful upload
-    await applyBackground({
-      type: "uploaded",
-      opacity: localSettings.opacity,
-      blur: localSettings.blur,
-      position: localSettings.position,
-      enabled: true,
-    });
+    if (!uploadFile || isOptimizingUpload) return;
+    try {
+      await uploadBackground(uploadFile);
+      await applyBackground({
+        type: "uploaded",
+        opacity: localSettings.opacity,
+        blur: localSettings.blur,
+        position: localSettings.position,
+        enabled: true,
+      });
+      setUploadErrorMessage("");
+      clearError();
+    } catch (error) {
+      const apiMessage = error?.response?.data?.error;
+      setUploadErrorMessage(apiMessage || "Failed to upload wallpaper");
+    }
   };
 
   const handleDisable = async () => {
@@ -120,7 +236,7 @@ const BackgroundCustomizer = () => {
     return (
       <div className="min-h-screen bg-[#0f1923] flex items-center justify-center text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#ff4655] rounded-full blur-[200px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[var(--accent-color-dynamic)] rounded-full blur-[200px]" />
         </div>
         <div className="relative z-10 text-center max-w-md p-8">
           <Lock size={64} className="mx-auto text-gray-600 mb-6" />
@@ -129,7 +245,7 @@ const BackgroundCustomizer = () => {
           </h1>
           <p className="text-gray-400 mb-4">
             Custom wallpapers unlock at{" "}
-            <span className="text-[#ff4655] font-bold">Level 10</span>.
+            <span className="text-[var(--accent-color-dynamic)] font-bold">Level 10</span>.
           </p>
           <p className="text-gray-500 text-sm mb-8">
             You are currently{" "}
@@ -138,7 +254,7 @@ const BackgroundCustomizer = () => {
           </p>
           <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden mb-4">
             <div
-              className="h-full bg-gradient-to-r from-[#ff4655] to-[#ff4655]/50 rounded-full"
+              className="h-full bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]/50 rounded-full"
               style={{ width: `${Math.min((level / 10) * 100, 100)}%` }}
             />
           </div>
@@ -166,7 +282,7 @@ const BackgroundCustomizer = () => {
           >
             <ArrowLeft size={18} />
           </button>
-          <Image size={18} className="text-[#ff4655]" />
+          <ImageIcon size={18} className="text-[var(--accent-color-dynamic)]" />
           <span className="font-bold tracking-wider uppercase text-sm">
             Wallpaper Customizer
           </span>
@@ -182,10 +298,11 @@ const BackgroundCustomizer = () => {
           )}
           <button
             onClick={uploadFile ? handleUploadApply : handleApply}
-            disabled={!previewUrl || loading}
-            className="px-6 py-2 bg-[#ff4655] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[#ff2a3a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+            disabled={!previewUrl || loading || isOptimizingUpload}
+            className="px-6 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[var(--accent-color-dynamic-hover)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
           >
-            <Check size={14} /> {loading ? "Saving..." : "Apply"}
+            <Check size={14} />
+            {isOptimizingUpload ? "Optimizing..." : loading ? "Saving..." : "Apply"}
           </button>
         </div>
       </div>
@@ -201,7 +318,7 @@ const BackgroundCustomizer = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-3 text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 transition-colors ${
                   activeTab === tab.id
-                    ? "text-[#ff4655] border-b-2 border-[#ff4655]"
+                    ? "text-[var(--accent-color-dynamic)] border-b-2 border-[var(--accent-color-dynamic)]"
                     : "text-gray-500 hover:text-gray-300"
                 }`}
               >
@@ -223,7 +340,7 @@ const BackgroundCustomizer = () => {
                     onClick={() => handlePresetSelect(preset)}
                     className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-colors ${
                       previewUrl === preset.url
-                        ? "border-[#ff4655]"
+                        ? "border-[var(--accent-color-dynamic)]"
                         : "border-transparent hover:border-[#ffffff20]"
                     }`}
                   >
@@ -238,7 +355,7 @@ const BackgroundCustomizer = () => {
                       {preset.name}
                     </span>
                     {previewUrl === preset.url && (
-                      <div className="absolute top-1 right-1 w-5 h-5 bg-[#ff4655] rounded-full flex items-center justify-center">
+                      <div className="absolute top-1 right-1 w-5 h-5 bg-[var(--accent-color-dynamic)] rounded-full flex items-center justify-center">
                         <Check size={12} />
                       </div>
                     )}
@@ -251,23 +368,31 @@ const BackgroundCustomizer = () => {
               <div className="space-y-4">
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#ffffff15] rounded-xl p-8 text-center cursor-pointer hover:border-[#ff4655]/50 transition-colors"
+                  className="border-2 border-dashed border-[#ffffff15] rounded-xl p-8 text-center cursor-pointer hover:border-[var(--accent-color-dynamic)]/50 transition-colors"
                 >
                   <Upload size={32} className="mx-auto text-gray-500 mb-3" />
                   <p className="text-sm text-gray-400 mb-1">
                     Click to upload a wallpaper
                   </p>
                   <p className="text-xs text-gray-600">
-                    JPG, PNG, WebP • Max 5MB
+                    JPG, PNG, GIF, WebP • Max {MAX_BACKGROUND_UPLOAD_LABEL}
                   </p>
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/jpeg,image/png,image/webp"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
                     onChange={handleUpload}
                     className="hidden"
                   />
                 </div>
+                {uploadStatusMessage && (
+                  <p className="text-xs text-[var(--accent-color-dynamic)]">{uploadStatusMessage}</p>
+                )}
+                {(uploadErrorMessage || uploadApiError) && (
+                  <div className="rounded-lg border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/10 px-3 py-2 text-xs text-[var(--accent-color-dynamic)]">
+                    {uploadErrorMessage || uploadApiError}
+                  </div>
+                )}
                 {uploadPreview && (
                   <div className="relative rounded-xl overflow-hidden border border-[#ffffff10]">
                     <img
@@ -279,6 +404,9 @@ const BackgroundCustomizer = () => {
                       onClick={() => {
                         setUploadFile(null);
                         setUploadPreview(null);
+                        setUploadErrorMessage("");
+                        setUploadStatusMessage("");
+                        clearError();
                         if (previewUrl === uploadPreview) setPreviewUrl(null);
                       }}
                       className="absolute top-2 right-2 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center hover:bg-black/80"
@@ -307,7 +435,7 @@ const BackgroundCustomizer = () => {
                         opacity: parseInt(e.target.value) / 100,
                       }))
                     }
-                    className="w-full accent-[#ff4655]"
+                    className="w-full accent-[var(--accent-color-dynamic)]"
                   />
                 </div>
                 <div>
@@ -325,7 +453,7 @@ const BackgroundCustomizer = () => {
                         blur: parseInt(e.target.value),
                       }))
                     }
-                    className="w-full accent-[#ff4655]"
+                    className="w-full accent-[var(--accent-color-dynamic)]"
                   />
                 </div>
                 <div>
@@ -344,7 +472,7 @@ const BackgroundCustomizer = () => {
                         }
                         className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg border transition-colors ${
                           localSettings.position === pos
-                            ? "border-[#ff4655] text-[#ff4655] bg-[#ff4655]/10"
+                            ? "border-[var(--accent-color-dynamic)] text-[var(--accent-color-dynamic)] bg-[var(--accent-color-dynamic)]/10"
                             : "border-[#ffffff10] text-gray-500 hover:text-gray-300"
                         }`}
                       >
@@ -383,7 +511,7 @@ const BackgroundCustomizer = () => {
               {/* Mock dashboard overlay for preview */}
               <div className="relative z-10 w-[80%] max-w-2xl">
                 <div className="bg-[#1a2633]/80 backdrop-blur-md border border-[#ffffff10] rounded-2xl p-8 text-center">
-                  <Sparkles size={32} className="mx-auto text-[#ff4655] mb-4" />
+                  <Sparkles size={32} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
                   <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">
                     LIVE PREVIEW
                   </h2>
@@ -396,7 +524,7 @@ const BackgroundCustomizer = () => {
             </>
           ) : (
             <div className="text-center">
-              <Image size={48} className="mx-auto text-gray-700 mb-4" />
+              <ImageIcon size={48} className="mx-auto text-gray-700 mb-4" />
               <p className="text-gray-500">
                 Select a preset or upload an image to preview
               </p>

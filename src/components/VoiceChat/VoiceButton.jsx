@@ -54,7 +54,11 @@ export default function VoiceButton({ sessionId, userId }) {
         {!active ? (
           <button
             onClick={handleStart}
-            className="inline-flex items-center gap-2 rounded-md bg-[#0fb8ce] px-3 py-1.5 text-xs font-bold text-[#0f1923]"
+            className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-bold"
+            style={{
+              backgroundColor: 'var(--accent-color-dynamic)',
+              color: '#0f1923',
+            }}
           >
             <Mic size={14} /> Join Voice
           </button>
@@ -69,7 +73,7 @@ export default function VoiceButton({ sessionId, userId }) {
             </button>
             <button
               onClick={handleStop}
-              className="inline-flex items-center gap-2 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-200"
+              className="inline-flex items-center gap-2 rounded-md border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/10 px-3 py-1.5 text-xs text-[var(--accent-color-dynamic)]"
             >
               <PhoneOff size={14} /> Leave
             </button>

@@ -237,7 +237,7 @@
 }
 
 .confirm-btn:hover {
-  background: var(--primary-hover, #e11d48);
+  background: var(--primary-hover, var(--accent-color-dynamic));
   transform: translateY(-1px);
 }
 

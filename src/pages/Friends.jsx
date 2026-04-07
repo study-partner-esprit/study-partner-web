@@ -25,8 +25,8 @@ const tabs = [
 ];
 
 const statusColors = {
-  online: "bg-green-500",
-  studying: "bg-yellow-500",
+  online: "bg-[var(--accent-color-dynamic)]",
+  studying: "bg-[var(--accent-color-dynamic)]",
   offline: "bg-gray-400",
 };
 
@@ -184,8 +184,8 @@ function Friends() {
             exit={{ opacity: 0, y: -20 }}
             className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
               notification.type === "error"
-                ? "bg-red-500/90"
-                : "bg-green-500/90"
+                ? "bg-[var(--accent-color-dynamic)]/90"
+                : "bg-[var(--accent-color-dynamic)]/90"
             }`}
           >
             {notification.message}
@@ -207,7 +207,7 @@ function Friends() {
           {/* Friend Code */}
           <div className="flex items-center gap-2 bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-2">
             <span className="text-gray-400 text-sm">My Code:</span>
-            <span className="font-mono font-bold text-purple-400">
+            <span className="font-mono font-bold text-[var(--accent-color-dynamic)]">
               {user?.friendCode || "--------"}
             </span>
             <button
@@ -228,14 +228,14 @@ function Friends() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all flex-1 justify-center ${
                 activeTab === tab.id
-                  ? "bg-purple-600 text-white"
+                  ? "bg-[var(--accent-color-dynamic)] text-white"
                   : "text-gray-400 hover:text-white hover:bg-gray-700/50"
               }`}
             >
               <tab.icon size={16} />
               {tab.label}
               {tab.id === "requests" && incomingRequests.length > 0 && (
-                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                <span className="bg-[var(--accent-color-dynamic)] text-white text-xs px-1.5 py-0.5 rounded-full">
                   {incomingRequests.length}
                 </span>
               )}
@@ -312,7 +312,7 @@ function FriendsTab({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-purple-500" />
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[var(--accent-color-dynamic)]" />
       </div>
     );
   }
@@ -334,11 +334,11 @@ function FriendsTab({
       {friends.map((friend) => (
         <div
           key={friend.userId || friend._id}
-          className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4 hover:border-purple-500/30 transition-colors"
+          className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4 hover:border-[var(--accent-color-dynamic)]/30 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 font-bold">
+              <div className="w-10 h-10 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] font-bold">
                 {(friend.name || friend.displayName || "?")[0].toUpperCase()}
               </div>
               <div
@@ -382,13 +382,13 @@ function FriendsTab({
                 </button>
                 <button
                   onClick={() => onRemove(friend.userId || friend._id)}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-[var(--accent-color-dynamic)] flex items-center gap-2"
                 >
                   <UserMinus size={14} /> Remove Friend
                 </button>
                 <button
                   onClick={() => onBlock(friend.userId || friend._id)}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 rounded-b-lg flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-[var(--accent-color-dynamic)] rounded-b-lg flex items-center gap-2"
                 >
                   <Shield size={14} /> Block User
                 </button>
@@ -409,7 +409,7 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
         <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
           <UserPlus size={18} /> Incoming Requests
           {incoming.length > 0 && (
-            <span className="text-sm bg-purple-600/30 text-purple-400 px-2 py-0.5 rounded-full">
+            <span className="text-sm bg-[var(--accent-color-dynamic)]/30 text-[var(--accent-color-dynamic)] px-2 py-0.5 rounded-full">
               {incoming.length}
             </span>
           )}
@@ -424,7 +424,7 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                 className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-600/30 rounded-full flex items-center justify-center text-blue-400 font-bold">
+                  <div className="w-10 h-10 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] font-bold">
                     {(req.requesterName || req.name || "?")[0].toUpperCase()}
                   </div>
                   <div>
@@ -440,14 +440,14 @@ function RequestsTab({ incoming, outgoing, onAccept, onReject, onCancel }) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => onAccept(req.friendshipId)}
-                    className="p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors"
+                    className="p-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors"
                     title="Accept"
                   >
                     <Check size={16} />
                   </button>
                   <button
                     onClick={() => onReject(req.friendshipId)}
-                    className="p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors"
+                    className="p-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors"
                     title="Reject"
                   >
                     <X size={16} />
@@ -520,12 +520,12 @@ function FindTab({
             onChange={(e) => setFriendCodeInput(e.target.value.toUpperCase())}
             placeholder="Enter friend code (e.g., A1B2C3D4)"
             maxLength={8}
-            className="flex-1 bg-gray-900/50 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none font-mono tracking-wider"
+            className="flex-1 bg-gray-900/50 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:border-[var(--accent-color-dynamic)] focus:outline-none font-mono tracking-wider"
           />
           <button
             onClick={onSendByCode}
             disabled={!friendCodeInput.trim()}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-[var(--accent-color-dynamic)] text-white rounded-lg hover:bg-[var(--accent-color-dynamic)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Send Request
           </button>
@@ -545,7 +545,7 @@ function FindTab({
             value={searchQuery}
             onChange={onSearch}
             placeholder="Search by name or email..."
-            className="w-full bg-gray-800/50 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none"
+            className="w-full bg-gray-800/50 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:border-[var(--accent-color-dynamic)] focus:outline-none"
           />
         </div>
 
@@ -560,7 +560,7 @@ function FindTab({
               className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 font-bold">
+                <div className="w-10 h-10 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] font-bold">
                   {(u.displayName || u.name || "?")[0].toUpperCase()}
                 </div>
                 <div>
@@ -573,17 +573,17 @@ function FindTab({
                 </div>
               </div>
               {u.friendshipStatus === "accepted" ? (
-                <span className="text-sm text-green-400 flex items-center gap-1">
+                <span className="text-sm text-[var(--accent-color-dynamic)] flex items-center gap-1">
                   <Check size={14} /> Friends
                 </span>
               ) : u.friendshipStatus === "pending" ? (
-                <span className="text-sm text-yellow-400 flex items-center gap-1">
+                <span className="text-sm text-[var(--accent-color-dynamic)] flex items-center gap-1">
                   <Clock size={14} /> Pending
                 </span>
               ) : (
                 <button
                   onClick={() => onSendById(u._id || u.userId)}
-                  className="px-4 py-1.5 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  className="px-4 py-1.5 text-sm bg-[var(--accent-color-dynamic)] text-white rounded-lg hover:bg-[var(--accent-color-dynamic)] transition-colors"
                 >
                   Add Friend
                 </button>
@@ -616,7 +616,7 @@ function BlockedTab({ blocked, onUnblock }) {
           className="flex items-center justify-between bg-gray-800/50 border border-gray-700/50 rounded-lg p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-600/30 rounded-full flex items-center justify-center text-red-400 font-bold">
+            <div className="w-10 h-10 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] font-bold">
               {(u.name || u.displayName || "?")[0].toUpperCase()}
             </div>
             <p className="font-medium">{u.name || u.displayName}</p>

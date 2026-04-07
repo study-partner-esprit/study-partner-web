@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import { backgroundAPI } from "../services/api";
 
+const MAX_BACKGROUND_SIZE_LABEL = "5MB";
+
+const normalizeUploadErrorMessage = (err, fallbackMessage) => {
+  const backendError = err?.response?.data?.error;
+  if (backendError === "File is too large") {
+    return `File is too large. Maximum allowed size is ${MAX_BACKGROUND_SIZE_LABEL}.`;
+  }
+  return backendError || fallbackMessage;
+};
+
 const useGamificationStore = create((set, get) => ({
   // Level & XP
   level: 1,
@@ -80,10 +90,12 @@ const useGamificationStore = create((set, get) => ({
     set({ loading: true });
     try {
       const data = await backgroundAPI.applyBackground(settings);
-      set({
-        backgroundSettings: data.backgroundSettings,
+      set((state) => ({
+        backgroundSettings: data.backgroundSettings ?? state.backgroundSettings,
+        animatedBackgroundSettings:
+          data.animatedBackgroundSettings ?? state.animatedBackgroundSettings,
         loading: false,
-      });
+      }));
       return data;
     } catch (err) {
       set({
@@ -96,19 +108,25 @@ const useGamificationStore = create((set, get) => ({
 
   // Upload custom background
   uploadBackground: async (file) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const formData = new FormData();
       formData.append("backgroundImage", file);
       const data = await backgroundAPI.uploadBackground(formData);
-      set({
-        backgroundSettings: data.backgroundSettings,
+      set((state) => ({
+        backgroundSettings: data.backgroundSettings ?? state.backgroundSettings,
+        animatedBackgroundSettings:
+          data.animatedBackgroundSettings ?? state.animatedBackgroundSettings,
         loading: false,
-      });
+      }));
       return data;
     } catch (err) {
+      const errorMessage = normalizeUploadErrorMessage(
+        err,
+        "Failed to upload background",
+      );
       set({
-        error: err.response?.data?.error || "Failed to upload background",
+        error: errorMessage,
         loading: false,
       });
       throw err;
@@ -122,10 +140,12 @@ const useGamificationStore = create((set, get) => ({
       const formData = new FormData();
       formData.append("animatedVideo", file);
       const data = await backgroundAPI.uploadAnimatedBackground(formData);
-      set({
-        animatedBackgroundSettings: data.animatedBackgroundSettings,
+      set((state) => ({
+        animatedBackgroundSettings:
+          data.animatedBackgroundSettings ?? state.animatedBackgroundSettings,
+        backgroundSettings: data.backgroundSettings ?? state.backgroundSettings,
         loading: false,
-      });
+      }));
       return data;
     } catch (err) {
       set({
@@ -142,10 +162,12 @@ const useGamificationStore = create((set, get) => ({
     set({ loading: true });
     try {
       const data = await backgroundAPI.applyAnimatedBackground(settings);
-      set({
-        animatedBackgroundSettings: data.animatedBackgroundSettings,
+      set((state) => ({
+        animatedBackgroundSettings:
+          data.animatedBackgroundSettings ?? state.animatedBackgroundSettings,
+        backgroundSettings: data.backgroundSettings ?? state.backgroundSettings,
         loading: false,
-      });
+      }));
       return data;
     } catch (err) {
       set({
@@ -201,6 +223,8 @@ const useGamificationStore = create((set, get) => ({
 
   // Check if feature is unlocked
   hasFeature: (feature) => get().unlockedFeatures.includes(feature),
+
+  clearError: () => set({ error: null }),
 }));
 
 export default useGamificationStore;

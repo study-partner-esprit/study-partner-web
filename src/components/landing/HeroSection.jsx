@@ -103,19 +103,19 @@ const HeroSection = () => {
       icon: Trophy,
       value: "50K+",
       label: "Achievements Earned",
-      color: "text-yellow-500",
+      color: "text-[var(--accent-color-dynamic)]",
     },
     {
       icon: TrendingUp,
       value: "85%",
       label: "Success Rate",
-      color: "text-emerald-500",
+      color: "text-[var(--accent-color-dynamic)]",
     },
     {
       icon: Star,
       value: "4.9/5",
       label: "User Rating",
-      color: "text-yellow-500",
+      color: "text-[var(--accent-color-dynamic)]",
     },
   ];
 
@@ -129,7 +129,7 @@ const HeroSection = () => {
           <div className="relative z-10 text-center p-6 md:p-12 flex flex-col justify-center items-center h-full min-h-[80vh]">
             <div
               ref={badgeRef}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-background/40 backdrop-blur-md border border-primary/20 text-primary text-sm font-semibold mb-6 shadow-[0_4px_20px_rgba(255,70,85,0.15)] ring-1 ring-white/10"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-background/40 backdrop-blur-md border border-primary/20 text-primary text-sm font-semibold mb-6 shadow-[0_4px_20px_var(--accent-color-dynamic-shadow-15)] ring-1 ring-white/10"
             >
               <Sparkles className="w-4 h-4 animate-pulse" />
               <span>🎮 Gamified Learning Experience</span>
@@ -141,7 +141,7 @@ const HeroSection = () => {
               className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-12 font-display bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-primary to-gray-900 dark:from-white dark:via-primary dark:to-white"
             >
               Level Up Your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-red-500 to-orange-500 animate-pulse">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] animate-pulse">
                 Study Game
               </span>
             </h1>

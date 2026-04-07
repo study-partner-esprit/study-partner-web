@@ -19,11 +19,11 @@ function ProgressBar({
 
   const colors = {
     primary: "from-primary to-primary/80",
-    green: "from-green-500 to-green-400",
-    blue: "from-blue-500 to-blue-400",
-    yellow: "from-yellow-500 to-yellow-400",
-    red: "from-red-500 to-red-400",
-    purple: "from-purple-500 to-purple-400",
+    green: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    blue: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    yellow: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    red: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    purple: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
   };
 
   return (

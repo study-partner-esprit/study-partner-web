@@ -28,16 +28,16 @@ export default function TrialBanner() {
   const subscriptionUrgent = subscriptionDaysRemaining <= 5;
 
   const trialClass = isExpired
-    ? "bg-red-600/90 text-white"
+    ? "bg-[var(--accent-color-dynamic)]/90 text-white"
     : urgent
-      ? "bg-amber-500/90 text-black"
-      : "bg-gradient-to-r from-purple-600/90 to-pink-600/90 text-white";
+      ? "bg-[var(--accent-color-dynamic)]/90 text-black"
+      : "bg-gradient-to-r from-[var(--accent-color-dynamic)]/90 to-[var(--accent-color-dynamic)]/90 text-white";
 
   const subscriptionClass = canChangePlan
-    ? "bg-amber-500/90 text-black"
+    ? "bg-[var(--accent-color-dynamic)]/90 text-black"
     : subscriptionUrgent
-      ? "bg-blue-500/90 text-white"
-      : "bg-gradient-to-r from-sky-600/90 to-indigo-600/90 text-white";
+      ? "bg-[var(--accent-color-dynamic)]/90 text-white"
+      : "bg-gradient-to-r from-[var(--accent-color-dynamic)]/90 to-[var(--accent-color-dynamic)]/90 text-white";
 
   const barClass = tier === "trial" ? trialClass : subscriptionClass;
 

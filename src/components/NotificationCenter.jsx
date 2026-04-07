@@ -64,7 +64,7 @@ const NotificationCenter = () => {
               Notifications
             </h3>
             {unreadCount > 0 && (
-              <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
+              <span className="bg-[var(--accent-color-dynamic)] text-white text-xs font-bold rounded-full px-2 py-1">
                 {unreadCount}
               </span>
             )}
@@ -74,7 +74,7 @@ const NotificationCenter = () => {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllAsRead}
-                className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                className="flex items-center gap-1 text-sm text-[var(--accent-color-dynamic)] hover:text-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)] dark:hover:text-[var(--accent-color-dynamic)] transition-colors"
                 title="Mark all as read"
               >
                 <CheckCheck size={16} />
@@ -96,10 +96,10 @@ const NotificationCenter = () => {
         <div className="max-h-96 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center p-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent-color-dynamic)]"></div>
             </div>
           ) : error ? (
-            <div className="p-4 text-center text-red-600 dark:text-red-400">
+            <div className="p-4 text-center text-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]">
               <p>Failed to load notifications</p>
               <button
                 onClick={() => user?._id && fetchNotifications(user._id)}

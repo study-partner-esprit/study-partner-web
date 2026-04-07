@@ -45,7 +45,7 @@ function FriendProfileModal({ onClose }) {
         className="bg-gray-900 border border-gray-700/50 rounded-2xl w-full max-w-md overflow-hidden"
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-purple-600/20 to-blue-600/20 p-6 pb-12">
+        <div className="relative bg-gradient-to-r from-[var(--accent-color-dynamic)]/20 to-[var(--accent-color-dynamic)]/20 p-6 pb-12">
           <button
             onClick={onClose}
             className="absolute right-4 top-4 p-1 hover:bg-gray-700/50 rounded-lg transition-colors"
@@ -56,7 +56,7 @@ function FriendProfileModal({ onClose }) {
 
         {/* Avatar */}
         <div className="relative flex justify-center -mt-8">
-          <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-gray-900">
+          <div className="w-16 h-16 bg-[var(--accent-color-dynamic)] rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-gray-900">
             {(profile.displayName || profile.name || "?")[0].toUpperCase()}
           </div>
         </div>
@@ -71,13 +71,13 @@ function FriendProfileModal({ onClose }) {
           )}
           {profile.level && (
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Trophy size={14} className="text-yellow-500" />
+              <Trophy size={14} className="text-[var(--accent-color-dynamic)]" />
               <span className="text-sm text-gray-400">
                 Level {profile.level.current || profile.level}
               </span>
               {profile.streak > 0 && (
                 <>
-                  <Flame size={14} className="text-orange-500 ml-2" />
+                  <Flame size={14} className="text-[var(--accent-color-dynamic)] ml-2" />
                   <span className="text-sm text-gray-400">
                     {profile.streak} day streak
                   </span>
@@ -90,19 +90,19 @@ function FriendProfileModal({ onClose }) {
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-4 px-6 mt-6">
           <StatCard
-            icon={<Clock size={16} className="text-blue-400" />}
+            icon={<Clock size={16} className="text-[var(--accent-color-dynamic)]" />}
             label="Study Hours"
             value={
               profile.totalStudyHours || profile.stats?.totalStudyHours || 0
             }
           />
           <StatCard
-            icon={<BookOpen size={16} className="text-green-400" />}
+            icon={<BookOpen size={16} className="text-[var(--accent-color-dynamic)]" />}
             label="Sessions"
             value={profile.totalSessions || profile.stats?.totalSessions || 0}
           />
           <StatCard
-            icon={<Users size={16} className="text-purple-400" />}
+            icon={<Users size={16} className="text-[var(--accent-color-dynamic)]" />}
             label="Friends"
             value={profile.friendCount || 0}
           />
@@ -118,7 +118,7 @@ function FriendProfileModal({ onClose }) {
               {profile.badges.slice(0, 6).map((badge, i) => (
                 <span
                   key={i}
-                  className="px-2 py-1 bg-yellow-600/20 text-yellow-400 text-xs rounded-full"
+                  className="px-2 py-1 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] text-xs rounded-full"
                 >
                   {badge.name || badge}
                 </span>
@@ -131,13 +131,13 @@ function FriendProfileModal({ onClose }) {
         <div className="flex gap-3 p-6 mt-2">
           <button
             onClick={handleRemove}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-red-400 rounded-lg hover:bg-gray-700 transition-colors text-sm"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-gray-700 transition-colors text-sm"
           >
             <UserMinus size={14} /> Remove
           </button>
           <button
             onClick={handleBlock}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-red-400 rounded-lg hover:bg-gray-700 transition-colors text-sm"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-gray-700 transition-colors text-sm"
           >
             <Shield size={14} /> Block
           </button>

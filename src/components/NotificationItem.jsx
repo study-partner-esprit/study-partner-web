@@ -21,27 +21,27 @@ const NotificationItem = ({ notification }) => {
 
     switch (type) {
       case "study_reminder":
-        return <Clock {...iconProps} className="text-blue-500" />;
+        return <Clock {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "break_suggestion":
-        return <Zap {...iconProps} className="text-yellow-500" />;
+        return <Zap {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "plan_generated":
-        return <Target {...iconProps} className="text-green-500" />;
+        return <Target {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "task_due":
-        return <Calendar {...iconProps} className="text-red-500" />;
+        return <Calendar {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "session_suspended":
-        return <AlertTriangle {...iconProps} className="text-orange-500" />;
+        return <AlertTriangle {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "fatigue_alert":
-        return <AlertTriangle {...iconProps} className="text-red-500" />;
+        return <AlertTriangle {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "focus_drop":
-        return <BookOpen {...iconProps} className="text-purple-500" />;
+        return <BookOpen {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "achievement":
-        return <Trophy {...iconProps} className="text-yellow-500" />;
+        return <Trophy {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "schedule_change":
-        return <Calendar {...iconProps} className="text-blue-500" />;
+        return <Calendar {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "team_invite":
-        return <Swords {...iconProps} className="text-cyan-500" />;
+        return <Swords {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       case "team_join":
-        return <Swords {...iconProps} className="text-green-500" />;
+        return <Swords {...iconProps} className="text-[var(--accent-color-dynamic)]" />;
       default:
         return <Bell {...iconProps} className="text-gray-500" />;
     }
@@ -50,11 +50,11 @@ const NotificationItem = ({ notification }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "urgent":
-        return "border-l-red-500 bg-red-50 dark:bg-red-900/20";
+        return "border-l-[var(--accent-color-dynamic)] bg-[var(--accent-color-dynamic)]/10 dark:bg-[var(--accent-color-dynamic)]/20";
       case "high":
-        return "border-l-orange-500 bg-orange-50 dark:bg-orange-900/20";
+        return "border-l-orange-500 bg-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)]/20";
       case "normal":
-        return "border-l-blue-500 bg-blue-50 dark:bg-blue-900/20";
+        return "border-l-blue-500 bg-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)]/20";
       default:
         return "border-l-gray-500 bg-gray-50 dark:bg-gray-900/20";
     }
@@ -115,9 +115,9 @@ const NotificationItem = ({ notification }) => {
             <span
               className={`text-xs px-2 py-1 rounded-full capitalize ${
                 notification.priority === "urgent"
-                  ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  ? "bg-[var(--accent-color-dynamic)]/15 text-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]"
                   : notification.priority === "high"
-                    ? "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+                    ? "bg-[var(--accent-color-dynamic)] text-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]"
                     : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
               }`}
             >

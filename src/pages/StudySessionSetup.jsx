@@ -24,21 +24,21 @@ const SESSION_MODES = [
     name: "DEEP FOCUS",
     description: "Intense distraction-free study blocks",
     icon: Target,
-    color: "#ff4655",
+    color: "var(--accent-color-dynamic)",
   },
   {
     id: "pomodoro",
     name: "POMODORO",
     description: "Classic 25/5 intervals with breaks",
     icon: Clock,
-    color: "#0fb8ce",
+    color: "var(--accent-color-dynamic)",
   },
   {
     id: "exam",
     name: "EXAM PREP",
     description: "Long format with strategic reviews",
     icon: Zap,
-    color: "#a35cf7",
+    color: "var(--accent-color-dynamic)",
   },
 ];
 
@@ -172,7 +172,7 @@ const StudySessionSetup = () => {
         >
           <ArrowLeft size={20} />
         </button>
-        <div className="text-xl font-bold tracking-widest text-[#ff4655] mr-4">
+        <div className="text-xl font-bold tracking-widest text-[var(--accent-color-dynamic)] mr-4">
           {"//"}
         </div>
         <h1 className="text-2xl font-bold tracking-wider uppercase">
@@ -183,21 +183,21 @@ const StudySessionSetup = () => {
               : "Confirm Session"}
         </h1>
         <div className="ml-auto flex items-center gap-4 text-sm font-bold tracking-widest text-gray-500">
-          <span className={step === "mode" ? "text-[#ff4655]" : ""}>MODE</span>
+          <span className={step === "mode" ? "text-[var(--accent-color-dynamic)]" : ""}>MODE</span>
           <ChevronRight size={14} />
-          <span className={step === "course" ? "text-[#ff4655]" : ""}>
+          <span className={step === "course" ? "text-[var(--accent-color-dynamic)]" : ""}>
             COURSE
           </span>{" "}
           {selectedType === "team" && (
             <>
               <ChevronRight size={14} />
-              <span className={step === "friends" ? "text-[#ff4655]" : ""}>
+              <span className={step === "friends" ? "text-[var(--accent-color-dynamic)]" : ""}>
                 FRIENDS
               </span>
             </>
           )}{" "}
           <ChevronRight size={14} />
-          <span className={step === "confirm" ? "text-[#ff4655]" : ""}>
+          <span className={step === "confirm" ? "text-[var(--accent-color-dynamic)]" : ""}>
             START
           </span>
         </div>
@@ -228,12 +228,12 @@ const StudySessionSetup = () => {
                   whileHover={{ scale: 1.03, y: -5 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleModeSelect("solo")}
-                  className="relative bg-[#1a2633] border-2 border-[#ffffff10] hover:border-[#ff4655] rounded-2xl p-8 text-left transition-all duration-300 group overflow-hidden"
+                  className="relative bg-[#1a2633] border-2 border-[#ffffff10] hover:border-[var(--accent-color-dynamic)] rounded-2xl p-8 text-left transition-all duration-300 group overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#ff4655]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-color-dynamic)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative z-10">
-                    <div className="w-16 h-16 bg-[#ff4655]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#ff4655]/20 transition-colors">
-                      <User size={32} className="text-[#ff4655]" />
+                    <div className="w-16 h-16 bg-[var(--accent-color-dynamic)]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[var(--accent-color-dynamic)]/20 transition-colors">
+                      <User size={32} className="text-[var(--accent-color-dynamic)]" />
                     </div>
                     <h3 className="text-2xl font-black uppercase tracking-wider mb-2">
                       SOLO
@@ -243,7 +243,7 @@ const StudySessionSetup = () => {
                       tracking. 1.0x XP multiplier.
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                      <Zap size={12} className="text-[#ff4655]" />
+                      <Zap size={12} className="text-[var(--accent-color-dynamic)]" />
                       <span>1.0x XP</span>
                     </div>
                   </div>
@@ -254,12 +254,27 @@ const StudySessionSetup = () => {
                   whileHover={{ scale: 1.03, y: -5 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleModeSelect("team")}
-                  className="relative bg-[#1a2633] border-2 border-[#ffffff10] hover:border-[#0fb8ce] rounded-2xl p-8 text-left transition-all duration-300 group overflow-hidden"
+                  className="relative bg-[#1a2633] border-2 rounded-2xl p-8 text-left transition-all duration-300 group overflow-hidden"
+                  style={{
+                    borderColor: '#ffffff10',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--accent-color-dynamic)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#ffffff10';
+                  }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0fb8ce]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
+                    backgroundImage: 'linear-gradient(to bottom right, color-mix(in srgb, var(--accent-color-dynamic) 5%, transparent), transparent)',
+                  }} />
                   <div className="relative z-10">
-                    <div className="w-16 h-16 bg-[#0fb8ce]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#0fb8ce]/20 transition-colors">
-                      <Users size={32} className="text-[#0fb8ce]" />
+                    <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors" style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
+                    }}>
+                      <Users size={32} style={{
+                        color: 'var(--accent-color-dynamic)',
+                      }} />
                     </div>
                     <h3 className="text-2xl font-black uppercase tracking-wider mb-2">
                       TEAM
@@ -269,7 +284,9 @@ const StudySessionSetup = () => {
                       multiplier up to 1.25x.
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
-                      <Zap size={12} className="text-[#0fb8ce]" />
+                      <Zap size={12} style={{
+                        color: 'var(--accent-color-dynamic)',
+                      }} />
                       <span>Up to 1.25x XP</span>
                     </div>
                   </div>
@@ -294,13 +311,13 @@ const StudySessionSetup = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setShowJoinCode(true)}
-                    className="mt-6 w-full flex items-center justify-center gap-3 p-4 rounded-xl border-2 border-dashed border-[#ffffff15] hover:border-[#a78bfa]/60 hover:bg-[#a78bfa]/5 transition-all duration-300 group"
+                    className="mt-6 w-full flex items-center justify-center gap-3 p-4 rounded-xl border-2 border-dashed border-[#ffffff15] hover:border-[var(--accent-color-dynamic)]/60 hover:bg-[var(--accent-color-dynamic)]/5 transition-all duration-300 group"
                   >
                     <LogIn
                       size={18}
-                      className="text-gray-600 group-hover:text-[#a78bfa] transition-colors"
+                      className="text-gray-600 group-hover:text-[var(--accent-color-dynamic)] transition-colors"
                     />
-                    <span className="text-sm font-bold tracking-widest uppercase text-gray-600 group-hover:text-[#a78bfa] transition-colors">
+                    <span className="text-sm font-bold tracking-widest uppercase text-gray-600 group-hover:text-[var(--accent-color-dynamic)] transition-colors">
                       Join with Invite Code
                     </span>
                   </motion.button>
@@ -308,9 +325,9 @@ const StudySessionSetup = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-5 rounded-xl border border-[#a78bfa]/30 bg-[#a78bfa]/5"
+                    className="mt-6 p-5 rounded-xl border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/5"
                   >
-                    <p className="text-center text-sm font-bold text-[#a78bfa] tracking-widest uppercase mb-4">
+                    <p className="text-center text-sm font-bold text-[var(--accent-color-dynamic)] tracking-widest uppercase mb-4">
                       Enter 6-Character Invite Code
                     </p>
                     <div className="flex gap-3">
@@ -331,13 +348,13 @@ const StudySessionSetup = () => {
                         }
                         placeholder="e.g. A1B2C3"
                         maxLength={6}
-                        className="flex-1 bg-[#0f1923] border border-[#a78bfa]/30 rounded-lg px-4 py-2.5 text-center text-xl font-black tracking-[0.4em] text-white placeholder-gray-700 focus:border-[#a78bfa] focus:outline-none uppercase"
+                        className="flex-1 bg-[#0f1923] border border-[var(--accent-color-dynamic)]/30 rounded-lg px-4 py-2.5 text-center text-xl font-black tracking-[0.4em] text-white placeholder-gray-700 focus:border-[var(--accent-color-dynamic)] focus:outline-none uppercase"
                         autoFocus
                       />
                       <button
                         onClick={handleJoinByCode}
                         disabled={joinCodeLoading || joinCode.length !== 6}
-                        className="px-6 py-2.5 bg-[#a78bfa] text-white font-black uppercase tracking-widest rounded-lg hover:bg-[#9061f9] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-2.5 bg-[var(--accent-color-dynamic)] text-white font-black uppercase tracking-widest rounded-lg hover:bg-[var(--accent-color-dynamic-hover)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {joinCodeLoading ? (
                           <Loader2 size={16} className="animate-spin" />
@@ -358,7 +375,7 @@ const StudySessionSetup = () => {
                       </button>
                     </div>
                     {joinCodeError && (
-                      <p className="mt-2 text-center text-xs text-red-400">
+                      <p className="mt-2 text-center text-xs text-[var(--accent-color-dynamic)]">
                         {joinCodeError}
                       </p>
                     )}
@@ -393,7 +410,7 @@ const StudySessionSetup = () => {
                     onClick={() => setSessionMode(m.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all text-sm font-bold tracking-wider uppercase ${
                       sessionMode === m.id
-                        ? "border-[#ff4655] bg-[#ff4655]/10 text-white"
+                        ? "border-[var(--accent-color-dynamic)] bg-[var(--accent-color-dynamic)]/10 text-white"
                         : "border-[#ffffff10] text-gray-500 hover:text-white hover:border-[#ffffff30]"
                     }`}
                   >
@@ -405,7 +422,7 @@ const StudySessionSetup = () => {
 
               {coursesLoading ? (
                 <div className="flex items-center justify-center py-20">
-                  <Loader2 className="animate-spin text-[#ff4655]" size={32} />
+                  <Loader2 className="animate-spin text-[var(--accent-color-dynamic)]" size={32} />
                 </div>
               ) : usableCourses.length === 0 ? (
                 <div className="text-center py-20 text-gray-500">
@@ -429,7 +446,7 @@ const StudySessionSetup = () => {
                       className={`text-left p-5 rounded-xl border transition-all ${
                         (selectedCourse?._id || selectedCourse?.id) ===
                         (course._id || course.id)
-                          ? "border-[#ff4655] bg-[#ff4655]/10"
+                          ? "border-[var(--accent-color-dynamic)] bg-[var(--accent-color-dynamic)]/10"
                           : "border-[#ffffff10] bg-[#1a2633]/50 hover:border-[#ffffff30]"
                       }`}
                     >
@@ -438,7 +455,7 @@ const StudySessionSetup = () => {
                           {course.title}
                         </h3>
                         {course.status !== "completed" && (
-                          <span className="ml-2 shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 uppercase tracking-wider">
+                          <span className="ml-2 shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)] border border-[var(--accent-color-dynamic)]/20 uppercase tracking-wider">
                             {course.status}
                           </span>
                         )}
@@ -498,7 +515,13 @@ const StudySessionSetup = () => {
                   placeholder="Search friends..."
                   value={friendSearch}
                   onChange={(e) => setFriendSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-[#1a2633] border border-[#ffffff10] rounded-lg text-sm text-white placeholder-gray-600 focus:border-[#0fb8ce]/50 outline-none transition-colors"
+                  className="w-full pl-9 pr-4 py-2.5 bg-[#1a2633] border border-[#ffffff10] rounded-lg text-sm text-white placeholder-gray-600 outline-none transition-colors"
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = '#ffffff10';
+                  }}
                 />
               </div>
 
@@ -523,24 +546,33 @@ const StudySessionSetup = () => {
                         whileTap={{ scale: disabled ? 1 : 0.99 }}
                         onClick={() => !disabled && toggleFriend(fid)}
                         disabled={disabled}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                          selected
-                            ? "border-[#0fb8ce] bg-[#0fb8ce]/10"
-                            : disabled
-                              ? "border-[#ffffff05] bg-[#1a2633]/30 opacity-40 cursor-not-allowed"
-                              : "border-[#ffffff10] bg-[#1a2633]/50 hover:border-[#ffffff30]"
-                        }`}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl border transition-all"
+                        style={selected ? {
+                          borderColor: 'var(--accent-color-dynamic)',
+                          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
+                        } : disabled ? {
+                          borderColor: '#ffffff05',
+                          backgroundColor: '#1a2633',
+                          opacity: 0.4,
+                          cursor: 'not-allowed',
+                        } : {
+                          borderColor: '#ffffff10',
+                          backgroundColor: '#1a2633',
+                        }}
                       >
                         {/* Avatar */}
                         <div className="relative shrink-0">
-                          <div className="w-10 h-10 rounded-full bg-[#0fb8ce]/20 flex items-center justify-center text-[#0fb8ce] font-bold text-sm">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{
+                            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
+                            color: 'var(--accent-color-dynamic)',
+                          }}>
                             {(friend.name || "?")[0].toUpperCase()}
                           </div>
                           <div
                             className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0f1923] ${
                               friend.onlineStatus === "online" ||
                               friend.onlineStatus === "studying"
-                                ? "bg-green-500"
+                                ? "bg-[var(--accent-color-dynamic)]"
                                 : "bg-gray-600"
                             }`}
                           />
@@ -557,7 +589,9 @@ const StudySessionSetup = () => {
                         </div>
                         {/* Checkmark */}
                         {selected && (
-                          <div className="w-6 h-6 rounded-full bg-[#0fb8ce] flex items-center justify-center shrink-0">
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{
+                            backgroundColor: 'var(--accent-color-dynamic)',
+                          }}>
                             <Check size={14} className="text-white" />
                           </div>
                         )}
@@ -576,7 +610,16 @@ const StudySessionSetup = () => {
                 </div>
                 <button
                   onClick={() => setLocalStep("confirm")}
-                  className="px-6 py-3 bg-[#0fb8ce] text-white font-bold rounded-xl hover:bg-[#0da3b7] transition-colors tracking-wider text-sm uppercase"
+                  className="px-6 py-3 text-white font-bold rounded-xl transition-colors tracking-wider text-sm uppercase"
+                  style={{
+                    backgroundColor: 'var(--accent-color-dynamic)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--accent-color-dynamic) 85%, transparent)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--accent-color-dynamic)';
+                  }}
                 >
                   {selectedFriends.size > 0
                     ? "Continue →"
@@ -596,14 +639,14 @@ const StudySessionSetup = () => {
               className="max-w-lg w-full text-center"
             >
               <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ff4655] to-[#a35cf7]" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]" />
 
                 <div className="mb-6">
                   <div
                     className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${
                       selectedType === "team"
-                        ? "bg-[#0fb8ce]/10 text-[#0fb8ce]"
-                        : "bg-[#ff4655]/10 text-[#ff4655]"
+                        ? "bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)]"
+                        : "bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)]"
                     }`}
                   >
                     {selectedType === "team" ? (
@@ -637,7 +680,13 @@ const StudySessionSetup = () => {
                       return f ? (
                         <span
                           key={fid}
-                          className="flex items-center gap-1.5 text-xs bg-[#0fb8ce]/10 border border-[#0fb8ce]/30 text-[#0fb8ce] px-2.5 py-1 rounded-full font-medium"
+                          className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium"
+                          style={{
+                            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent)',
+                            borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
+                            color: 'var(--accent-color-dynamic)',
+                            borderWidth: '1px',
+                          }}
                         >
                           <Users size={11} />
                           {f.name}
@@ -648,7 +697,7 @@ const StudySessionSetup = () => {
                 )}
 
                 {error && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                  <div className="mb-4 p-3 bg-[var(--accent-color-dynamic)]/10 border border-[var(--accent-color-dynamic)]/20 rounded-lg text-[var(--accent-color-dynamic)] text-sm">
                     {error}
                   </div>
                 )}
@@ -656,7 +705,7 @@ const StudySessionSetup = () => {
                 <button
                   onClick={handleStart}
                   disabled={sessionLoading}
-                  className="w-full px-8 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-8 py-4 bg-[var(--accent-color-dynamic)] text-white font-black text-xl tracking-widest uppercase hover:bg-[var(--accent-color-dynamic-hover)] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_var(--accent-color-dynamic-shadow-40)] disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     clipPath:
                       "polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%)",

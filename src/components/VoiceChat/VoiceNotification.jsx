@@ -3,7 +3,11 @@ import React from "react";
 export default function VoiceNotification({ message }) {
   if (!message) return null;
   return (
-    <div className="rounded-md border border-[#0fb8ce]/40 bg-[#0f2c33] px-2 py-1 text-xs text-[#8ce6f3]">
+    <div className="rounded-md bg-[#0f2c33] px-2 py-1 text-xs" style={{
+      borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)',
+      borderWidth: '1px',
+      color: 'color-mix(in srgb, var(--accent-color-dynamic) 90%, transparent)',
+    }}>
       {message}
     </div>
   );

@@ -3,9 +3,9 @@ import React from "react";
 export default function VoiceIndicator({ speakingStatus }) {
   const color =
     speakingStatus === "loud"
-      ? "bg-red-400"
+      ? "bg-[var(--accent-color-dynamic)]"
       : speakingStatus === "speaking"
-        ? "bg-green-400"
+        ? "bg-[var(--accent-color-dynamic)]"
         : "bg-gray-500";
 
   return (

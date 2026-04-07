@@ -107,7 +107,7 @@ export default function WeeklyCalendar({
         startIndex,
         endIndex,
         label: av.label || "Blocked",
-        backgroundColor: av.color || "#ff6b6b",
+        backgroundColor: av.color || "var(--accent-color-dynamic)",
       };
     });
     setSelectedSlots(mappedAvailability);
@@ -149,7 +149,7 @@ export default function WeeklyCalendar({
         startIndex,
         endIndex,
         label: ev.title,
-        backgroundColor: ev.color || "#2e86de",
+        backgroundColor: ev.color || "var(--accent-color-dynamic)",
         isEvent: true,
         meta: ev,
       };
@@ -300,7 +300,7 @@ export default function WeeklyCalendar({
       end_time: endClock,
       label: label.trim(),
       is_recurring: isRecurring,
-      color: "#ff6b6b",
+      color: "var(--accent-color-dynamic)",
     };
 
     if (onSave) {
@@ -335,7 +335,7 @@ export default function WeeklyCalendar({
       end_time: slotIndexToClock(createRange.endIndex),
       label: label.trim(),
       is_recurring: isRecurring,
-      color: "#ff6b6b",
+      color: "var(--accent-color-dynamic)",
     };
 
     if (onSave) {

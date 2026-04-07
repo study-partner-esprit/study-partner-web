@@ -44,7 +44,7 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold flex items-center gap-2">
-          <Users size={16} className="text-purple-400" />
+          <Users size={16} className="text-[var(--accent-color-dynamic)]" />
           Team Session
         </h3>
         <span className="text-xs text-gray-500">
@@ -57,7 +57,7 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
         <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-3 mb-4">
           <p className="text-xs text-gray-500 mb-1">Invite Code</p>
           <div className="flex items-center justify-between">
-            <span className="font-mono font-bold text-purple-400 text-lg tracking-wider">
+            <span className="font-mono font-bold text-[var(--accent-color-dynamic)] text-lg tracking-wider">
               {inviteCode}
             </span>
             <button
@@ -80,14 +80,14 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
               p.leftAt ? "opacity-50" : "bg-gray-700/30"
             }`}
           >
-            <div className="w-8 h-8 bg-purple-600/30 rounded-full flex items-center justify-center text-purple-400 text-sm font-bold">
+            <div className="w-8 h-8 bg-[var(--accent-color-dynamic)]/30 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] text-sm font-bold">
               {(p.name || "?")[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate flex items-center gap-1">
                 {p.name}
                 {p.role === "host" && (
-                  <Crown size={12} className="text-yellow-500" />
+                  <Crown size={12} className="text-[var(--accent-color-dynamic)]" />
                 )}
               </p>
               <p className="text-xs text-gray-500 flex items-center gap-1">
@@ -103,7 +103,7 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
       <div className="space-y-2">
         <button
           onClick={onInvite}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors text-sm"
         >
           <UserPlus size={14} /> Invite Friend
         </button>
@@ -111,7 +111,7 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
         {isHost ? (
           <button
             onClick={onEnd}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors text-sm"
           >
             <StopCircle size={14} /> End Session
           </button>

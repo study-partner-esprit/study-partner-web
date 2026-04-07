@@ -56,7 +56,7 @@ export default function UpgradePrompt({
           onClick={close}
         >
           <motion.div
-            className="relative w-full max-w-md mx-4 rounded-2xl bg-gray-900 border border-purple-500/30 p-8 text-center shadow-2xl"
+            className="relative w-full max-w-md mx-4 rounded-2xl bg-gray-900 border border-[var(--accent-color-dynamic)]/30 p-8 text-center shadow-2xl"
             initial={{ scale: 0.85, y: 40 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.85, y: 40 }}
@@ -70,8 +70,8 @@ export default function UpgradePrompt({
             </button>
 
             <div className="flex justify-center mb-4">
-              <div className="rounded-full bg-purple-500/20 p-4">
-                <Lock className="text-purple-400" size={32} />
+              <div className="rounded-full bg-[var(--accent-color-dynamic)]/20 p-4">
+                <Lock className="text-[var(--accent-color-dynamic)]" size={32} />
               </div>
             </div>
 
@@ -90,7 +90,7 @@ export default function UpgradePrompt({
               ) : (
                 <>
                   This feature requires{" "}
-                  <span className="text-purple-300 font-semibold">
+                  <span className="text-[var(--accent-color-dynamic)] font-semibold">
                     {detail?.requiredTier
                       ? Array.isArray(detail.requiredTier)
                         ? detail.requiredTier
@@ -113,7 +113,7 @@ export default function UpgradePrompt({
                 close();
                 navigate("/pricing");
               }}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 px-6 transition-all shadow-lg hover:shadow-purple-500/25"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] hover:from-[var(--accent-color-dynamic)] hover:to-[var(--accent-color-dynamic)] text-white font-semibold py-3 px-6 transition-all shadow-lg hover:shadow-purple-500/25"
             >
               <Sparkles size={18} />
               View Plans &amp; Upgrade

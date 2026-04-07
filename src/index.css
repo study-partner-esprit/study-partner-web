@@ -28,7 +28,47 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 346 100% 58%;
     --radius: 0.5rem;
-    --glow-color: 346 100% 58%;
+    --accent-color-dynamic: #4fb8ce;
+    --accent-color-dynamic-hover: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 78%,
+      black
+    );
+    --accent-color-dynamic-shadow-15: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 15%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-20: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 20%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-30: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 30%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-40: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 40%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-50: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 50%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-60: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 60%,
+      transparent
+    );
+    --accent-color-dynamic-shadow-80: color-mix(
+      in srgb,
+      var(--accent-color-dynamic) 80%,
+      transparent
+    );
   }
 
   .dark {
@@ -52,21 +92,23 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 346 100% 58%;
-    --glow-color: 346 100% 58%;
   }
 }
 
 .text-glow {
-  text-shadow: 0 0 10px hsl(var(--glow-color) / 0.5);
+  text-shadow: 0 0 10px var(--accent-color-dynamic), 0 0 20px var(--accent-color-dynamic, rgba(79, 184, 206, 0.5));
+  transition: text-shadow 0.3s ease;
 }
 
 .box-glow {
-  box-shadow: 0 0 20px hsl(var(--glow-color) / 0.15);
+  box-shadow: 0 0 20px var(--accent-color-dynamic), 0 0 40px var(--accent-color-dynamic, rgba(79, 184, 206, 0.15));
+  transition: box-shadow 0.3s ease;
 }
 
 .border-glow {
-  border-color: hsl(var(--glow-color) / 0.5);
-  box-shadow: 0 0 10px hsl(var(--glow-color) / 0.2);
+  border-color: var(--accent-color-dynamic, rgba(79, 184, 206, 0.5));
+  box-shadow: 0 0 10px var(--accent-color-dynamic, rgba(79, 184, 206, 0.2));
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Valorant-style Card */
@@ -314,12 +356,12 @@ code {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: var(--accent-color-dynamic);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: var(--accent-color-dynamic-hover);
 }
 
 .btn-secondary {
@@ -352,7 +394,7 @@ code {
 
 .form-input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: var(--accent-color-dynamic);
 }
 
 /* Cards */

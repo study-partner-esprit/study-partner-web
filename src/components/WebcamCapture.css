@@ -33,7 +33,7 @@
 }
 
 .webcam-container.streaming {
-  border-color: #667eea;
+  border-color: var(--accent-color-dynamic);
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
 }
 
@@ -64,7 +64,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ff4655;
+  background: var(--accent-color-dynamic);
   animation: pulse 1.5s ease infinite;
 }
 

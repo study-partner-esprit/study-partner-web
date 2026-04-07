@@ -36,8 +36,8 @@ const tiers = [
     price: "$9.99",
     period: "/month",
     icon: <Zap size={28} />,
-    color: "from-blue-600 to-cyan-600",
-    borderColor: "border-blue-500/30",
+    color: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    borderColor: "border-[var(--accent-color-dynamic)]/30",
     popular: false,
     features: {
       "Manual course creation": true,
@@ -61,8 +61,8 @@ const tiers = [
     price: "$19.99",
     period: "/month",
     icon: <Crown size={28} />,
-    color: "from-purple-600 to-pink-600",
-    borderColor: "border-purple-500/30",
+    color: "from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]",
+    borderColor: "border-[var(--accent-color-dynamic)]/30",
     popular: true,
     features: {
       "Manual course creation": true,
@@ -250,8 +250,8 @@ export default function Pricing() {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-center gap-2 mb-4"
           >
-            <Sparkles className="text-purple-400" size={24} />
-            <span className="text-purple-400 font-semibold uppercase tracking-wider text-sm">
+            <Sparkles className="text-[var(--accent-color-dynamic)]" size={24} />
+            <span className="text-[var(--accent-color-dynamic)] font-semibold uppercase tracking-wider text-sm">
               Choose Your Plan
             </span>
           </motion.div>
@@ -262,7 +262,7 @@ export default function Pricing() {
             className="text-4xl md:text-5xl font-bold text-white mb-4"
           >
             Unlock Your Full{" "}
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] bg-clip-text text-transparent">
               Study Potential
             </span>
           </motion.h1>
@@ -278,28 +278,28 @@ export default function Pricing() {
 
         {/* Tier Cards */}
         {error && (
-          <div className="mb-8 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <div className="mb-8 rounded-lg border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-3 text-sm text-[var(--accent-color-dynamic)]">
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-8 rounded-lg border border-green-500/40 bg-green-500/10 px-4 py-3 text-sm text-green-200">
+          <div className="mb-8 rounded-lg border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-3 text-sm text-[var(--accent-color-dynamic)]">
             {success}
           </div>
         )}
         {couponInfo && (
-          <div className="mb-8 rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
+          <div className="mb-8 rounded-lg border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-3 text-sm text-[var(--accent-color-dynamic)]">
             Coupon access expires on{" "}
             {new Date(couponInfo.expiresAt).toLocaleDateString()}.
             {couponInfo.daysLeft < 5 && (
-              <span className="ml-2 font-semibold text-yellow-200">
+              <span className="ml-2 font-semibold text-[var(--accent-color-dynamic)]">
                 Warning: less than 5 days left.
               </span>
             )}
           </div>
         )}
         {stripeUnavailable && (
-          <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+          <div className="mb-8 rounded-lg border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-3 text-sm text-[var(--accent-color-dynamic)]">
             Card payments are currently unavailable. Coupon upgrades still work.
           </div>
         )}
@@ -315,11 +315,11 @@ export default function Pricing() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 * i }}
                 className={`relative rounded-2xl border ${tier.borderColor} bg-gray-900/80 backdrop-blur-sm p-8 flex flex-col ${
-                  tier.popular ? "ring-2 ring-purple-500/50 scale-[1.02]" : ""
+                  tier.popular ? "ring-2 ring-[var(--accent-color-dynamic)]/50 scale-[1.02]" : ""
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-1 text-xs font-bold text-white uppercase tracking-wider">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] px-4 py-1 text-xs font-bold text-white uppercase tracking-wider">
                     Most Popular
                   </div>
                 )}
@@ -357,7 +357,7 @@ export default function Pricing() {
                           }
                           className={`rounded-lg py-1.5 text-xs font-semibold border transition ${
                             pricing.months === m
-                              ? "border-purple-500 bg-purple-500/20 text-white"
+                              ? "border-[var(--accent-color-dynamic)] bg-[var(--accent-color-dynamic)]/20 text-white"
                               : "border-gray-700 bg-gray-900 text-gray-300 hover:bg-gray-800"
                           }`}
                         >
@@ -368,7 +368,7 @@ export default function Pricing() {
                     <div className="mt-2 text-xs text-gray-300">
                       Total: ${pricing.total.toFixed(2)}
                       {pricing.discountPct > 0 && (
-                        <span className="ml-2 text-green-400">
+                        <span className="ml-2 text-[var(--accent-color-dynamic)]">
                           ({pricing.discountPct}% OFF)
                         </span>
                       )}
@@ -384,7 +384,7 @@ export default function Pricing() {
                     >
                       {enabled ? (
                         <Check
-                          className="text-green-400 mt-0.5 shrink-0"
+                          className="text-[var(--accent-color-dynamic)] mt-0.5 shrink-0"
                           size={16}
                         />
                       ) : (
@@ -410,7 +410,7 @@ export default function Pricing() {
                     Current Plan
                   </button>
                 ) : isPlanChangeLocked && tier.id !== currentTier ? (
-                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                  <div className="rounded-xl border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/10 p-3 text-xs text-[var(--accent-color-dynamic)]">
                     Plan locked until last 5 days. Remaining:{" "}
                     {user?.daysRemaining ?? 0} day(s).
                   </div>
@@ -432,7 +432,7 @@ export default function Pricing() {
                       }
                       className={`w-full rounded-xl py-3 font-semibold transition-all ${
                         tier.popular
-                          ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-purple-500/25"
+                          ? "bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] hover:from-[var(--accent-color-dynamic)] hover:to-[var(--accent-color-dynamic)] text-white shadow-lg hover:shadow-purple-500/25"
                           : "bg-gray-800 hover:bg-gray-700 text-white"
                       }`}
                     >
@@ -465,12 +465,12 @@ export default function Pricing() {
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value)}
                           placeholder={`Enter ${tier.name} coupon`}
-                          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+                          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent-color-dynamic)]"
                         />
                         <button
                           onClick={() => handleRedeemCoupon(tier.id)}
                           disabled={redeemingTier === tier.id}
-                          className="mt-2 w-full rounded-lg bg-green-600 hover:bg-green-500 px-3 py-2 text-sm font-semibold text-white"
+                          className="mt-2 w-full rounded-lg bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)] px-3 py-2 text-sm font-semibold text-white"
                         >
                           {redeemingTier === tier.id
                             ? "Applying..."

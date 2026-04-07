@@ -67,7 +67,7 @@ const SessionInvitePopup = () => {
           transition={{ type: "spring", damping: 22, stiffness: 260 }}
           className="fixed bottom-6 right-6 z-[9999] w-80"
         >
-          <div className="relative bg-card/95 backdrop-blur-lg border border-cyan-500/40 rounded-2xl p-5 shadow-2xl shadow-cyan-500/10">
+          <div className="relative bg-card/95 backdrop-blur-lg border border-[var(--accent-color-dynamic)]/40 rounded-2xl p-5 shadow-2xl shadow-cyan-500/10">
             {/* Dismiss button */}
             <button
               onClick={handleDismiss}
@@ -78,8 +78,8 @@ const SessionInvitePopup = () => {
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-cyan-500/10 rounded-xl">
-                <Swords className="w-5 h-5 text-cyan-400" />
+              <div className="p-2 bg-[var(--accent-color-dynamic)]/10 rounded-xl">
+                <Swords className="w-5 h-5 text-[var(--accent-color-dynamic)]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold truncate">Game Room Invite!</p>
@@ -101,7 +101,7 @@ const SessionInvitePopup = () => {
             {/* Countdown bar */}
             <div className="w-full h-1 bg-muted rounded-full mb-4 overflow-hidden">
               <motion.div
-                className="h-full bg-cyan-500 rounded-full"
+                className="h-full bg-[var(--accent-color-dynamic)] rounded-full"
                 initial={{ width: "100%" }}
                 animate={{ width: "0%" }}
                 transition={{
@@ -122,7 +122,7 @@ const SessionInvitePopup = () => {
               <button
                 onClick={handleJoin}
                 disabled={joining}
-                className="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-[var(--accent-color-dynamic)] text-white hover:bg-[var(--accent-color-dynamic)] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 {joining ? "Joining..." : "JOIN"}

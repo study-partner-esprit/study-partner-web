@@ -130,7 +130,9 @@ const AnimatedBackgroundCustomizer = () => {
     return (
       <div className="min-h-screen bg-[#0f1923] flex items-center justify-center text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#0fb8ce] rounded-full blur-[200px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[200px]" style={{
+            backgroundColor: 'var(--accent-color-dynamic)',
+          }} />
         </div>
         <div className="relative z-10 text-center max-w-md p-8">
           <Lock size={64} className="mx-auto text-gray-600 mb-6" />
@@ -139,7 +141,9 @@ const AnimatedBackgroundCustomizer = () => {
           </h1>
           <p className="text-gray-400 mb-4">
             Animated backgrounds unlock at{" "}
-            <span className="text-[#0fb8ce] font-bold">Level 20</span>.
+            <span className="font-bold" style={{
+              color: 'var(--accent-color-dynamic)',
+            }}>Level 20</span>.
           </p>
           <p className="text-gray-500 text-sm mb-8">
             You are currently{" "}
@@ -148,7 +152,7 @@ const AnimatedBackgroundCustomizer = () => {
           </p>
           <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden mb-4">
             <div
-              className="h-full bg-gradient-to-r from-[#0fb8ce] to-[#0fb8ce]/50 rounded-full"
+              className="h-full bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]/50 rounded-full"
               style={{ width: `${Math.min((level / 20) * 100, 100)}%` }}
             />
           </div>
@@ -176,7 +180,7 @@ const AnimatedBackgroundCustomizer = () => {
           >
             <ArrowLeft size={18} />
           </button>
-          <Film size={18} className="text-[#0fb8ce]" />
+          <Film size={18} className="text-[var(--accent-color-dynamic)]" />
           <span className="font-bold tracking-wider uppercase text-sm">
             Animated Backgrounds
           </span>
@@ -193,7 +197,7 @@ const AnimatedBackgroundCustomizer = () => {
           <button
             onClick={uploadFile ? handleUploadApply : handleApply}
             disabled={(!selectedPreset && !uploadFile) || loading}
-            className="px-6 py-2 bg-[#0fb8ce] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[#0fb8ce]/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+            className="px-6 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[var(--accent-color-dynamic)]/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
           >
             <Check size={14} /> {loading ? "Saving..." : "Apply"}
           </button>
@@ -213,7 +217,7 @@ const AnimatedBackgroundCustomizer = () => {
               }}
               className={`flex-1 px-4 py-3 text-xs font-bold tracking-wider uppercase transition-colors ${
                 activeTab === "presets"
-                  ? "bg-[#0fb8ce] text-white border-b-2 border-[#0fb8ce]"
+                  ? "bg-[var(--accent-color-dynamic)] text-white border-b-2 border-[var(--accent-color-dynamic)]"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -226,7 +230,7 @@ const AnimatedBackgroundCustomizer = () => {
               }}
               className={`flex-1 px-4 py-3 text-xs font-bold tracking-wider uppercase transition-colors flex items-center justify-center gap-1 ${
                 activeTab === "upload"
-                  ? "bg-[#0fb8ce] text-white border-b-2 border-[#0fb8ce]"
+                  ? "bg-[var(--accent-color-dynamic)] text-white border-b-2 border-[var(--accent-color-dynamic)]"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -249,7 +253,7 @@ const AnimatedBackgroundCustomizer = () => {
                     onClick={() => setSelectedPreset(preset)}
                     className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-colors ${
                       selectedPreset?.url === preset.url
-                        ? "border-[#0fb8ce]"
+                        ? "border-[var(--accent-color-dynamic)]"
                         : "border-transparent hover:border-[#ffffff20]"
                     }`}
                   >
@@ -270,7 +274,7 @@ const AnimatedBackgroundCustomizer = () => {
                       {preset.name}
                     </span>
                     {selectedPreset?.url === preset.url && (
-                      <div className="absolute top-1 right-1 w-5 h-5 bg-[#0fb8ce] rounded-full flex items-center justify-center">
+                      <div className="absolute top-1 right-1 w-5 h-5 bg-[var(--accent-color-dynamic)] rounded-full flex items-center justify-center">
                         <Check size={12} />
                       </div>
                     )}
@@ -293,9 +297,9 @@ const AnimatedBackgroundCustomizer = () => {
               {!uploadFile ? (
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full aspect-square bg-[#1a2633] border-2 border-dashed border-[#0fb8ce]/50 rounded-xl flex flex-col items-center justify-center gap-3 hover:border-[#0fb8ce] hover:bg-[#0fb8ce]/5 transition-all"
+                  className="w-full aspect-square bg-[#1a2633] border-2 border-dashed border-[var(--accent-color-dynamic)]/50 rounded-xl flex flex-col items-center justify-center gap-3 hover:border-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)]/5 transition-all"
                 >
-                  <Upload size={32} className="text-[#0fb8ce]" />
+                  <Upload size={32} className="text-[var(--accent-color-dynamic)]" />
                   <div className="text-center">
                     <p className="text-xs font-bold text-gray-400">
                       Click to upload
@@ -351,7 +355,7 @@ const AnimatedBackgroundCustomizer = () => {
                     opacity: parseInt(e.target.value) / 100,
                   }))
                 }
-                className="w-full accent-[#0fb8ce]"
+                className="w-full accent-[var(--accent-color-dynamic)]"
               />
             </div>
 
@@ -370,7 +374,7 @@ const AnimatedBackgroundCustomizer = () => {
                     brightness: parseInt(e.target.value),
                   }))
                 }
-                className="w-full accent-[#0fb8ce]"
+                className="w-full accent-[var(--accent-color-dynamic)]"
               />
             </div>
 
@@ -389,7 +393,7 @@ const AnimatedBackgroundCustomizer = () => {
                     saturation: parseInt(e.target.value),
                   }))
                 }
-                className="w-full accent-[#0fb8ce]"
+                className="w-full accent-[var(--accent-color-dynamic)]"
               />
             </div>
 
@@ -408,7 +412,7 @@ const AnimatedBackgroundCustomizer = () => {
                     speed: parseInt(e.target.value) / 100,
                   }))
                 }
-                className="w-full accent-[#0fb8ce]"
+                className="w-full accent-[var(--accent-color-dynamic)]"
               />
             </div>
 
@@ -421,7 +425,7 @@ const AnimatedBackgroundCustomizer = () => {
                   setLocalSettings((p) => ({ ...p, loop: !p.loop }))
                 }
                 className={`w-10 h-5 rounded-full transition-colors relative ${
-                  localSettings.loop ? "bg-[#0fb8ce]" : "bg-gray-700"
+                  localSettings.loop ? "bg-[var(--accent-color-dynamic)]" : "bg-gray-700"
                 }`}
               >
                 <div
@@ -472,7 +476,7 @@ const AnimatedBackgroundCustomizer = () => {
               {/* Mock content overlay */}
               <div className="relative z-10 w-[80%] max-w-2xl">
                 <div className="bg-[#1a2633]/80 backdrop-blur-md border border-[#ffffff10] rounded-2xl p-8 text-center">
-                  <Film size={32} className="mx-auto text-[#0fb8ce] mb-4" />
+                  <Film size={32} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
                   <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">
                     LIVE PREVIEW
                   </h2>

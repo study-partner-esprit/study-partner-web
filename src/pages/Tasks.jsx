@@ -173,7 +173,7 @@ const Tasks = () => {
                 </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider"
+                  className="px-6 py-3 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] font-bold tracking-wider"
                 >
                   CREATE YOUR FIRST TASK
                 </button>
@@ -314,7 +314,7 @@ const Tasks = () => {
                 <div className="flex gap-4">
                   <button
                     type="submit"
-                    className="flex-1 px-6 py-3 bg-[#ff4655] hover:bg-[#ff2a3a] font-bold tracking-wider transition-all"
+                    className="flex-1 px-6 py-3 bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)] font-bold tracking-wider transition-all"
                   >
                     {editingTask ? "UPDATE" : "CREATE"} TASK
                   </button>
@@ -343,16 +343,16 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="bg-[#1a2633]/50 backdrop-blur-md border border-white/10 p-6 relative overflow-hidden group hover:border-[#ff4655] hover:bg-[#1a2633]/70 transition-all rounded-xl"
+      className="bg-[#1a2633]/50 backdrop-blur-md border border-white/10 p-6 relative overflow-hidden group hover:border-[var(--accent-color-dynamic)] hover:bg-[#1a2633]/70 transition-all rounded-xl"
     >
       {/* Priority indicator */}
       <div
         className={`absolute top-0 left-0 w-full h-1 ${
           task.priority === "high"
-            ? "bg-red-500"
+            ? "bg-[var(--accent-color-dynamic)]"
             : task.priority === "medium"
-              ? "bg-yellow-500"
-              : "bg-green-500"
+              ? "bg-[var(--accent-color-dynamic)]"
+              : "bg-[var(--accent-color-dynamic)]"
         }`}
       ></div>
 
@@ -360,9 +360,9 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
       <div
         className={`absolute top-4 right-4 px-2 py-1 text-xs font-bold ${
           task.status === "completed"
-            ? "bg-green-500/20 text-green-400"
+            ? "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)]"
             : task.status === "in-progress"
-              ? "bg-yellow-500/20 text-yellow-400"
+              ? "bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)]"
               : "bg-muted/50 text-muted-foreground"
         }`}
       >
@@ -381,7 +381,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
         {/* Task source badge */}
         {task.studyPlanId && (
           <div className="mb-3">
-            <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs font-bold">
+            <span className="px-2 py-1 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] text-xs font-bold">
               FROM STUDY PLAN
             </span>
           </div>
@@ -414,7 +414,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
                   task.status === "todo" ? "in-progress" : "completed",
                 )
               }
-              className="flex-1 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 text-sm font-bold transition-all"
+              className="flex-1 px-3 py-2 bg-[var(--accent-color-dynamic)]/20 hover:bg-[var(--accent-color-dynamic)]/30 text-[var(--accent-color-dynamic)] text-sm font-bold transition-all"
             >
               {task.status === "todo" ? "START" : "COMPLETE"}
             </button>
@@ -427,7 +427,7 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
           </button>
           <button
             onClick={() => onDelete(task._id)}
-            className="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-sm font-bold transition-all"
+            className="px-3 py-2 bg-[var(--accent-color-dynamic)]/20 hover:bg-[var(--accent-color-dynamic)]/30 text-[var(--accent-color-dynamic)] text-sm font-bold transition-all"
           >
             DELETE
           </button>

@@ -282,7 +282,7 @@ const StudyPlanner = () => {
 
           {/* Success/Error Messages */}
           {success && (
-            <div className="mt-4 p-4 bg-green-500/20 border-2 border-green-500 text-green-500 font-bold">
+            <div className="mt-4 p-4 bg-[var(--accent-color-dynamic)]/20 border-2 border-[var(--accent-color-dynamic)] text-[var(--accent-color-dynamic)] font-bold">
               {success}
             </div>
           )}

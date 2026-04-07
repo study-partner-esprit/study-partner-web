@@ -45,7 +45,7 @@ const TaskProgressBar = ({ taskProgress }) => {
       </div>
       <div className="w-full h-3 bg-[#1a2633] rounded-full overflow-hidden border border-[#ffffff10]">
         <motion.div
-          className="h-full bg-gradient-to-r from-[#ff4655] to-[#ff4655]/70 rounded-full"
+          className="h-full bg-gradient-to-r from-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)]/70 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
@@ -58,11 +58,11 @@ const TaskProgressBar = ({ taskProgress }) => {
             key={idx}
             className={`flex-1 h-1.5 rounded-full transition-colors ${
               task.status === "completed"
-                ? "bg-green-500"
+                ? "bg-[var(--accent-color-dynamic)]"
                 : task.status === "skipped"
-                  ? "bg-yellow-500"
+                  ? "bg-[var(--accent-color-dynamic)]"
                   : task.status === "in-progress"
-                    ? "bg-[#ff4655] animate-pulse"
+                    ? "bg-[var(--accent-color-dynamic)] animate-pulse"
                     : "bg-[#1a2633]"
             }`}
             title={`${task.title} (${task.status})`}
@@ -99,7 +99,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
       className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden"
     >
       <div className="absolute inset-0 z-0 opacity-15">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#ff4655] rounded-full blur-[200px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--accent-color-dynamic)] rounded-full blur-[200px]" />
       </div>
 
       <div className="relative z-10 max-w-lg w-full p-8">
@@ -108,7 +108,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
           animate={{ y: 0 }}
           className="text-center mb-8"
         >
-          <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
+          <Trophy size={64} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
           <h1 className="text-5xl font-black tracking-tighter uppercase text-white mb-2">
             SESSION COMPLETE
           </h1>
@@ -118,7 +118,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
         <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 space-y-4 mb-8">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-              <CheckCircle2 size={24} className="mx-auto text-green-500 mb-2" />
+              <CheckCircle2 size={24} className="mx-auto text-[var(--accent-color-dynamic)] mb-2" />
               <p className="text-2xl font-black text-white">
                 {summary.completedTasks}
               </p>
@@ -127,7 +127,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
               </p>
             </div>
             <div className="text-center p-4 bg-[#0f1923] rounded-xl">
-              <SkipForward size={24} className="mx-auto text-yellow-500 mb-2" />
+              <SkipForward size={24} className="mx-auto text-[var(--accent-color-dynamic)] mb-2" />
               <p className="text-2xl font-black text-white">
                 {summary.skippedTasks}
               </p>
@@ -140,7 +140,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
           <div className="border-t border-[#ffffff10] pt-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-gray-400">Total XP Earned</span>
-              <span className="text-2xl font-black text-[#ff4655] flex items-center gap-1">
+              <span className="text-2xl font-black text-[var(--accent-color-dynamic)] flex items-center gap-1">
                 <Zap size={20} />+{summary.totalXP}
               </span>
             </div>
@@ -149,7 +149,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
               <div className="mb-3 rounded-lg bg-[#0f1923] border border-[#ffffff10] p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400">Knowledge Points Gained</span>
-                  <span className="text-lg font-black text-[#0fb8ce]">
+                  <span className="text-lg font-black text-[var(--accent-color-dynamic)]">
                     +{totalKP} KP
                   </span>
                 </div>
@@ -184,7 +184,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
             {summary.xpMultiplier > 1 && (
               <div className="flex items-center justify-between mb-3">
                 <span className="text-gray-400">Team Multiplier</span>
-                <span className="text-lg font-bold text-[#0fb8ce]">
+                <span className="text-lg font-bold text-[var(--accent-color-dynamic)]">
                   {summary.xpMultiplier}x
                 </span>
               </div>
@@ -207,7 +207,7 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
           </button>
           <button
             onClick={onGoHome}
-            className="flex-1 px-6 py-3 bg-[#ff4655] text-white font-bold tracking-wider uppercase hover:bg-[#ff2a3a] transition-all rounded-lg flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 bg-[var(--accent-color-dynamic)] text-white font-bold tracking-wider uppercase hover:bg-[var(--accent-color-dynamic-hover)] transition-all rounded-lg flex items-center justify-center gap-2"
           >
             DASHBOARD
           </button>
@@ -745,7 +745,7 @@ const StudySession = () => {
               >
                 <ArrowLeft size={18} />
               </button>
-              <BookOpen size={18} className="text-[#ff4655]" />
+              <BookOpen size={18} className="text-[var(--accent-color-dynamic)]" />
               <span className="font-bold tracking-wider uppercase text-sm">
                 {selectedCourse?.title || "Study Session"}
               </span>
@@ -759,7 +759,7 @@ const StudySession = () => {
                 </span>
               </div>
               {activeSession?.xpMultiplier > 1 && (
-                <div className="flex items-center gap-1 text-[#0fb8ce]">
+                <div className="flex items-center gap-1 text-[var(--accent-color-dynamic)]">
                   <Zap size={14} />
                   <span className="font-bold text-sm">
                     {activeSession.xpMultiplier}x XP
@@ -777,7 +777,7 @@ const StudySession = () => {
               </label>
               <button
                 onClick={() => stopSession()}
-                className="px-4 py-2 bg-[#ff4655] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[#ff2a3a] transition-colors"
+                className="px-4 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded hover:bg-[var(--accent-color-dynamic-hover)] transition-colors"
               >
                 END SESSION
               </button>
@@ -798,10 +798,10 @@ const StudySession = () => {
                 {/* Task Content */}
                 <div className="lg:col-span-2">
                   <div className="bg-[#1a2633] border border-[#ffffff10] rounded-2xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ff4655] to-transparent" />
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--accent-color-dynamic)] to-transparent" />
 
                     <div className="flex items-center gap-3 mb-4">
-                      <span className="px-3 py-1 bg-[#ff4655]/10 text-[#ff4655] text-xs font-bold rounded-full uppercase tracking-wider">
+                      <span className="px-3 py-1 bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)] text-xs font-bold rounded-full uppercase tracking-wider">
                         Task {currentIdx + 1} of {taskProgress.totalTasks}
                       </span>
                       <span className="text-xs text-gray-500 flex items-center gap-1">
@@ -829,7 +829,7 @@ const StudySession = () => {
                       </div>
                       <div className="w-full h-2 bg-[#1a2633] rounded-full overflow-hidden mb-2">
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${canAdvanceTask ? "bg-green-500" : "bg-[#ff4655]"}`}
+                          className={`h-full rounded-full transition-all duration-500 ${canAdvanceTask ? "bg-[var(--accent-color-dynamic)]" : "bg-[var(--accent-color-dynamic)]"}`}
                           style={{ width: `${advanceProgressPct}%` }}
                         />
                       </div>
@@ -844,7 +844,7 @@ const StudySession = () => {
                       <button
                         onClick={completeTask}
                         disabled={taskLoading || !canAdvanceTask}
-                        className="flex-1 px-6 py-3 bg-green-600 text-white font-bold tracking-wider uppercase rounded-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="flex-1 px-6 py-3 bg-[var(--accent-color-dynamic)] text-white font-bold tracking-wider uppercase rounded-lg hover:bg-[var(--accent-color-dynamic)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         <CheckCircle2 size={18} />{" "}
                         {taskLoading ? "..." : "MARK COMPLETE"}
@@ -881,14 +881,14 @@ const StudySession = () => {
                         <div className="flex justify-between text-xs mb-1">
                           <span className="text-gray-500">Focus</span>
                           <span
-                            className={`font-bold ${signals.focus.score > 0.6 ? "text-green-400" : signals.focus.score > 0.3 ? "text-yellow-400" : "text-red-400"}`}
+                            className={`font-bold ${signals.focus.score > 0.6 ? "text-[var(--accent-color-dynamic)]" : signals.focus.score > 0.3 ? "text-[var(--accent-color-dynamic)]" : "text-[var(--accent-color-dynamic)]"}`}
                           >
                             {(signals.focus.score * 100).toFixed(0)}%
                           </span>
                         </div>
                         <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-green-500 rounded-full transition-all duration-500"
+                            className="h-full bg-[var(--accent-color-dynamic)] rounded-full transition-all duration-500"
                             style={{ width: `${signals.focus.score * 100}%` }}
                           />
                         </div>
@@ -897,14 +897,14 @@ const StudySession = () => {
                         <div className="flex justify-between text-xs mb-1">
                           <span className="text-gray-500">Fatigue</span>
                           <span
-                            className={`font-bold ${signals.fatigue.score < 0.3 ? "text-green-400" : signals.fatigue.score < 0.6 ? "text-yellow-400" : "text-red-400"}`}
+                            className={`font-bold ${signals.fatigue.score < 0.3 ? "text-[var(--accent-color-dynamic)]" : signals.fatigue.score < 0.6 ? "text-[var(--accent-color-dynamic)]" : "text-[var(--accent-color-dynamic)]"}`}
                           >
                             {(signals.fatigue.score * 100).toFixed(0)}%
                           </span>
                         </div>
                         <div className="w-full h-2 bg-[#0f1923] rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                            className="h-full bg-[var(--accent-color-dynamic)] rounded-full transition-all duration-500"
                             style={{ width: `${signals.fatigue.score * 100}%` }}
                           />
                         </div>
@@ -923,11 +923,11 @@ const StudySession = () => {
                           key={idx}
                           className={`flex items-center gap-2 px-2 py-1.5 rounded text-xs ${
                             idx === currentIdx
-                              ? "bg-[#ff4655]/10 text-white"
+                              ? "bg-[var(--accent-color-dynamic)]/10 text-white"
                               : task.status === "completed"
-                                ? "text-green-500"
+                                ? "text-[var(--accent-color-dynamic)]"
                                 : task.status === "skipped"
-                                  ? "text-yellow-500"
+                                  ? "text-[var(--accent-color-dynamic)]"
                                   : "text-gray-600"
                           }`}
                         >
@@ -936,7 +936,7 @@ const StudySession = () => {
                           ) : task.status === "skipped" ? (
                             <SkipForward size={12} />
                           ) : idx === currentIdx ? (
-                            <Play size={12} className="text-[#ff4655]" />
+                            <Play size={12} className="text-[var(--accent-color-dynamic)]" />
                           ) : (
                             <div className="w-3 h-3 rounded-full border border-gray-600" />
                           )}
@@ -965,7 +965,7 @@ const StudySession = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-20"
               >
-                <Trophy size={64} className="mx-auto text-yellow-500 mb-4" />
+                <Trophy size={64} className="mx-auto text-[var(--accent-color-dynamic)] mb-4" />
                 <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">
                   ALL TASKS COMPLETE!
                 </h2>
@@ -974,7 +974,7 @@ const StudySession = () => {
                 </p>
                 <button
                   onClick={() => stopSession()}
-                  className="px-12 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]"
+                  className="px-12 py-4 bg-[var(--accent-color-dynamic)] text-white font-black text-xl tracking-widest uppercase hover:bg-[var(--accent-color-dynamic-hover)] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_var(--accent-color-dynamic-shadow-40)]"
                 >
                   VIEW RESULTS
                 </button>
@@ -994,7 +994,7 @@ const StudySession = () => {
               <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
                 AI Coach
               </h3>
-              <div className="bg-[#0f1923] rounded-lg px-3 py-1.5 text-xs font-bold text-[#ff4655] uppercase tracking-wider inline-block mb-3">
+              <div className="bg-[#0f1923] rounded-lg px-3 py-1.5 text-xs font-bold text-[var(--accent-color-dynamic)] uppercase tracking-wider inline-block mb-3">
                 {coachDecision.action_type.replace("_", " ")}
               </div>
               {coachDecision.message && (
@@ -1006,7 +1006,7 @@ const StudySession = () => {
               <div className="flex gap-3">
                 <button
                   onClick={acceptCoachSuggestion}
-                  className="flex-1 px-4 py-2 bg-[#ff4655] text-white rounded-lg font-bold"
+                  className="flex-1 px-4 py-2 bg-[var(--accent-color-dynamic)] text-white rounded-lg font-bold"
                 >
                   Accept
                 </button>

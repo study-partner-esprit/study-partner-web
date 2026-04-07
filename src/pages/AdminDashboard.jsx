@@ -44,7 +44,7 @@ export default function AdminDashboard() {
         </p>
 
         {error && (
-          <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">
+          <div className="mb-4 rounded-md border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-2 text-[var(--accent-color-dynamic)] text-sm">
             {error}
           </div>
         )}

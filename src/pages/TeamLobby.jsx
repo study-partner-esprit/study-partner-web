@@ -37,15 +37,15 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onInvite}
-        className="w-full aspect-[3/4] bg-[#1a2633]/50 border-2 border-dashed border-[#ffffff15] rounded-xl flex flex-col items-center justify-center gap-3 hover:border-[#0fb8ce]/50 hover:bg-[#0fb8ce]/5 transition-all cursor-pointer group"
+        className="w-full aspect-[3/4] bg-[#1a2633]/50 border-2 border-dashed border-[#ffffff15] rounded-xl flex flex-col items-center justify-center gap-3 hover:border-[var(--accent-color-dynamic)]/50 hover:bg-[var(--accent-color-dynamic)]/5 transition-all cursor-pointer group"
       >
-        <div className="w-14 h-14 rounded-full bg-[#ffffff05] flex items-center justify-center group-hover:bg-[#0fb8ce]/10 transition-colors">
+        <div className="w-14 h-14 rounded-full bg-[#ffffff05] flex items-center justify-center group-hover:bg-[var(--accent-color-dynamic)]/10 transition-colors">
           <UserPlus
             size={24}
-            className="text-gray-600 group-hover:text-[#0fb8ce] transition-colors"
+            className="text-gray-600 group-hover:text-[var(--accent-color-dynamic)] transition-colors"
           />
         </div>
-        <span className="text-sm font-bold text-gray-600 group-hover:text-[#0fb8ce] tracking-wider uppercase transition-colors">
+        <span className="text-sm font-bold text-gray-600 group-hover:text-[var(--accent-color-dynamic)] tracking-wider uppercase transition-colors">
           Invite
         </span>
         <span className="text-xs text-gray-700">Slot {slotIndex + 1}</span>
@@ -57,14 +57,22 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full aspect-[3/4] bg-gradient-to-b from-[#1a2633] to-[#0f1923] border-2 border-[#0fb8ce]/30 rounded-xl relative overflow-hidden group"
+      className="w-full aspect-[3/4] bg-gradient-to-b from-[#1a2633] to-[#0f1923] border-2 rounded-xl relative overflow-hidden group"
+      style={{
+        borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
+      }}
     >
       {/* Glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0fb8ce]/10 to-transparent" />
+      <div className="absolute inset-0 to-transparent" style={{
+        backgroundImage: 'linear-gradient(to top, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), transparent)'
+      }} />
 
       {/* Player Avatar */}
       <div className="absolute inset-0 flex items-center justify-center pt-4">
-        <div className="w-20 h-20 rounded-full bg-[#0fb8ce]/20 border-2 border-[#0fb8ce]/40 flex items-center justify-center overflow-hidden">
+        <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden border-2" style={{
+          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
+          borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 40%, transparent)',
+        }}>
           {player.avatar ? (
             <img
               src={player.avatar}
@@ -72,7 +80,7 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-2xl font-black text-[#0fb8ce]">
+            <span className="text-2xl font-black" style={{ color: 'var(--accent-color-dynamic)' }}>
               {(player.name || "?")[0].toUpperCase()}
             </span>
           )}
@@ -82,20 +90,23 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
       {/* Leader crown */}
       {isLeader && (
         <div className="absolute top-3 left-3 z-10">
-          <Crown size={20} className="text-yellow-500 drop-shadow-lg" />
+          <Crown size={20} className="text-[var(--accent-color-dynamic)] drop-shadow-lg" />
         </div>
       )}
 
       {/* Ready indicator */}
       <div className="absolute top-3 right-3 z-10">
-        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]" />
+        <div className="w-3 h-3 bg-[var(--accent-color-dynamic)] rounded-full animate-pulse shadow-[0_0_10px_var(--accent-color-dynamic)]" />
       </div>
 
       {/* Player info */}
       <div className="absolute bottom-0 w-full p-4 text-center bg-gradient-to-t from-black/80 to-transparent">
         <h3 className="font-bold text-base truncate">{player.name}</h3>
         <div className="flex items-center justify-center gap-2 mt-1">
-          <span className="text-xs bg-[#0fb8ce]/20 text-[#0fb8ce] px-2 py-0.5 rounded-full font-bold">
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{
+            backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
+            color: 'var(--accent-color-dynamic)',
+          }}>
             {isLeader ? "LEADER" : "MEMBER"}
           </span>
         </div>
@@ -238,7 +249,9 @@ const TeamLobby = () => {
       <div className="min-h-screen bg-[#0f1923] flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a2633] to-[#0f1923]" />
         <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#0fb8ce] rounded-full blur-[200px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[200px]" style={{
+            backgroundColor: 'var(--accent-color-dynamic)',
+          }} />
         </div>
         <motion.div
           key={countdown}
@@ -247,10 +260,14 @@ const TeamLobby = () => {
           exit={{ scale: 0, opacity: 0 }}
           className="z-20 text-center"
         >
-          <h1 className="text-[200px] font-black text-white drop-shadow-[0_0_30px_rgba(15,184,206,0.8)]">
+          <h1 className="text-[200px] font-black text-white" style={{
+            textShadow: '0 0 30px var(--accent-color-dynamic)',
+          }}>
             {countdown}
           </h1>
-          <p className="text-[#0fb8ce] font-bold tracking-[0.5em] text-xl uppercase">
+          <p className="font-bold tracking-[0.5em] text-xl uppercase" style={{
+            color: 'var(--accent-color-dynamic)',
+          }}>
             SESSION STARTING
           </p>
         </motion.div>
@@ -270,8 +287,10 @@ const TeamLobby = () => {
 
       {/* Ambient glow */}
       <div className="absolute inset-0 z-0 opacity-10">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#0fb8ce] rounded-full blur-[200px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#a35cf7] rounded-full blur-[200px]" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[200px]" style={{
+          backgroundColor: 'var(--accent-color-dynamic)',
+        }} />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[var(--accent-color-dynamic)] rounded-full blur-[200px]" />
       </div>
 
       {/* Top bar */}
@@ -282,7 +301,9 @@ const TeamLobby = () => {
         >
           <ArrowLeft size={20} />
         </button>
-        <Swords size={24} className="text-[#0fb8ce] mr-3" />
+        <Swords size={24} className="mr-3" style={{
+          color: 'var(--accent-color-dynamic)',
+        }} />
         <h1 className="text-2xl font-bold tracking-wider uppercase">
           TEAM LOBBY
         </h1>
@@ -294,9 +315,17 @@ const TeamLobby = () => {
 
         {/* XP Multiplier Badge */}
         <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0fb8ce]/10 to-[#a35cf7]/10 border border-[#0fb8ce]/30 rounded-lg">
-            <Zap size={16} className="text-[#0fb8ce]" />
-            <span className="font-bold text-[#0fb8ce]">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+            backgroundImage: 'linear-gradient(to right, color-mix(in srgb, var(--accent-color-dynamic) 10%, transparent), var(--accent-color-dynamic) 10%)',
+            borderColor: 'color-mix(in srgb, var(--accent-color-dynamic) 30%, transparent)',
+            borderWidth: '1px',
+          }}>
+            <Zap size={16} style={{
+              color: 'var(--accent-color-dynamic)',
+            }} />
+            <span className="font-bold" style={{
+              color: 'var(--accent-color-dynamic)',
+            }}>
               {currentMultiplier.label} XP
             </span>
             <span className="text-xs text-gray-500">
@@ -375,7 +404,9 @@ const TeamLobby = () => {
                     <p className="text-xs text-gray-500 font-bold tracking-wider uppercase">
                       INVITE CODE
                     </p>
-                    <p className="text-2xl font-mono font-bold text-[#0fb8ce] tracking-[0.3em]">
+                    <p className="text-2xl font-mono font-bold tracking-[0.3em]" style={{
+                      color: 'var(--accent-color-dynamic)',
+                    }}>
                       {inviteCode}
                     </p>
                   </div>
@@ -385,7 +416,7 @@ const TeamLobby = () => {
                     title="Copy invite code"
                   >
                     {copied ? (
-                      <Check size={20} className="text-green-500" />
+                      <Check size={20} className="text-[var(--accent-color-dynamic)]" />
                     ) : (
                       <Copy size={20} className="text-gray-400" />
                     )}
@@ -419,7 +450,13 @@ const TeamLobby = () => {
                 value={friendFilter}
                 onChange={(e) => setFriendFilter(e.target.value)}
                 placeholder="Search friends..."
-                className="w-full bg-[#1a2633] border border-[#ffffff10] rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#0fb8ce]/50 focus:outline-none"
+                className="w-full bg-[#1a2633] border border-[#ffffff10] rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none"
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent-color-dynamic) 50%, transparent)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = '#ffffff10';
+                }}
               />
             </div>
           </div>
@@ -440,7 +477,10 @@ const TeamLobby = () => {
                     key={friendId}
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#ffffff05] transition-colors"
                   >
-                    <div className="w-8 h-8 bg-[#0fb8ce]/20 rounded-full flex items-center justify-center text-[#0fb8ce] text-sm font-bold">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
+                      color: 'var(--accent-color-dynamic)',
+                    }}>
                       {(friend.name ||
                         friend.displayName ||
                         "?")[0].toUpperCase()}
@@ -451,13 +491,17 @@ const TeamLobby = () => {
                       </p>
                     </div>
                     {isInvited ? (
-                      <span className="text-xs text-green-500 flex items-center gap-1">
+                      <span className="text-xs text-[var(--accent-color-dynamic)] flex items-center gap-1">
                         <Check size={12} /> Sent
                       </span>
                     ) : (
                       <button
                         onClick={() => handleInvite(friendId)}
-                        className="px-3 py-1 text-xs bg-[#0fb8ce]/20 text-[#0fb8ce] rounded-lg hover:bg-[#0fb8ce]/30 transition-colors font-bold"
+                        className="px-3 py-1 text-xs rounded-lg hover:bg-[#ffffff05] transition-colors font-bold"
+                        style={{
+                          backgroundColor: 'color-mix(in srgb, var(--accent-color-dynamic) 20%, transparent)',
+                          color: 'var(--accent-color-dynamic)',
+                        }}
                       >
                         Invite
                       </button>
@@ -473,7 +517,7 @@ const TeamLobby = () => {
       {/* Bottom action bar */}
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-[#0f1923] border-t border-[#ffffff10] flex flex-col items-center justify-center px-8 gap-1 py-3">
         {startError && (
-          <p className="text-xs text-red-400 font-bold tracking-wider">
+          <p className="text-xs text-[var(--accent-color-dynamic)] font-bold tracking-wider">
             {startError}
           </p>
         )}
@@ -488,7 +532,7 @@ const TeamLobby = () => {
           {isLeader && (
             <button
               onClick={() => setShowInviteModal(true)}
-              className="px-8 py-3 bg-[#0fb8ce]/10 border border-[#0fb8ce]/30 text-[#0fb8ce] font-bold tracking-wider uppercase hover:bg-[#0fb8ce]/20 transition-all rounded flex items-center gap-2"
+              className="px-8 py-3 bg-[var(--accent-color-dynamic)]/10 border border-[var(--accent-color-dynamic)]/30 text-[var(--accent-color-dynamic)] font-bold tracking-wider uppercase hover:bg-[var(--accent-color-dynamic)]/20 transition-all rounded flex items-center gap-2"
             >
               <UserPlus size={18} />
               INVITE
@@ -498,7 +542,7 @@ const TeamLobby = () => {
           {isLeader ? (
             <button
               onClick={handleStartSession}
-              className="px-16 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]"
+              className="px-16 py-4 bg-[var(--accent-color-dynamic)] text-white font-black text-xl tracking-widest uppercase hover:bg-[var(--accent-color-dynamic-hover)] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_var(--accent-color-dynamic-shadow-40)]"
               style={{
                 clipPath:
                   "polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%)",
@@ -537,7 +581,7 @@ const TeamLobby = () => {
             >
               <div className="flex items-center justify-between p-5 border-b border-[#ffffff10]">
                 <h3 className="font-bold text-lg flex items-center gap-2">
-                  <UserPlus size={20} className="text-[#0fb8ce]" />
+                  <UserPlus size={20} className="text-[var(--accent-color-dynamic)]" />
                   Invite Friends
                 </h3>
                 <button
@@ -555,7 +599,7 @@ const TeamLobby = () => {
                     Share invite code
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-mono font-bold text-[#0fb8ce] tracking-[0.3em]">
+                    <span className="text-2xl font-mono font-bold text-[var(--accent-color-dynamic)] tracking-[0.3em]">
                       {inviteCode}
                     </span>
                     <button
@@ -563,7 +607,7 @@ const TeamLobby = () => {
                       className="p-2 hover:bg-[#ffffff10] rounded-lg transition-colors"
                     >
                       {copied ? (
-                        <Check size={16} className="text-green-500" />
+                        <Check size={16} className="text-[var(--accent-color-dynamic)]" />
                       ) : (
                         <Copy size={16} className="text-gray-400" />
                       )}
@@ -589,7 +633,7 @@ const TeamLobby = () => {
                     value={friendFilter}
                     onChange={(e) => setFriendFilter(e.target.value)}
                     placeholder="Search friends..."
-                    className="w-full bg-[#0f1923] border border-[#ffffff10] rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[#0fb8ce]/50 focus:outline-none"
+                    className="w-full bg-[#0f1923] border border-[#ffffff10] rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-gray-600 focus:border-[var(--accent-color-dynamic)]/50 focus:outline-none"
                   />
                 </div>
 
@@ -603,7 +647,7 @@ const TeamLobby = () => {
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-[#ffffff05]"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-[#0fb8ce]/20 rounded-full flex items-center justify-center text-[#0fb8ce] font-bold">
+                          <div className="w-10 h-10 bg-[var(--accent-color-dynamic)]/20 rounded-full flex items-center justify-center text-[var(--accent-color-dynamic)] font-bold">
                             {(friend.name ||
                               friend.displayName ||
                               "?")[0].toUpperCase()}
@@ -613,13 +657,13 @@ const TeamLobby = () => {
                           </span>
                         </div>
                         {isInvited ? (
-                          <span className="text-xs text-green-500 flex items-center gap-1">
+                          <span className="text-xs text-[var(--accent-color-dynamic)] flex items-center gap-1">
                             <Check size={14} /> Invited
                           </span>
                         ) : (
                           <button
                             onClick={() => handleInvite(friendId)}
-                            className="px-4 py-1.5 text-sm bg-[#0fb8ce] text-black rounded-lg hover:bg-[#0fb8ce]/80 transition-colors font-bold"
+                            className="px-4 py-1.5 text-sm bg-[var(--accent-color-dynamic)] text-black rounded-lg hover:bg-[var(--accent-color-dynamic)]/80 transition-colors font-bold"
                           >
                             Invite
                           </button>

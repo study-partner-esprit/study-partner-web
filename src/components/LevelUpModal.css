@@ -109,7 +109,7 @@
 .levelup-title {
   font-size: 2.5rem;
   font-weight: 900;
-  background: linear-gradient(135deg, var(--primary) 0%, #ff8f9c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-color-dynamic) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -138,7 +138,7 @@
   font-size: 4rem;
   font-weight: 900;
   color: var(--primary);
-  text-shadow: 2px 2px 4px rgba(255, 70, 85, 0.2);
+  text-shadow: 2px 2px 4px var(--accent-color-dynamic-shadow-20);
   animation: numberGlow 2s ease infinite;
 }
 
@@ -146,11 +146,11 @@
   0%,
   100% {
     transform: scale(1);
-    text-shadow: 2px 2px 4px rgba(255, 70, 85, 0.2);
+    text-shadow: 2px 2px 4px var(--accent-color-dynamic-shadow-20);
   }
   50% {
     transform: scale(1.1);
-    text-shadow: 0 0 20px rgba(255, 70, 85, 0.6);
+    text-shadow: 0 0 20px var(--accent-color-dynamic-shadow-60);
   }
 }
 
@@ -169,7 +169,7 @@
 }
 
 .levelup-close-btn {
-  background: linear-gradient(135deg, var(--primary) 0%, #ff8f9c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-color-dynamic) 100%);
   color: white;
   border: none;
   padding: 16px 48px;
@@ -180,12 +180,12 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.4);
+  box-shadow: 0 4px 12px var(--accent-color-dynamic-shadow-40);
 }
 
 .levelup-close-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 70, 85, 0.5);
+  box-shadow: 0 8px 20px var(--accent-color-dynamic-shadow-50);
 }
 
 .levelup-close-btn:active {

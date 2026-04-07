@@ -41,7 +41,7 @@ export default function AdminSubscriptions() {
         </p>
 
         {error && (
-          <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-2 text-red-300 text-sm">
+          <div className="mb-4 rounded-md border border-[var(--accent-color-dynamic)]/40 bg-[var(--accent-color-dynamic)]/10 px-4 py-2 text-[var(--accent-color-dynamic)] text-sm">
             {error}
           </div>
         )}
@@ -95,7 +95,7 @@ export default function AdminSubscriptions() {
                       {s.status !== "canceled" && (
                         <button
                           onClick={() => handleCancel(s._id)}
-                          className="rounded-md border border-red-500/40 text-red-300 px-2 py-1 hover:bg-red-500/10"
+                          className="rounded-md border border-[var(--accent-color-dynamic)]/40 text-[var(--accent-color-dynamic)] px-2 py-1 hover:bg-[var(--accent-color-dynamic)]/10"
                         >
                           Cancel
                         </button>

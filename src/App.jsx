@@ -54,6 +54,44 @@ import Sidebar from "./components/Sidebar";
 import { ErrorBoundary } from "./components/shared";
 import useNotificationStore from "./store/notificationStore";
 
+const hexToRgb = (hex) => {
+  const normalized = (hex || "").replace("#", "").trim();
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+  const int = parseInt(normalized, 16);
+  return {
+    r: (int >> 16) & 255,
+    g: (int >> 8) & 255,
+    b: int & 255,
+  };
+};
+
+const rgbToHslCss = ({ r, g, b }) => {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+
+  let h = 0;
+  if (delta !== 0) {
+    if (max === rn) {
+      h = ((gn - bn) / delta) % 6;
+    } else if (max === gn) {
+      h = (bn - rn) / delta + 2;
+    } else {
+      h = (rn - gn) / delta + 4;
+    }
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+
+  const l = (max + min) / 2;
+  const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+  return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+};
+
 function App() {
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
@@ -121,25 +159,37 @@ function App() {
     const extractColor = async () => {
       try {
         let color = "#4fb8ce"; // default
-        if (
+
+        const hasStaticBackground =
+          backgroundSettings?.enabled && backgroundSettings?.imageUrl;
+        const hasAnimatedBackground =
           animatedBackgroundSettings?.enabled &&
-          animatedBackgroundSettings?.videoUrl
-        ) {
+          animatedBackgroundSettings?.videoUrl;
+
+        // Keep extraction source aligned with render priority: static > animated.
+        if (hasStaticBackground) {
+          color = await extractDominantColor(backgroundSettings.imageUrl);
+        } else if (hasAnimatedBackground) {
           color = await extractColorFromVideo(
             animatedBackgroundSettings.videoUrl,
           );
-        } else if (
-          backgroundSettings?.enabled &&
-          backgroundSettings?.imageUrl
-        ) {
-          color = await extractDominantColor(backgroundSettings.imageUrl);
         }
         setAccentColor(color);
-        // Apply to document
+        // Apply dynamic accent and map core theme tokens to the same hue.
         document.documentElement.style.setProperty(
           "--accent-color-dynamic",
           color,
         );
+        const rgb = hexToRgb(color);
+        if (rgb) {
+          document.documentElement.style.setProperty(
+            "--primary-rgb",
+            `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+          );
+          const hsl = rgbToHslCss(rgb);
+          document.documentElement.style.setProperty("--primary", hsl);
+          document.documentElement.style.setProperty("--ring", hsl);
+        }
       } catch (err) {
         console.error("Error extracting background color:", err);
       }
@@ -205,48 +255,43 @@ function App() {
 
   return (
     <ErrorBoundary>
-      {/* Background layers */}
-      {!isLandingPage &&
-        backgroundSettings?.enabled &&
-        backgroundSettings?.imageUrl && (
-          <div
-            className="fixed inset-0 z-0 pointer-events-none"
-            style={{
-              backgroundImage: `url(${backgroundSettings.imageUrl})`,
-              backgroundSize:
-                backgroundSettings.position === "repeat"
-                  ? "auto"
-                  : backgroundSettings.position || "cover",
-              backgroundPosition: "center",
-              backgroundRepeat:
-                backgroundSettings.position === "repeat"
-                  ? "repeat"
-                  : "no-repeat",
-              opacity: backgroundSettings.opacity || 0.15,
-              filter: `blur(${backgroundSettings.blur || 2}px)`,
-            }}
+      {/* Background layers — Static takes priority over Animated */}
+      {!isLandingPage && backgroundSettings?.enabled && backgroundSettings?.imageUrl ? (
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${backgroundSettings.imageUrl})`,
+            backgroundSize:
+              backgroundSettings.position === "repeat"
+                ? "auto"
+                : backgroundSettings.position || "cover",
+            backgroundPosition: "center",
+            backgroundRepeat:
+              backgroundSettings.position === "repeat"
+                ? "repeat"
+                : "no-repeat",
+            opacity: backgroundSettings.opacity || 0.15,
+            filter: `blur(${backgroundSettings.blur || 2}px)`,
+          }}
+        />
+      ) : !isLandingPage && animatedBackgroundSettings?.enabled && animatedBackgroundSettings?.videoUrl ? (
+        <video
+          autoPlay
+          muted
+          loop={animatedBackgroundSettings.loop !== false}
+          playsInline
+          className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+          style={{
+            opacity: animatedBackgroundSettings.opacity || 0.12,
+            filter: `brightness(${100 + (animatedBackgroundSettings.brightness || 0)}%) saturate(${animatedBackgroundSettings.saturation || 80}%)`,
+          }}
+        >
+          <source
+            src={animatedBackgroundSettings.videoUrl}
+            type="video/mp4"
           />
-        )}
-      {!isLandingPage &&
-        animatedBackgroundSettings?.enabled &&
-        animatedBackgroundSettings?.videoUrl && (
-          <video
-            autoPlay
-            muted
-            loop={animatedBackgroundSettings.loop !== false}
-            playsInline
-            className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
-            style={{
-              opacity: animatedBackgroundSettings.opacity || 0.12,
-              filter: `brightness(${100 + (animatedBackgroundSettings.brightness || 0)}%) saturate(${animatedBackgroundSettings.saturation || 80}%)`,
-            }}
-          >
-            <source
-              src={animatedBackgroundSettings.videoUrl}
-              type="video/mp4"
-            />
-          </video>
-        )}
+        </video>
+      ) : null}
 
       {/* Ambient glow layer — adapts to extracted background color */}
       {!isLandingPage &&

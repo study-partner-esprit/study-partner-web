@@ -110,7 +110,7 @@ const CTASection = () => {
     {
       icon: Star,
       text: "Earn 500 XP on signup",
-      color: "text-yellow-500",
+      color: "text-[var(--accent-color-dynamic)]",
       glow: "shadow-yellow-500/50",
     },
     {
@@ -122,8 +122,8 @@ const CTASection = () => {
     {
       icon: Gift,
       text: "Get free study templates",
-      color: "text-red-400",
-      glow: "shadow-red-400/50",
+      color: "text-[var(--accent-color-dynamic)]",
+      glow: "shadow-[0_0_18px_var(--accent-color-dynamic-shadow-50)]",
     },
     {
       icon: Zap,
@@ -168,7 +168,7 @@ const CTASection = () => {
               className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 dark:text-white font-display tracking-tight cta-title"
             >
               Join the Study <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-red-500 to-orange-500 animate-pulse">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[var(--accent-color-dynamic)] to-[var(--accent-color-dynamic)] animate-pulse">
                 Revolution
               </span>
             </h2>
@@ -232,7 +232,7 @@ const CTASection = () => {
               className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500 dark:text-gray-400"
             >
               <span className="flex items-center gap-2 transition-transform hover:scale-105">
-                <Crown className="w-4 h-4 text-yellow-500" />
+                <Crown className="w-4 h-4 text-[var(--accent-color-dynamic)]" />
                 No credit card required
               </span>
               <span className="flex items-center gap-2 transition-transform hover:scale-105">

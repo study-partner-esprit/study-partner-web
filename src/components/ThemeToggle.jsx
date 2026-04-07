@@ -29,7 +29,7 @@ const ThemeToggle = () => {
           transition={{ duration: 0.2 }}
           className="absolute"
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] text-yellow-500" />
+          <Sun className="h-[1.2rem] w-[1.2rem] text-[var(--accent-color-dynamic)]" />
         </motion.div>
         <motion.div
           initial={false}

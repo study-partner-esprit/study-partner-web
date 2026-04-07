@@ -223,7 +223,7 @@ const Dashboard = () => {
                   <div className="flex justify-between items-center py-2 border-b border-border/30">
                     <span className="text-muted-foreground">ROLE</span>
                     <span
-                      className={`font-bold ${user?.role === "admin" ? "text-primary" : "text-green-500"}`}
+                      className={`font-bold ${user?.role === "admin" ? "text-primary" : "text-[var(--accent-color-dynamic)]"}`}
                     >
                       {user?.role?.toUpperCase()}
                     </span>
@@ -265,7 +265,7 @@ const Dashboard = () => {
                   </Link>
                   <Link
                     to="/session-setup"
-                    className="block px-4 py-3 bg-[#ff4655] text-white hover:brightness-110 transition-all duration-300 font-bold tracking-wider text-center shadow-lg group"
+                    className="block px-4 py-3 bg-[var(--accent-color-dynamic)] text-white hover:brightness-110 transition-all duration-300 font-bold tracking-wider text-center shadow-lg group"
                   >
                     <span className="group-hover:scale-110 inline-block transition-transform mr-2">
                       🚀

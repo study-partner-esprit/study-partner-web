@@ -15,8 +15,8 @@ function ConfirmDialog({
   if (!open) return null;
 
   const variantStyles = {
-    danger: "bg-red-600 hover:bg-red-700",
-    warning: "bg-yellow-600 hover:bg-yellow-700",
+    danger: "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic-hover)]",
+    warning: "bg-[var(--accent-color-dynamic)] hover:bg-[var(--accent-color-dynamic)]",
     primary: "bg-primary hover:bg-primary/90",
   };
 
@@ -37,8 +37,8 @@ function ConfirmDialog({
           className="bg-card border border-border rounded-2xl w-full max-w-sm p-6 shadow-2xl"
         >
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+            <div className="w-10 h-10 rounded-full bg-[var(--accent-color-dynamic)]/10 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 text-[var(--accent-color-dynamic)]" />
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-foreground text-lg">{title}</h3>

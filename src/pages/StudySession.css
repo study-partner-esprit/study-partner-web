@@ -40,12 +40,12 @@
   transition: all 0.3s;
   background: var(--primary);
   color: white;
-  box-shadow: 0 4px 14px rgba(255, 70, 85, 0.3);
+  box-shadow: 0 4px 14px var(--accent-color-dynamic-shadow-30);
 }
 
 .session-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.4);
+  box-shadow: 0 6px 20px var(--accent-color-dynamic-shadow-40);
 }
 
 .session-btn.session-active {
@@ -173,8 +173,8 @@
 .focus-gauge {
   background: linear-gradient(
     90deg,
-    #ff6b6b 0%,
-    #ffa500 50%,
+    var(--accent-color-dynamic) 0%,
+    var(--accent-color-dynamic) 50%,
     var(--primary) 100%
   );
 }
@@ -183,8 +183,8 @@
   background: linear-gradient(
     90deg,
     var(--primary) 0%,
-    #ffa500 50%,
-    #ff6b6b 100%
+    var(--accent-color-dynamic) 50%,
+    var(--accent-color-dynamic) 100%
   );
 }
 
@@ -203,22 +203,22 @@
 
 .badge-success {
   background: rgba(40, 167, 69, 0.1);
-  color: #28a745;
+  color: var(--accent-color-dynamic);
 }
 
 .badge-warning {
   background: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
+  color: var(--accent-color-dynamic);
 }
 
 .badge-danger {
   background: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
+  color: var(--accent-color-dynamic);
 }
 
 .badge-info {
   background: rgba(23, 162, 184, 0.1);
-  color: #17a2b8;
+  color: var(--accent-color-dynamic);
 }
 
 .signal-score {
@@ -280,7 +280,7 @@
 }
 
 .bar-fatigue {
-  background: #ff9800;
+  background: var(--accent-color-dynamic);
 }
 
 .chart-legend {
@@ -308,7 +308,7 @@
 }
 
 .fatigue-color {
-  background: #ff9800;
+  background: var(--accent-color-dynamic);
 }
 
 /* Coach Popup */
@@ -442,7 +442,7 @@
 }
 
 .accept-btn:hover {
-  box-shadow: 0 4px 14px rgba(255, 70, 85, 0.3);
+  box-shadow: 0 4px 14px var(--accent-color-dynamic-shadow-30);
   transform: translateY(-2px);
 }
 
@@ -458,7 +458,7 @@
 .ignored-count {
   padding: 0 1.5rem 1.5rem;
   font-size: 0.875rem;
-  color: #ff9800;
+  color: var(--accent-color-dynamic);
   text-align: center;
 }
 

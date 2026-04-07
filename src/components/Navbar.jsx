@@ -118,7 +118,7 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
               whileTap={{ scale: 0.95 }}
             >
               {theme === "dark" ? (
-                <Sun className="w-5 h-5 text-yellow-500" />
+                <Sun className="w-5 h-5 text-[var(--accent-color-dynamic)]" />
               ) : (
                 <Moon className="w-5 h-5 text-foreground" />
               )}

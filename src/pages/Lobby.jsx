@@ -13,7 +13,7 @@ const MODES = [
     description:
       "Intense distraction-free work blocks. Ideal for coding or writing.",
     abilities: ["Blocker", "White Noise", "Timer"],
-    color: "#ff4655", // Red
+    color: "var(--accent-color-dynamic)", // Red
     img: "https://images.unsplash.com/photo-1516110833967-0b5716ca1387?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -22,7 +22,7 @@ const MODES = [
     role: "Balance",
     description: "Classic 25/5 intervals. Keep fresh with regular breaks.",
     abilities: ["Intervals", "Breaks", "Stats"],
-    color: "#0fb8ce", // Cyan/Omen
+    color: "var(--accent-color-dynamic)", // Cyan/Omen
     img: "https://images.unsplash.com/photo-1456406644174-8ddd4cd52a06?auto=format&fit=crop&q=80&w=800",
   },
   {
@@ -31,7 +31,7 @@ const MODES = [
     role: "Endurance",
     description: "Long format study with strategic review points.",
     abilities: ["Review", "Notes", "Quiz"],
-    color: "#a35cf7", // Purple/Reyna
+    color: "var(--accent-color-dynamic)", // Purple/Reyna
     img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800",
   },
 ];
@@ -83,7 +83,7 @@ const Lobby = () => {
         {/* Background rays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1a2633] to-[#0f1923]" />
         <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#ff4655] rounded-full blur-[200px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--accent-color-dynamic)] rounded-full blur-[200px]" />
         </div>
 
         {/* Match Found Text */}
@@ -92,10 +92,10 @@ const Lobby = () => {
           animate={{ scale: 1, opacity: 1 }}
           className="z-20 text-center mb-12"
         >
-          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-white drop-shadow-[0_0_15px_rgba(255,70,85,0.8)]">
+          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase text-white drop-shadow-[0_0_15px_var(--accent-color-dynamic-shadow-80)]">
             MATCH FOUND
           </h1>
-          <p className="text-[#ff4655] font-bold tracking-[0.5em] text-xl mt-4 uppercase">
+          <p className="text-[var(--accent-color-dynamic)] font-bold tracking-[0.5em] text-xl mt-4 uppercase">
             {countdown > 0 ? `GAME STARTS IN ${countdown}` : "GAME STARTED"}
           </p>
         </motion.div>
@@ -105,7 +105,7 @@ const Lobby = () => {
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="z-20 w-80 md:w-96 aspect-[3/5] bg-[#1a2633] border-4 border-[#ff4655] rounded-xl relative overflow-hidden shadow-2xl group"
+          className="z-20 w-80 md:w-96 aspect-[3/5] bg-[#1a2633] border-4 border-[var(--accent-color-dynamic)] rounded-xl relative overflow-hidden shadow-2xl group"
         >
           {/* Card Background Image/Avatar */}
           <div
@@ -119,7 +119,7 @@ const Lobby = () => {
           {/* Content */}
           <div className="absolute bottom-0 w-full p-6 text-center">
             <div className="mb-2">
-              <span className="bg-[#ff4655] text-black px-2 py-1 text-xs font-bold uppercase rounded-sm">
+              <span className="bg-[var(--accent-color-dynamic)] text-black px-2 py-1 text-xs font-bold uppercase rounded-sm">
                 {profile?.level?.title || "AGENT"}
               </span>
             </div>
@@ -132,7 +132,7 @@ const Lobby = () => {
 
             <div className="w-full h-1 bg-[#333] mt-4 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-[#ff4655]"
+                className="h-full bg-[var(--accent-color-dynamic)]"
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 10, ease: "linear" }}
@@ -142,10 +142,10 @@ const Lobby = () => {
 
           {/* Top Icon */}
           <div className="absolute top-4 left-4">
-            <Shield className="w-8 h-8 text-[#ff4655]" />
+            <Shield className="w-8 h-8 text-[var(--accent-color-dynamic)]" />
           </div>
           <div className="absolute top-4 right-4">
-            <div className="w-2 h-2 bg-[#00ff00] rounded-full animate-pulse shadow-[0_0_10px_#00ff00]" />
+            <div className="w-2 h-2 bg-[var(--accent-color-dynamic)] rounded-full animate-pulse shadow-[0_0_10px_var(--accent-color-dynamic)]" />
           </div>
         </motion.div>
       </div>
@@ -159,7 +159,7 @@ const Lobby = () => {
 
       {/* Header */}
       <div className="relative z-20 h-20 px-8 flex items-center border-b border-[#ffffff10] bg-[#0f1923]/80 backdrop-blur-md">
-        <div className="text-xl font-bold tracking-widest text-[#ff4655] mr-4">
+        <div className="text-xl font-bold tracking-widest text-[var(--accent-color-dynamic)] mr-4">
           {"//"}
         </div>
         <h1 className="text-2xl font-bold tracking-wider uppercase">
@@ -167,7 +167,7 @@ const Lobby = () => {
         </h1>
         <div className="ml-auto flex items-center gap-4 text-sm font-bold tracking-widest text-gray-500">
           <span>LOBBY</span>
-          <span className="text-[#ff4655]">●</span>
+          <span className="text-[var(--accent-color-dynamic)]">●</span>
         </div>
       </div>
 
@@ -181,7 +181,7 @@ const Lobby = () => {
               whileHover={{ scale: 1.05, x: 5 }}
               className={`w-16 h-16 md:w-20 md:h-20 rounded-xl cursor-pointer transition-all duration-300 relative overflow-hidden group ${
                 selectedMode.id === mode.id
-                  ? "ring-2 ring-[#ff4655] shadow-[0_0_20px_rgba(255,70,85,0.4)]"
+                  ? "ring-2 ring-[var(--accent-color-dynamic)] shadow-[0_0_20px_var(--accent-color-dynamic-shadow-40)]"
                   : "opacity-50 hover:opacity-100 hover:ring-2 hover:ring-white/50"
               }`}
             >
@@ -232,7 +232,7 @@ const Lobby = () => {
                     {selectedMode.name}
                   </h2>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="bg-[#ff4655] px-2 py-1 text-xs font-bold uppercase text-black rounded-sm">
+                    <span className="bg-[var(--accent-color-dynamic)] px-2 py-1 text-xs font-bold uppercase text-black rounded-sm">
                       {selectedMode.role}
                     </span>
                   </div>
@@ -254,7 +254,7 @@ const Lobby = () => {
                         key={idx}
                         className="flex items-center gap-4 bg-[#1a2633]/50 p-4 rounded-lg border border-[#ffffff05]"
                       >
-                        <div className="w-10 h-10 rounded bg-[#ffffff05] flex items-center justify-center text-[#ff4655]">
+                        <div className="w-10 h-10 rounded bg-[#ffffff05] flex items-center justify-center text-[var(--accent-color-dynamic)]">
                           {idx === 0 ? (
                             <Zap />
                           ) : idx === 1 ? (
@@ -287,7 +287,7 @@ const Lobby = () => {
           onClick={handleLockIn}
           disabled={lockedIn}
           className={`
-                px-16 py-4 bg-[#ff4655] text-white font-black text-xl tracking-widest uppercase clip-path-polygon hover:bg-[#ff2a3a] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,70,85,0.4)]
+                px-16 py-4 bg-[var(--accent-color-dynamic)] text-white font-black text-xl tracking-widest uppercase clip-path-polygon hover:bg-[var(--accent-color-dynamic-hover)] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_var(--accent-color-dynamic-shadow-40)]
                 ${lockedIn ? "animate-pulse cursor-not-allowed opacity-80" : ""}
              `}
           style={{

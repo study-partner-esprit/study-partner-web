@@ -207,11 +207,11 @@
   font-weight: 700;
   font-size: 0.95rem;
   color: #1e293b;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #5a67d8;
+  border-bottom: 2px solid var(--accent-color-dynamic);
   cursor: pointer;
 }
 
@@ -398,7 +398,7 @@
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
   color: white;
 }
 
@@ -408,7 +408,7 @@
 }
 
 .btn-delete {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, var(--accent-color-dynamic) 0%, var(--accent-color-dynamic) 100%);
   color: white;
 }
 

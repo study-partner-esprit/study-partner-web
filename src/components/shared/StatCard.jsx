@@ -11,9 +11,9 @@ function StatCard({ icon, label, value, trend, className = "" }) {
           <span
             className={`text-xs font-medium px-2 py-0.5 rounded-full ${
               trend > 0
-                ? "bg-green-500/10 text-green-500"
+                ? "bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)]"
                 : trend < 0
-                  ? "bg-red-500/10 text-red-500"
+                  ? "bg-[var(--accent-color-dynamic)]/10 text-[var(--accent-color-dynamic)]"
                   : "bg-muted text-muted-foreground"
             }`}
           >

@@ -134,7 +134,7 @@ const QuestItem = ({ quest, isCompleted = false }) => {
     <div
       className={`p-3 rounded-xl border mb-2 transition-colors ${
         isCompleted
-          ? "border-green-500/30 bg-green-500/5"
+          ? "border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/5"
           : "border-border bg-card hover:bg-muted/30"
       }`}
     >
@@ -143,7 +143,7 @@ const QuestItem = ({ quest, isCompleted = false }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <p
-              className={`text-sm font-medium ${isCompleted ? "text-green-400 line-through" : "text-foreground"}`}
+              className={`text-sm font-medium ${isCompleted ? "text-[var(--accent-color-dynamic)] line-through" : "text-foreground"}`}
             >
               {quest.title}
             </p>
