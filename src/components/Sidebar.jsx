@@ -8,6 +8,7 @@ import {
   CheckSquare,
   Target,
   Trophy,
+  Swords,
   Brain,
   Users,
   Search,
@@ -49,6 +50,7 @@ const Sidebar = ({ topOffset = 80 }) => {
       title: "Social & Progress",
       items: [
         { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
+        { path: "/characters", label: "Characters", icon: Swords },
         { path: "/friends", label: "Friends", icon: Users },
       ],
     },

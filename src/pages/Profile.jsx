@@ -27,12 +27,20 @@ const getAvatarSrc = (avatarPath, userName) => {
   return `${apiBase}${avatarPath}`;
 };
 
+const getRankBadgeSrc = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith("data:")) return imagePath;
+  if (imagePath.startsWith("http")) return imagePath;
+  return imagePath;
+};
+
 const Profile = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const { level: userLevel, fetchLevelInfo } = useGamificationStore();
   const [profile, setProfile] = useState(null);
   const [gamification, setGamification] = useState(null);
+  const [rankProfile, setRankProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -47,6 +55,7 @@ const Profile = () => {
   useEffect(() => {
     fetchProfile();
     fetchGamification();
+    fetchRankProfile();
     fetchFriendCount();
     fetchLevelInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,6 +88,16 @@ const Profile = () => {
         level: 1,
         achievements: [],
       });
+    }
+  };
+
+  const fetchRankProfile = async () => {
+    try {
+      const data = await gamificationAPI.getRankProfile();
+      setRankProfile(data);
+    } catch (error) {
+      console.error("Failed to fetch rank profile:", error);
+      setRankProfile(null);
     }
   };
 
@@ -241,6 +260,21 @@ const Profile = () => {
                       <Trophy className="w-4 h-4 text-primary" />
                       {profile?.level?.title || "Novice Explorer"}
                     </p>
+
+                    {rankProfile?.profile?.rankName && (
+                      <div className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-border">
+                        {getRankBadgeSrc(rankProfile?.rankBadge?.imagePath) && (
+                          <img
+                            src={getRankBadgeSrc(rankProfile.rankBadge.imagePath)}
+                            alt={rankProfile.profile.rankName}
+                            className="w-8 h-8 object-contain"
+                          />
+                        )}
+                        <span className="text-xs font-bold uppercase tracking-widest text-primary">
+                          {rankProfile.profile.rankName}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <button

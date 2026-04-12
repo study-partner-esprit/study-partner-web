@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
@@ -13,6 +13,11 @@ vi.mock("react-router-dom", async () => {
 
 vi.mock("../services/api", () => ({
   profileAPI: { get: vi.fn() },
+  characterAPI: {
+    getUserCharacter: vi.fn(),
+    getOwnedCharacters: vi.fn(),
+    changeCharacter: vi.fn(),
+  },
 }));
 
 vi.mock("../store/authStore", () => ({
@@ -59,7 +64,7 @@ vi.mock("framer-motion", () => ({
 }));
 
 import Lobby from "../pages/Lobby";
-import { profileAPI } from "../services/api";
+import { characterAPI, profileAPI } from "../services/api";
 
 const renderLobby = () =>
   render(
@@ -71,8 +76,31 @@ const renderLobby = () =>
 describe("Lobby Page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
     profileAPI.get.mockResolvedValue({
       data: { profile: { nickname: "TestNick", level: 5 } },
+    });
+    characterAPI.getOwnedCharacters.mockResolvedValue({
+      success: true,
+      data: {
+        active_character_id: "char-1",
+        owned_characters: [
+          { _id: "char-1", name: "Chrono", icon: "⏱️" },
+          { _id: "char-2", name: "Aegis", icon: "🛡️" },
+        ],
+      },
+    });
+    characterAPI.getUserCharacter.mockResolvedValue({
+      success: true,
+      data: {
+        character_id: { _id: "char-1", name: "Chrono", icon: "⏱️" },
+      },
+    });
+    characterAPI.changeCharacter.mockResolvedValue({
+      success: true,
+      data: {
+        character_id: { _id: "char-2", name: "Aegis", icon: "🛡️" },
+      },
     });
   });
 
@@ -104,5 +132,36 @@ describe("Lobby Page", () => {
     expect(pomodoroButtons.length).toBeGreaterThan(0);
     // Just verify the buttons exist - update happens internally
     expect(pomodoroButtons[0]).toBeInTheDocument();
+  });
+
+  it("lock in applies selected owned character and navigates with selectedCharacterId", async () => {
+    vi.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    renderLobby();
+
+    const characterSelect = await screen.findByRole("combobox");
+    await screen.findByRole("option", { name: "Aegis" });
+    await user.selectOptions(characterSelect, "char-2");
+
+    const lockInButton = screen.getByRole("button", { name: /LOCK IN/i });
+    await user.click(lockInButton);
+
+    await waitFor(() => {
+      expect(characterAPI.changeCharacter).toHaveBeenCalledWith("char-2");
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(12000);
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/sessions", {
+        state: {
+          mode: "focus",
+          selectedCharacterId: "char-2",
+        },
+      });
+    });
   });
 });

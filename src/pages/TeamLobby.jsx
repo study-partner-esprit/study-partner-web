@@ -19,8 +19,9 @@ import { useAuthStore } from "../store/authStore";
 import useSessionStore from "../store/sessionStore";
 import useFriendsStore from "../store/friendsStore";
 import useNotificationStore from "../store/notificationStore";
-import { profileAPI, teamSessionsAPI } from "../services/api";
-import VoiceButton from "@/components/VoiceChat/VoiceButton";
+import { profileAPI, teamSessionsAPI, characterAPI } from "../services/api";
+import CharacterBadge from "../components/Characters/CharacterBadge/CharacterBadge";
+import VoiceButton from "../components/VoiceChat/VoiceButton";
 
 // XP Multiplier table
 const XP_MULTIPLIERS = {
@@ -130,6 +131,18 @@ const TeamLobbyCard = ({ player, isLeader, isEmpty, onInvite, slotIndex }) => {
             {isLeader ? "LEADER" : "MEMBER"}
           </span>
         </div>
+
+        {player.character && (
+          <div className="mt-2 mx-auto w-fit max-w-full px-2 py-1 rounded-md bg-black/40 border border-[#ffffff15]">
+            <CharacterBadge
+              character={player.character}
+              size="small"
+              showName={true}
+              showRarity={false}
+              theme="dark"
+            />
+          </div>
+        )}
       </div>
     </motion.div>
   );
@@ -168,15 +181,59 @@ const TeamLobby = () => {
   const [friendFilter, setFriendFilter] = useState("");
   const [countdown, setCountdown] = useState(null);
   const [startError, setStartError] = useState("");
+  const [ownedCharacters, setOwnedCharacters] = useState([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState("");
+  const [isUpdatingCharacter, setIsUpdatingCharacter] = useState(false);
 
   useEffect(() => {
-    profileAPI
-      .get()
-      .then((r) => setProfile(r.data.profile))
-      .catch(() => {});
+    const loadIdentityAndCharacters = async () => {
+      try {
+        const [profileRes, ownedRes] = await Promise.allSettled([
+          profileAPI.get(),
+          characterAPI.getOwnedCharacters(),
+        ]);
+
+        if (profileRes.status === "fulfilled") {
+          setProfile(profileRes.value.data.profile);
+        }
+
+        if (ownedRes.status === "fulfilled" && ownedRes.value?.success) {
+          const ownedData = ownedRes.value?.data || {};
+          const ownedList = ownedData.owned_characters || [];
+          const activeCharacterId =
+            ownedData.active_character_id?._id || ownedData.active_character_id || "";
+
+          setOwnedCharacters(ownedList);
+          setSelectedCharacterId(String(activeCharacterId || ownedList[0]?._id || ""));
+        }
+      } catch (error) {
+        console.error("Failed to load profile/characters:", error);
+      }
+    };
+
+    loadIdentityAndCharacters();
+
     fetchFriends();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleLobbyCharacterChange = async (characterId) => {
+    setSelectedCharacterId(characterId);
+
+    if (!characterId) return;
+
+    try {
+      setIsUpdatingCharacter(true);
+      await characterAPI.changeCharacter(characterId);
+      if (teamSession?._id) {
+        fetchParticipants(teamSession._id);
+      }
+    } catch (error) {
+      console.error("Failed to change lobby character:", error);
+    } finally {
+      setIsUpdatingCharacter(false);
+    }
+  };
 
   // Poll participants
   useEffect(() => {
@@ -351,6 +408,28 @@ const TeamLobby = () => {
 
         {/* XP Multiplier Badge */}
         <div className="ml-auto flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-[#1a2633]/70 border border-[#ffffff10] rounded-lg px-3 py-2">
+            <span className="text-xs uppercase tracking-wider text-gray-500">
+              Character
+            </span>
+            <select
+              value={selectedCharacterId}
+              onChange={(e) => handleLobbyCharacterChange(e.target.value)}
+              className="bg-transparent text-sm text-white outline-none"
+              disabled={isUpdatingCharacter || ownedCharacters.length === 0}
+            >
+              {ownedCharacters.map((character) => (
+                <option
+                  key={character._id}
+                  value={character._id}
+                  className="bg-[#0f1923]"
+                >
+                  {character.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div
             className="flex items-center gap-2 px-4 py-2 rounded-lg"
             style={{
@@ -578,6 +657,11 @@ const TeamLobby = () => {
         {startError && (
           <p className="text-xs text-[var(--accent-color-dynamic)] font-bold tracking-wider">
             {startError}
+          </p>
+        )}
+        {isUpdatingCharacter && (
+          <p className="text-xs text-gray-400 tracking-wider uppercase">
+            Updating lobby character...
           </p>
         )}
         <div className="flex items-center gap-6">

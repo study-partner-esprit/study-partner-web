@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Clock, Zap, Brain, Shield } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
-import { profileAPI } from "../services/api";
+import { characterAPI, profileAPI } from "../services/api";
+import CharacterBadge from "../components/Characters/CharacterBadge/CharacterBadge";
 
 const MODES = [
   {
@@ -42,14 +43,61 @@ const Lobby = () => {
   const [selectedMode, setSelectedMode] = useState(MODES[0]);
   const [lockedIn, setLockedIn] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [userCharacter, setUserCharacter] = useState(null);
+  const [ownedCharacters, setOwnedCharacters] = useState([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState("");
+  const [isUpdatingCharacter, setIsUpdatingCharacter] = useState(false);
   const [matchState, setMatchState] = useState("selecting"); // selecting, counting, found
   const [countdown, setCountdown] = useState(5); // 5 seconds for demo
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const res = await profileAPI.get();
-        setProfile(res.data.profile);
+        const [profileResult, ownedResult, characterResult] = await Promise.allSettled([
+          profileAPI.get(),
+          characterAPI.getOwnedCharacters(),
+          characterAPI.getUserCharacter(),
+        ]);
+
+        if (profileResult.status === "fulfilled") {
+          setProfile(profileResult.value.data.profile);
+        }
+
+        if (ownedResult.status === "fulfilled" && ownedResult.value?.success) {
+          const ownedData = ownedResult.value?.data || {};
+          const ownedList = ownedData.owned_characters || [];
+          const activeCharacterId =
+            ownedData.active_character_id?._id ||
+            ownedData.active_character_id ||
+            "";
+
+          setOwnedCharacters(ownedList);
+          setSelectedCharacterId(String(activeCharacterId || ownedList[0]?._id || ""));
+
+          const activeCharacter = ownedList.find(
+            (character) =>
+              String(character?._id || "") === String(activeCharacterId || ""),
+          );
+          if (activeCharacter) {
+            setUserCharacter(activeCharacter);
+          }
+        }
+
+        if (
+          characterResult.status === "fulfilled" &&
+          characterResult.value?.success
+        ) {
+          const currentCharacter =
+            characterResult.value.data?.character_id ||
+            characterResult.value.data?.character ||
+            null;
+
+          setUserCharacter((prev) => prev || currentCharacter);
+
+          if (currentCharacter?._id) {
+            setSelectedCharacterId((prev) => prev || String(currentCharacter._id));
+          }
+        }
       } catch (e) {
         console.error(e);
       }
@@ -57,8 +105,37 @@ const Lobby = () => {
     loadProfile();
   }, []);
 
-  const handleLockIn = () => {
+  const handleLockIn = async () => {
     setLockedIn(true);
+
+    if (
+      selectedCharacterId &&
+      String(userCharacter?._id || "") !== String(selectedCharacterId)
+    ) {
+      try {
+        setIsUpdatingCharacter(true);
+        const result = await characterAPI.changeCharacter(selectedCharacterId);
+        const changedCharacter =
+          result?.data?.character_id || result?.data?.character || null;
+
+        if (changedCharacter) {
+          setUserCharacter(changedCharacter);
+        } else {
+          const fallbackCharacter = ownedCharacters.find(
+            (character) =>
+              String(character?._id || "") === String(selectedCharacterId),
+          );
+          if (fallbackCharacter) {
+            setUserCharacter(fallbackCharacter);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to update active character:", error);
+      } finally {
+        setIsUpdatingCharacter(false);
+      }
+    }
+
     // 1. Simulate "Lock In" animation/delay
     setTimeout(() => {
       setMatchState("found"); // Show card
@@ -71,7 +148,12 @@ const Lobby = () => {
         if (count <= 0) {
           clearInterval(interval);
           // navigate logic
-          navigate("/sessions", { state: { mode: selectedMode.id } });
+          navigate("/sessions", {
+            state: {
+              mode: selectedMode.id,
+              selectedCharacterId,
+            },
+          });
         }
       }, 1000);
     }, 1000); // 1s delay for lock-in animation
@@ -129,6 +211,18 @@ const Lobby = () => {
             <p className="text-gray-400 font-bold tracking-widest text-sm mb-4">
               LEVEL {profile?.level?.current || 1}
             </p>
+
+            {userCharacter && (
+              <div className="inline-flex items-center px-3 py-1 rounded-md bg-black/50 border border-[#ffffff20] mb-2">
+                <CharacterBadge
+                  character={userCharacter}
+                  size="small"
+                  showName={true}
+                  showRarity={false}
+                  theme="dark"
+                />
+              </div>
+            )}
 
             <div className="w-full h-1 bg-[#333] mt-4 rounded-full overflow-hidden">
               <motion.div
@@ -245,6 +339,32 @@ const Lobby = () => {
               {/* Stats / Abilities Side Panel */}
               <div className="w-full md:w-1/2 space-y-8">
                 <div>
+                  <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">
+                    LOBBY CHARACTER
+                  </h3>
+                  <div className="bg-[#1a2633]/50 p-4 rounded-lg border border-[#ffffff05]">
+                    <label className="block text-xs text-gray-400 uppercase tracking-wider mb-2">
+                      Select From Owned Characters
+                    </label>
+                    <select
+                      value={selectedCharacterId}
+                      onChange={(e) => setSelectedCharacterId(e.target.value)}
+                      className="w-full bg-[#0f1923] border border-[#ffffff10] rounded-lg px-3 py-2 text-sm text-white"
+                      disabled={lockedIn || isUpdatingCharacter}
+                    >
+                      {ownedCharacters.map((character) => (
+                        <option key={character._id} value={character._id}>
+                          {character.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Onboarding choice is permanent. Lobby choice is reversible.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
                   <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">
                     SESSION FEATURES
                   </h3>
@@ -295,7 +415,7 @@ const Lobby = () => {
               "polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)",
           }}
         >
-          {lockedIn ? "STARTING..." : "LOCK IN"}
+          {lockedIn ? isUpdatingCharacter ? "APPLYING CHARACTER..." : "STARTING..." : "LOCK IN"}
         </button>
       </div>
     </div>

@@ -313,6 +313,42 @@ export const availabilityAPI = {
       .then((res) => res.data),
 };
 
+// Character System API
+export const characterAPI = {
+  getCharacters: (params = {}) =>
+    api.get("/api/v1/characters", { params }).then((res) => res.data),
+  getBaseCharacters: () =>
+    api.get("/api/v1/characters/base").then((res) => res.data),
+  getCharacterById: (characterId) =>
+    api.get(`/api/v1/characters/${characterId}`).then((res) => res.data),
+  selectCharacter: (characterId) =>
+    api.post("/api/v1/user/select-character", { characterId }).then((res) => res.data),
+  changeCharacter: (characterId) =>
+    api.patch("/api/v1/user/character", { characterId }).then((res) => res.data),
+  getUserCharacter: () =>
+    api.get("/api/v1/user/character").then((res) => res.data),
+  getOwnedCharacters: () =>
+    api.get("/api/v1/user/owned-characters").then((res) => res.data),
+  purchaseCharacter: (characterId) =>
+    api
+      .post(`/api/v1/user/characters/${characterId}/purchase`)
+      .then((res) => res.data),
+  confirmCharacterPurchase: (sessionId) =>
+    api
+      .post("/api/v1/user/characters/purchase/confirm", { sessionId })
+      .then((res) => res.data),
+  getCharacterPurchases: () =>
+    api.get("/api/v1/user/characters/purchases").then((res) => res.data),
+  getUnlockProgress: () =>
+    api.get("/api/v1/user/unlock-progress").then((res) => res.data),
+  triggerAbility: (payload) =>
+    api.post("/api/v1/abilities/trigger", payload).then((res) => res.data),
+  getAbilityStats: () =>
+    api.get("/api/v1/user/ability-stats").then((res) => res.data),
+  getAbilityEvents: (limit = 100) =>
+    api.get("/api/v1/user/ability-events", { params: { limit } }).then((res) => res.data),
+};
+
 // Gamification API - Goes through Node.js backend
 export const gamificationAPI = {
   getProfile: () =>
@@ -526,6 +562,17 @@ export const teamSessionsAPI = {
       .then((r) => r.data),
   end: (sessionId) =>
     api.put(`/api/v1/study/sessions/team/${sessionId}/end`).then((r) => r.data),
+};
+
+export const challengeSessionsAPI = {
+  start: (data) =>
+    api.post("/api/v1/study/sessions/challenge/start", data).then((r) => r.data),
+  get: (sessionId) =>
+    api.get(`/api/v1/study/sessions/challenge/${sessionId}`).then((r) => r.data),
+  complete: (sessionId, data = {}) =>
+    api
+      .put(`/api/v1/study/sessions/challenge/${sessionId}/complete`, data)
+      .then((r) => r.data),
 };
 
 // Session Setup & Task Progression API

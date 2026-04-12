@@ -16,6 +16,7 @@ import Tasks from "./pages/Tasks";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./pages/Profile";
+import Characters from "./pages/Characters";
 import Lobby from "./pages/Lobby";
 import CourseUpload from "./pages/CourseUpload";
 import StudyPlanner from "./pages/StudyPlanner";
@@ -36,6 +37,8 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import Pricing from "./pages/Pricing";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
+import CheckoutCharacterSuccess from "./pages/CheckoutCharacterSuccess";
+import CheckoutCharacterCancel from "./pages/CheckoutCharacterCancel";
 import StudySessionSetup from "./pages/StudySessionSetup";
 import TeamLobby from "./pages/TeamLobby";
 import BackgroundCustomizer from "./pages/BackgroundCustomizer";
@@ -46,6 +49,7 @@ import useGamificationStore from "./store/gamificationStore";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import CharacterSelectionStep from "./pages/CharacterSelectionStep";
 import SessionManager from "./components/SessionManager";
 import NotificationCenter from "./components/NotificationCenter";
 import UpgradePrompt from "./components/UpgradePrompt";
@@ -152,7 +156,7 @@ function App() {
       fetchLevelInfo();
       fetchBackgroundSettings();
     }
-  }, [user?._id]);
+  }, [user?._id, fetchBackgroundSettings, fetchLevelInfo]);
 
   // Extract and apply dominant color from background
   useEffect(() => {
@@ -334,6 +338,14 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/checkout/success" element={<CheckoutSuccess />} />
           <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+          <Route
+            path="/checkout/character-success"
+            element={<CheckoutCharacterSuccess />}
+          />
+          <Route
+            path="/checkout/character-cancel"
+            element={<CheckoutCharacterCancel />}
+          />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -375,6 +387,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/characters"
+            element={
+              <PrivateRoute requireStudent>
+                <Characters />
               </PrivateRoute>
             }
           />
@@ -543,6 +563,14 @@ function App() {
             element={
               <PrivateRoute requireStudent>
                 <AnimatedBackgroundCustomizer />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/character-selection"
+            element={
+              <PrivateRoute requireStudent>
+                <CharacterSelectionStep />
               </PrivateRoute>
             }
           />

@@ -79,6 +79,10 @@ const Sessions = () => {
         payload.notes = formData.notes;
       }
 
+      if (location.state?.selectedCharacterId) {
+        payload.selectedCharacterId = location.state.selectedCharacterId;
+      }
+
       const response = await sessionsAPI.create(payload);
       // Backend returns the session object directly
       setActiveSession(response.data.session || response.data);

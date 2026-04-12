@@ -1,0 +1,153 @@
+/* Character Badge Styles */
+
+.character-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge-avatar-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  background: white;
+  flex-shrink: 0;
+}
+
+.badge-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.badge-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 100%;
+  height: 100%;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.badge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.badge-character-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge-rarity {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.badge-rarity-common {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.badge-rarity-uncommon {
+  background: #4caf50;
+  color: white;
+}
+
+.badge-rarity-rare {
+  background: #2196f3;
+  color: white;
+}
+
+.badge-rarity-legendary {
+  background: #ff9800;
+  color: white;
+}
+
+.character-badge.theme-dark .badge-character-name {
+  color: #e5e7eb;
+}
+
+.character-badge.theme-dark .badge-rarity {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Size Variants */
+
+.badge-small {
+  gap: 8px;
+}
+
+.badge-small .badge-avatar-placeholder {
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 0.85rem;
+}
+
+.badge-small .badge-character-name {
+  font-size: 0.85rem;
+}
+
+.badge-medium {
+  gap: 12px;
+}
+
+.badge-medium .badge-avatar-placeholder {
+  min-width: 48px;
+  min-height: 48px;
+  font-size: 1rem;
+}
+
+.badge-medium .badge-character-name {
+  font-size: 0.95rem;
+}
+
+.badge-large {
+  gap: 16px;
+}
+
+.badge-large .badge-avatar-placeholder {
+  min-width: 64px;
+  min-height: 64px;
+  font-size: 1.2rem;
+}
+
+.badge-large .badge-character-name {
+  font-size: 1.1rem;
+}
+
+/* Lobby Display Variant */
+
+.character-badge.lobby-display {
+  position: relative;
+}
+
+.lobby-display.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.5);
+  pointer-events: none;
+}

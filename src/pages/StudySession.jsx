@@ -19,11 +19,16 @@ import {
   focusAPI,
   sessionsAPI,
   gamificationAPI,
+  teamSessionsAPI,
+  characterAPI,
 } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import useSessionStore from "../store/sessionStore";
 import WebcamCapture from "../components/WebcamCapture";
 import ChatWindow from "../components/SessionChat/ChatWindow";
+import TeamSessionPanel from "../components/TeamSessionPanel";
+import AbilityNotification from "../components/Characters/Gamification/AbilityNotification";
+import AbilityActiveIndicator from "../components/Characters/Gamification/AbilityActiveIndicator";
 import "./StudySession.css";
 
 // ─── Task Progress Bar ───────────────────────────────────────────────
@@ -74,15 +79,32 @@ const TaskProgressBar = ({ taskProgress }) => {
 };
 
 // ─── Session Summary Screen ──────────────────────────────────────────
-const SessionSummary = ({ summary, onRestart, onGoHome }) => {
+export const SessionSummary = ({ summary, onRestart, onGoHome }) => {
   const kpResult = summary?.kpResult || null;
+  const completionRewards = summary?.completionRewards || null;
+  const completionRank = completionRewards?.rank || null;
+  const primaryAbilityBonus = completionRewards?.abilityBonuses?.[0] || null;
   const primaryBreakdown =
     kpResult?.primaryBreakdown ||
     kpResult?.events?.find((event) => event.action === "session_complete") ||
     kpResult?.events?.[0] ||
     null;
 
-  const totalKP = Number(kpResult?.totalKP || summary?.totalKP || 0);
+  const completionKPAwarded = Number(completionRank?.knowledgePointsAwarded);
+  const rawTotalKP =
+    kpResult?.totalKP ??
+    summary?.totalKP ??
+    (Number.isFinite(completionKPAwarded) ? completionKPAwarded : 0);
+  const totalKP = Number.isFinite(Number(rawTotalKP)) ? Number(rawTotalKP) : 0;
+  const completionRankName =
+    completionRank?.name ||
+    (Number.isFinite(Number(completionRank?.index))
+      ? `Rank #${Number(completionRank.index) + 1}`
+      : null);
+  const completionTotalKnowledgePoints = Number(
+    completionRank?.totalKnowledgePoints,
+  );
+  const completionKpToNextRank = Number(completionRank?.kpToNextRank);
   const difficultyMult = Number(primaryBreakdown?.multipliers?.difficulty || 1);
   const performanceMult = Number(
     primaryBreakdown?.multipliers?.performance || 1,
@@ -198,6 +220,47 @@ const SessionSummary = ({ summary, onRestart, onGoHome }) => {
                 </span>
               </div>
             )}
+
+            {primaryAbilityBonus && (
+              <div className="flex items-center justify-between mb-3 rounded-lg border border-[#ffffff10] bg-[#0f1923] px-3 py-2">
+                <span className="text-gray-400 text-sm">Ability Triggered</span>
+                <span className="text-sm font-bold text-[var(--accent-color-dynamic)]">
+                  {primaryAbilityBonus.abilityName || "Ability"}
+                </span>
+              </div>
+            )}
+
+            {(completionRankName ||
+              Number.isFinite(completionTotalKnowledgePoints) ||
+              Number.isFinite(completionKpToNextRank)) && (
+              <div className="mb-3 rounded-lg border border-[#ffffff10] bg-[#0f1923] px-3 py-2">
+                {completionRankName && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">Current Rank</span>
+                    <span className="font-bold text-[var(--accent-color-dynamic)]">
+                      {completionRankName}
+                    </span>
+                  </div>
+                )}
+                {Number.isFinite(completionTotalKnowledgePoints) && (
+                  <div className="flex items-center justify-between text-sm mt-1">
+                    <span className="text-gray-400">Total Knowledge Points</span>
+                    <span className="font-bold text-white">
+                      {completionTotalKnowledgePoints}
+                    </span>
+                  </div>
+                )}
+                {Number.isFinite(completionKpToNextRank) && (
+                  <div className="flex items-center justify-between text-sm mt-1">
+                    <span className="text-gray-400">KP to Next Rank</span>
+                    <span className="font-bold text-white">
+                      {completionKpToNextRank}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Total Tasks</span>
               <span className="text-lg font-bold text-white">
@@ -232,6 +295,8 @@ const StudySession = () => {
   const {
     step,
     activeSession,
+    teamSession,
+    inviteCode,
     taskProgress,
     sessionSummary,
     selectedCourse,
@@ -265,6 +330,12 @@ const StudySession = () => {
   // Coach state
   const [coachDecision, setCoachDecision] = useState(null);
   const [coachVisible, setCoachVisible] = useState(false);
+  const [currentCharacter, setCurrentCharacter] = useState(null);
+  const [abilityNotification, setAbilityNotification] = useState(null);
+  const [activeAbility, setActiveAbility] = useState({
+    abilityName: null,
+    multiplier: 1,
+  });
 
   // Timers
   const sessionTimerRef = useRef(null);
@@ -273,6 +344,45 @@ const StudySession = () => {
 
   // ── Task-progression mode flag ──
   const hasTaskProgression = activeSession && taskProgress?.tasks?.length > 0;
+  const isTeamSession =
+    (activeSession?.type || teamSession?.type || "solo") === "team";
+  const liveTeamSessionId =
+    activeSession?._id || teamSession?._id || studySessionIdRef.current;
+  const isTeamHost =
+    String(activeSession?.userId || teamSession?.userId || "") ===
+    String(user?._id || user?.userId || "");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCharacter = async () => {
+      try {
+        const result = await characterAPI.getUserCharacter();
+        if (!result?.success || cancelled) return;
+
+        const character =
+          result.data?.character_id || result.data?.character || null;
+        setCurrentCharacter(character);
+        setActiveAbility((prev) => ({
+          ...prev,
+          abilityName:
+            character?.primary_ability_id?.name ||
+            character?.abilities?.[0]?.name ||
+            prev.abilityName,
+        }));
+      } catch {
+        // Character is optional in active session UI.
+      }
+    };
+
+    if (user?._id || user?.userId) {
+      loadCharacter();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?._id, user?.userId]);
 
   // Auto-start session when coming from setup flow
   useEffect(() => {
@@ -286,6 +396,8 @@ const StudySession = () => {
   const autoStartSession = async () => {
     setSessionActive(true);
     setSessionDuration(0);
+    setAbilityNotification(null);
+    setActiveAbility((prev) => ({ ...prev, multiplier: 1 }));
     try {
       const focusRes = await focusAPI.startSession({
         studySessionId: activeSession._id,
@@ -419,6 +531,8 @@ const StudySession = () => {
     setSessionActive(true);
     setSessionDuration(0);
     setIgnoredCount(0);
+    setAbilityNotification(null);
+    setActiveAbility((prev) => ({ ...prev, multiplier: 1 }));
 
     // Reset break detection state
     setBreakCount(0);
@@ -488,6 +602,7 @@ const StudySession = () => {
     }
 
     const completedStudySessionId = studySessionIdRef.current;
+    let completionRewards = null;
 
     // End focus tracking session and get summary
     let focusScore = 0;
@@ -512,15 +627,69 @@ const StudySession = () => {
     // End study session record with focus data
     if (studySessionIdRef.current) {
       try {
-        await sessionsAPI.update(studySessionIdRef.current, {
-          status: "completed",
-          duration: sessionDuration,
-          focusScore: focusSummary?.avgFocusLevel || focusScore,
-          endTime: new Date().toISOString(),
-        });
-        console.log("[StudySession] Study session ended");
+        if (isTeamSession) {
+          if (isTeamHost) {
+            const teamEndResult = await teamSessionsAPI.end(
+              studySessionIdRef.current,
+            );
+            const rewards = Array.isArray(teamEndResult?.teamRewards)
+              ? teamEndResult.teamRewards
+              : [];
+            const currentUserId = String(user?._id || user?.userId || "");
+            completionRewards =
+              rewards.find(
+                (reward) => String(reward.userId) === currentUserId,
+              ) || null;
+            console.log("[StudySession] Team session ended");
+          } else {
+            await teamSessionsAPI.leave(studySessionIdRef.current);
+            console.log("[StudySession] Left team session as participant");
+          }
+        } else {
+          const sessionUpdateRes = await sessionsAPI.update(
+            studySessionIdRef.current,
+            {
+              status: "completed",
+              duration: sessionDuration,
+              focusScore: focusSummary?.avgFocusLevel || focusScore,
+              endTime: new Date().toISOString(),
+            },
+          );
+          completionRewards = sessionUpdateRes?.data?.completionRewards || null;
+          console.log("[StudySession] Study session ended");
+        }
       } catch (err) {
         console.error("[StudySession] Failed to end study session:", err);
+      }
+    }
+
+    if (completionRewards) {
+      const primaryAbility = completionRewards?.abilityBonuses?.[0] || null;
+      const normalizedMultiplier = Number(completionRewards.multiplier || 1);
+
+      setActiveAbility((prev) => ({
+        ...prev,
+        multiplier: Number.isFinite(normalizedMultiplier)
+          ? normalizedMultiplier
+          : 1,
+        abilityName: primaryAbility?.abilityName || prev.abilityName,
+      }));
+
+      if (primaryAbility) {
+        setAbilityNotification({
+          ability: {
+            name: primaryAbility.abilityName || "Ability",
+            effect_type: primaryAbility.effectType || "XP_MULTIPLIER",
+            description:
+              primaryAbility.description ||
+              "Your character ability boosted this session reward.",
+          },
+          xpGain: Number(completionRewards.awardedXP || 0),
+          baseXp: Number(completionRewards.baseXP || 0),
+          multiplier: Number(completionRewards.multiplier || 1),
+          character: currentCharacter || { name: "Character", icon: "*" },
+          debugInfo: primaryAbility.debugInfo || null,
+        });
       }
     }
 
@@ -590,7 +759,11 @@ const StudySession = () => {
 
     // If task-progression mode, transition to summary screen
     if (hasTaskProgression) {
-      finishSession({ kpResult: kpSessionResult });
+      finishSession({
+        kpResult: kpSessionResult,
+        completionRewards,
+        alreadyCompleted: true,
+      });
     }
   };
 
@@ -696,17 +869,30 @@ const StudySession = () => {
   // ─── Summary Screen ────────────────────────────────────────────────
   if (step === "summary" && sessionSummary) {
     return (
-      <SessionSummary
-        summary={sessionSummary}
-        onRestart={() => {
-          resetSession();
-          navigate("/session-setup");
-        }}
-        onGoHome={() => {
-          resetSession();
-          navigate("/dashboard");
-        }}
-      />
+      <>
+        <SessionSummary
+          summary={sessionSummary}
+          onRestart={() => {
+            resetSession();
+            navigate("/session-setup");
+          }}
+          onGoHome={() => {
+            resetSession();
+            navigate("/dashboard");
+          }}
+        />
+        {abilityNotification && (
+          <AbilityNotification
+            ability={abilityNotification.ability}
+            xpGain={abilityNotification.xpGain}
+            baseXp={abilityNotification.baseXp}
+            multiplier={abilityNotification.multiplier}
+            character={abilityNotification.character}
+            debugInfo={abilityNotification.debugInfo}
+            onDismiss={() => setAbilityNotification(null)}
+          />
+        )}
+      </>
     );
   }
 
@@ -770,6 +956,12 @@ const StudySession = () => {
                   {formatDuration(sessionDuration)}
                 </span>
               </div>
+              <AbilityActiveIndicator
+                character={currentCharacter}
+                abilityName={activeAbility.abilityName}
+                multiplier={activeAbility.multiplier}
+                isSessionActive={sessionActive}
+              />
               {activeSession?.xpMultiplier > 1 && (
                 <div className="flex items-center gap-1 text-[var(--accent-color-dynamic)]">
                   <Zap size={14} />
@@ -874,6 +1066,15 @@ const StudySession = () => {
 
                 {/* Sidebar */}
                 <div className="space-y-4">
+                  {isTeamSession && liveTeamSessionId && (
+                    <TeamSessionPanel
+                      sessionId={liveTeamSessionId}
+                      isHost={isTeamHost}
+                      inviteCode={inviteCode || activeSession?.inviteCode}
+                      showActions={false}
+                    />
+                  )}
+
                   {sessionActive && (
                     <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
                       <h3 className="text-xs font-bold tracking-wider text-gray-500 uppercase mb-3">
@@ -1038,6 +1239,18 @@ const StudySession = () => {
             </motion.div>
           </div>
         )}
+
+        {abilityNotification && (
+          <AbilityNotification
+            ability={abilityNotification.ability}
+            xpGain={abilityNotification.xpGain}
+            baseXp={abilityNotification.baseXp}
+            multiplier={abilityNotification.multiplier}
+            character={abilityNotification.character}
+            debugInfo={abilityNotification.debugInfo}
+            onDismiss={() => setAbilityNotification(null)}
+          />
+        )}
       </div>
     );
   }
@@ -1080,6 +1293,26 @@ const StudySession = () => {
           </div>
         )}
       </div>
+
+      <div style={{ marginBottom: "12px" }}>
+        <AbilityActiveIndicator
+          character={currentCharacter}
+          abilityName={activeAbility.abilityName}
+          multiplier={activeAbility.multiplier}
+          isSessionActive={sessionActive}
+        />
+      </div>
+
+      {sessionActive && isTeamSession && liveTeamSessionId && (
+        <div className="webcam-section" style={{ textAlign: "left" }}>
+          <TeamSessionPanel
+            sessionId={liveTeamSessionId}
+            isHost={isTeamHost}
+            inviteCode={inviteCode || activeSession?.inviteCode}
+            showActions={false}
+          />
+        </div>
+      )}
 
       {/* Webcam Monitoring */}
       {sessionActive && (
@@ -1295,6 +1528,18 @@ const StudySession = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {abilityNotification && (
+        <AbilityNotification
+          ability={abilityNotification.ability}
+          xpGain={abilityNotification.xpGain}
+          baseXp={abilityNotification.baseXp}
+          multiplier={abilityNotification.multiplier}
+          character={abilityNotification.character}
+          debugInfo={abilityNotification.debugInfo}
+          onDismiss={() => setAbilityNotification(null)}
+        />
       )}
     </div>
   );

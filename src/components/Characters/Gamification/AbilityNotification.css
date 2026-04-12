@@ -1,0 +1,281 @@
+.ability-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  max-width: 420px;
+  animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (max-width: 768px) {
+  .ability-notification {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+}
+
+.notification-background {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15))
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
+  z-index: -1;
+}
+
+.notification-content {
+  position: relative;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  border-left: 4px solid #FFD700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.notification-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Header */
+.notification-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.notification-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.notification-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+  color: #1a1a1a;
+}
+
+/* Body - XP Display */
+.notification-body {
+  margin-bottom: 12px;
+}
+
+.xp-display {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.xp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.xp-row:last-child {
+  margin-bottom: 0;
+}
+
+.xp-row.bonus .xp-value {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.xp-row.total .xp-value-total {
+  color: #667eea;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.xp-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.xp-value,
+.xp-value-total {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.xp-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 8px 0;
+}
+
+/* Debug Info */
+.notification-debug {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.debug-item {
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  color: #f39c12;
+  background: #fff3e0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.debug-item.warning {
+  border-left: 2px solid #f39c12;
+}
+
+/* Footer */
+.notification-footer {
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.notification-description {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Multiple notifications stacking */
+.ability-notification:nth-child(2) {
+  bottom: 460px;
+  animation-delay: 0.1s;
+}
+
+.ability-notification:nth-child(3) {
+  bottom: 896px;
+  animation-delay: 0.2s;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ability-notification {
+    animation: none;
+  }
+
+  .notification-animation {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .notification-content {
+    background: #1e1e1e;
+    color: #e0e0e0;
+  }
+
+  .notification-title {
+    color: #e0e0e0;
+  }
+
+  .notification-close {
+    color: #666;
+  }
+
+  .notification-close:hover {
+    color: #e0e0e0;
+  }
+
+  .xp-display {
+    background: #2a2a2a;
+  }
+
+  .xp-label {
+    color: #999;
+  }
+
+  .xp-value,
+  .xp-value-total {
+    color: #e0e0e0;
+  }
+
+  .xp-divider {
+    background: #404040;
+  }
+
+  .notification-description {
+    color: #666;
+  }
+
+  .notification-footer {
+    border-top-color: #404040;
+  }
+
+  .debug-item {
+    background: #332701;
+    color: #ffb74d;
+  }
+}

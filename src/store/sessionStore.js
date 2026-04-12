@@ -256,19 +256,29 @@ const useSessionStore = create((set, get) => ({
     const { activeSession, taskProgress } = get();
     if (!activeSession) return;
 
-    try {
-      await sessionsAPI.update(activeSession._id, {
-        status: "completed",
-        endTime: new Date().toISOString(),
-      });
-    } catch (err) {
-      console.error("Failed to end session:", err);
+    const { alreadyCompleted = false, completionRewards = null } = options;
+    let completionRewardsData = completionRewards;
+
+    if (!alreadyCompleted) {
+      try {
+        const sessionUpdateResult = await sessionsAPI.update(activeSession._id, {
+          status: "completed",
+          endTime: new Date().toISOString(),
+        });
+
+        completionRewardsData =
+          sessionUpdateResult?.data?.completionRewards || completionRewardsData;
+      } catch (err) {
+        console.error("Failed to end session:", err);
+      }
     }
 
     const tasks = taskProgress?.tasks || [];
     const completedCount = tasks.filter((t) => t.status === "completed").length;
     const skippedCount = tasks.filter((t) => t.status === "skipped").length;
-    const totalXP = tasks.reduce((sum, t) => sum + (t.xpEarned || 0), 0);
+    const taskBasedXP = tasks.reduce((sum, t) => sum + (t.xpEarned || 0), 0);
+    const awardedXP = Number(completionRewardsData?.awardedXP);
+    const totalXP = Number.isFinite(awardedXP) && awardedXP > 0 ? awardedXP : taskBasedXP;
     const kpResult = options.kpResult || null;
 
     set({
@@ -280,6 +290,7 @@ const useSessionStore = create((set, get) => ({
         totalXP,
         totalKP: kpResult?.totalKP || 0,
         kpResult,
+        completionRewards: completionRewardsData,
         xpMultiplier: activeSession.xpMultiplier || 1.0,
         duration: activeSession.duration || 0,
         courseTitle: get().selectedCourse?.title || "Study Session",

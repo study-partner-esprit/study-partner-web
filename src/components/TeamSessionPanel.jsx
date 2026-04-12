@@ -10,8 +10,16 @@ import {
   Clock,
 } from "lucide-react";
 import useFriendsStore from "../store/friendsStore";
+import CharacterBadge from "./Characters/CharacterBadge/CharacterBadge";
 
-function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
+function TeamSessionPanel({
+  sessionId,
+  isHost,
+  inviteCode,
+  onInvite,
+  onEnd,
+  showActions = true,
+}) {
   const { teamParticipants, fetchParticipants, leaveTeamSession } =
     useFriendsStore();
 
@@ -93,6 +101,17 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
                   />
                 )}
               </p>
+              {p.character?.name && (
+                <div className="mt-1">
+                  <CharacterBadge
+                    character={p.character}
+                    size="small"
+                    showName={true}
+                    showRarity={false}
+                    theme="dark"
+                  />
+                </div>
+              )}
               <p className="text-xs text-gray-500 flex items-center gap-1">
                 <Clock size={10} />
                 {p.durationMinutes || 0}m{p.leftAt && " (left)"}
@@ -102,31 +121,32 @@ function TeamSessionPanel({ sessionId, isHost, inviteCode, onInvite, onEnd }) {
         ))}
       </div>
 
-      {/* Actions */}
-      <div className="space-y-2">
-        <button
-          onClick={onInvite}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors text-sm"
-        >
-          <UserPlus size={14} /> Invite Friend
-        </button>
-
-        {isHost ? (
+      {showActions && (
+        <div className="space-y-2">
           <button
-            onClick={onEnd}
+            onClick={onInvite}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors text-sm"
           >
-            <StopCircle size={14} /> End Session
+            <UserPlus size={14} /> Invite Friend
           </button>
-        ) : (
-          <button
-            onClick={handleLeave}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors text-sm"
-          >
-            <LogOut size={14} /> Leave Session
-          </button>
-        )}
-      </div>
+
+          {isHost ? (
+            <button
+              onClick={onEnd}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] rounded-lg hover:bg-[var(--accent-color-dynamic)]/30 transition-colors text-sm"
+            >
+              <StopCircle size={14} /> End Session
+            </button>
+          ) : (
+            <button
+              onClick={handleLeave}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+            >
+              <LogOut size={14} /> Leave Session
+            </button>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }
