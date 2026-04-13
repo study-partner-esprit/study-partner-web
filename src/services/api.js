@@ -322,9 +322,13 @@ export const characterAPI = {
   getCharacterById: (characterId) =>
     api.get(`/api/v1/characters/${characterId}`).then((res) => res.data),
   selectCharacter: (characterId) =>
-    api.post("/api/v1/user/select-character", { characterId }).then((res) => res.data),
+    api
+      .post("/api/v1/user/select-character", { characterId })
+      .then((res) => res.data),
   changeCharacter: (characterId) =>
-    api.patch("/api/v1/user/character", { characterId }).then((res) => res.data),
+    api
+      .patch("/api/v1/user/character", { characterId })
+      .then((res) => res.data),
   getUserCharacter: () =>
     api.get("/api/v1/user/character").then((res) => res.data),
   getOwnedCharacters: () =>
@@ -346,7 +350,9 @@ export const characterAPI = {
   getAbilityStats: () =>
     api.get("/api/v1/user/ability-stats").then((res) => res.data),
   getAbilityEvents: (limit = 100) =>
-    api.get("/api/v1/user/ability-events", { params: { limit } }).then((res) => res.data),
+    api
+      .get("/api/v1/user/ability-events", { params: { limit } })
+      .then((res) => res.data),
 };
 
 // Gamification API - Goes through Node.js backend
@@ -566,9 +572,13 @@ export const teamSessionsAPI = {
 
 export const challengeSessionsAPI = {
   start: (data) =>
-    api.post("/api/v1/study/sessions/challenge/start", data).then((r) => r.data),
+    api
+      .post("/api/v1/study/sessions/challenge/start", data)
+      .then((r) => r.data),
   get: (sessionId) =>
-    api.get(`/api/v1/study/sessions/challenge/${sessionId}`).then((r) => r.data),
+    api
+      .get(`/api/v1/study/sessions/challenge/${sessionId}`)
+      .then((r) => r.data),
   complete: (sessionId, data = {}) =>
     api
       .put(`/api/v1/study/sessions/challenge/${sessionId}/complete`, data)

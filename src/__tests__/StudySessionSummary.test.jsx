@@ -62,13 +62,29 @@ vi.mock("../components/Characters/Gamification/AbilityActiveIndicator", () => ({
 vi.mock("framer-motion", () => ({
   motion: {
     div: React.forwardRef((props, ref) => {
-      const { initial, animate, exit, whileHover, whileTap, variants, transition, ...rest } =
-        props;
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = props;
       return <div ref={ref} {...rest} />;
     }),
     button: React.forwardRef((props, ref) => {
-      const { initial, animate, exit, whileHover, whileTap, variants, transition, ...rest } =
-        props;
+      const {
+        initial,
+        animate,
+        exit,
+        whileHover,
+        whileTap,
+        variants,
+        transition,
+        ...rest
+      } = props;
       return <button ref={ref} {...rest} />;
     }),
   },

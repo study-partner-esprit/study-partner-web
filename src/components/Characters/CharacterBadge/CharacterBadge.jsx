@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './CharacterBadge.css';
+import React, { useState } from "react";
+import "./CharacterBadge.css";
 
 /**
  * Character Badge Component
@@ -7,11 +7,11 @@ import './CharacterBadge.css';
  */
 function CharacterBadge({
   character,
-  size = 'medium',
+  size = "medium",
   showName = true,
   showRarity = true,
-  className = '',
-  theme = 'light',
+  className = "",
+  theme = "light",
 }) {
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
 
@@ -21,22 +21,22 @@ function CharacterBadge({
 
   const getCharacterColor = (rarity) => {
     const colors = {
-      common: '#999',
-      uncommon: '#4caf50',
-      rare: '#2196f3',
-      legendary: '#ff9800',
+      common: "#999",
+      uncommon: "#4caf50",
+      rare: "#2196f3",
+      legendary: "#ff9800",
     };
-    return colors[rarity] || '#999';
+    return colors[rarity] || "#999";
   };
 
   const badgeClasses = [
-    'character-badge',
+    "character-badge",
     `badge-${size}`,
-    theme === 'dark' ? 'theme-dark' : '',
+    theme === "dark" ? "theme-dark" : "",
     className,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <div className={badgeClasses}>
@@ -63,9 +63,7 @@ function CharacterBadge({
         <div className="badge-info">
           <h3 className="badge-character-name">{character.name}</h3>
           {showRarity && (
-            <span
-              className={`badge-rarity badge-rarity-${character.rarity}`}
-            >
+            <span className={`badge-rarity badge-rarity-${character.rarity}`}>
               {character.rarity}
             </span>
           )}

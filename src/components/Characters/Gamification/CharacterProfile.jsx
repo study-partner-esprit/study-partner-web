@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import './CharacterProfile.css';
-import { characterAPI, friendsAPI, gamificationAPI } from '../../../services/api';
+import React, { useEffect, useState } from "react";
+import "./CharacterProfile.css";
+import {
+  characterAPI,
+  friendsAPI,
+  gamificationAPI,
+} from "../../../services/api";
 
 const toSafeCount = (value, fallback = 0) => {
   const numeric = Number(value);
@@ -11,9 +15,16 @@ const toSafeCount = (value, fallback = 0) => {
   return Math.max(0, Math.trunc(numeric));
 };
 
-const resolveBackendSignals = ({ gamificationPayload, rankPayload, friendsPayload }) => {
-  const stats = gamificationPayload?.stats || gamificationPayload?.data?.stats || {};
-  const streakFromRank = rankPayload?.profile?.currentStreak ?? rankPayload?.data?.profile?.currentStreak;
+const resolveBackendSignals = ({
+  gamificationPayload,
+  rankPayload,
+  friendsPayload,
+}) => {
+  const stats =
+    gamificationPayload?.stats || gamificationPayload?.data?.stats || {};
+  const streakFromRank =
+    rankPayload?.profile?.currentStreak ??
+    rankPayload?.data?.profile?.currentStreak;
   const streakFromStats = stats.currentStreak ?? stats.current_streak;
   const friendsCount = Array.isArray(friendsPayload?.friends)
     ? friendsPayload.friends.length
@@ -32,7 +43,10 @@ const resolveBackendSignals = ({ gamificationPayload, rankPayload, friendsPayloa
         stats.challenges_completed,
       0,
     ),
-    friends: toSafeCount(friendsCount, stats.friendsAdded ?? stats.friends_added),
+    friends: toSafeCount(
+      friendsCount,
+      stats.friendsAdded ?? stats.friends_added,
+    ),
     groupSessions: toSafeCount(
       stats.groupSessions ??
         stats.group_sessions ??
@@ -55,7 +69,7 @@ function CharacterProfile({ userId }) {
   const [error, setError] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [purchaseInFlightId, setPurchaseInFlightId] = useState(null);
-  const [purchaseError, setPurchaseError] = useState('');
+  const [purchaseError, setPurchaseError] = useState("");
   const [backendSignals, setBackendSignals] = useState({
     streak: 0,
     tasks: 0,
@@ -65,25 +79,29 @@ function CharacterProfile({ userId }) {
 
   const formatUsd = (amountUsdCents) => {
     const normalized = Number(amountUsdCents || 0);
-    if (!Number.isFinite(normalized) || normalized <= 0) return '$0.00';
+    if (!Number.isFinite(normalized) || normalized <= 0) return "$0.00";
     return `$${(normalized / 100).toFixed(2)}`;
   };
 
   const handlePurchaseCharacter = async (characterId) => {
     try {
-      setPurchaseError('');
+      setPurchaseError("");
       setPurchaseInFlightId(characterId);
 
       const result = await characterAPI.purchaseCharacter(characterId);
       const checkoutUrl = result?.data?.checkoutUrl;
 
       if (!checkoutUrl) {
-        throw new Error('Checkout URL was not returned by server');
+        throw new Error("Checkout URL was not returned by server");
       }
 
       window.location.assign(checkoutUrl);
     } catch (err) {
-      setPurchaseError(err?.response?.data?.message || err?.message || 'Failed to start purchase');
+      setPurchaseError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to start purchase",
+      );
       setPurchaseInFlightId(null);
     }
   };
@@ -103,19 +121,21 @@ function CharacterProfile({ userId }) {
           ]);
 
         if (
-          userCharRes.status !== 'fulfilled' ||
+          userCharRes.status !== "fulfilled" ||
           !userCharRes.value?.success ||
           !userCharRes.value?.data
         ) {
-          throw new Error('Failed to fetch user character');
+          throw new Error("Failed to fetch user character");
         }
 
         const userCharData = userCharRes.value.data;
         setUserCharacter(userCharData);
-        setCharacter(userCharData.character_id || userCharData.character || null);
+        setCharacter(
+          userCharData.character_id || userCharData.character || null,
+        );
 
         if (
-          progressRes.status === 'fulfilled' &&
+          progressRes.status === "fulfilled" &&
           progressRes.value?.success &&
           Array.isArray(progressRes.value?.data)
         ) {
@@ -126,10 +146,14 @@ function CharacterProfile({ userId }) {
 
         setBackendSignals(
           resolveBackendSignals({
-            gamificationPayload: gamificationRes.status === 'fulfilled' ? gamificationRes.value : null,
-            rankPayload: rankRes.status === 'fulfilled' ? rankRes.value : null,
-            friendsPayload: friendsRes.status === 'fulfilled' ? friendsRes.value : null,
-          })
+            gamificationPayload:
+              gamificationRes.status === "fulfilled"
+                ? gamificationRes.value
+                : null,
+            rankPayload: rankRes.status === "fulfilled" ? rankRes.value : null,
+            friendsPayload:
+              friendsRes.status === "fulfilled" ? friendsRes.value : null,
+          }),
         );
 
         setError(null);
@@ -156,21 +180,21 @@ function CharacterProfile({ userId }) {
   };
 
   const getUnlockStatus = (item) => {
-    if (!item) return 'LOCKED';
+    if (!item) return "LOCKED";
     if (item.current_progress >= item.required_progress) {
-      return 'UNLOCKED';
+      return "UNLOCKED";
     }
-    return 'IN_PROGRESS';
+    return "IN_PROGRESS";
   };
 
   const getRarityColor = (rarity) => {
     const colors = {
-      common: '#d0d0d0',
-      uncommon: '#4caf50',
-      rare: '#2196f3',
-      legendary: '#ff9800',
+      common: "#d0d0d0",
+      uncommon: "#4caf50",
+      rare: "#2196f3",
+      legendary: "#ff9800",
     };
-    return colors[rarity] || '#999';
+    return colors[rarity] || "#999";
   };
 
   if (loading) {
@@ -223,7 +247,7 @@ function CharacterProfile({ userId }) {
           className="profile-toggle"
           onClick={() => setShowDetails(!showDetails)}
         >
-          {showDetails ? '▼' : '▶'}
+          {showDetails ? "▼" : "▶"}
         </button>
       </div>
 
@@ -235,7 +259,9 @@ function CharacterProfile({ userId }) {
         <div className="mastery-container">
           <div className="mastery-level">
             <span className="level-label">Level:</span>
-            <span className="level-value">{userCharacter.mastery_level}/10</span>
+            <span className="level-value">
+              {userCharacter.mastery_level}/10
+            </span>
           </div>
           <div className="mastery-bar">
             <div
@@ -324,20 +350,20 @@ function CharacterProfile({ userId }) {
                   <div className="unlock-header">
                     <h4 className="unlock-name">{item.character_id.name}</h4>
                     <span className={`unlock-status ${status.toLowerCase()}`}>
-                      {status === 'UNLOCKED'
-                        ? '🔓 Unlocked'
-                        : status === 'IN_PROGRESS'
-                          ? '⏳ In Progress'
-                          : '🔒 Locked'}
+                      {status === "UNLOCKED"
+                        ? "🔓 Unlocked"
+                        : status === "IN_PROGRESS"
+                          ? "⏳ In Progress"
+                          : "🔒 Locked"}
                     </span>
                   </div>
 
-                  {status !== 'UNLOCKED' && (
+                  {status !== "UNLOCKED" && (
                     <>
                       <p className="unlock-condition">
                         {item.condition_type
                           ? `Requires: ${item.condition_type}`
-                          : 'Complete studies to unlock'}
+                          : "Complete studies to unlock"}
                       </p>
                       <div className="unlock-bar">
                         <div
@@ -354,11 +380,15 @@ function CharacterProfile({ userId }) {
                           <button
                             type="button"
                             className="unlock-purchase-btn"
-                            disabled={purchaseInFlightId === unlockCharacter._id}
-                            onClick={() => handlePurchaseCharacter(unlockCharacter._id)}
+                            disabled={
+                              purchaseInFlightId === unlockCharacter._id
+                            }
+                            onClick={() =>
+                              handlePurchaseCharacter(unlockCharacter._id)
+                            }
                           >
                             {purchaseInFlightId === unlockCharacter._id
-                              ? 'Opening Checkout...'
+                              ? "Opening Checkout..."
                               : `Buy Now ${formatUsd(unlockCharacter.purchase_price_usd_cents)}`}
                           </button>
                         </div>

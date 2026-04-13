@@ -18,7 +18,8 @@ const PrivateRoute = ({
 
   const shouldCheckCharacter = useMemo(() => {
     const isAdmin = user?.role === "admin" || user?.isAdmin;
-    const isCharacterSelectionRoute = location.pathname === "/character-selection";
+    const isCharacterSelectionRoute =
+      location.pathname === "/character-selection";
 
     return (
       requireStudent &&
@@ -26,7 +27,13 @@ const PrivateRoute = ({
       isAuthenticated &&
       !isCharacterSelectionRoute
     );
-  }, [requireStudent, user?.role, user?.isAdmin, isAuthenticated, location.pathname]);
+  }, [
+    requireStudent,
+    user?.role,
+    user?.isAdmin,
+    isAuthenticated,
+    location.pathname,
+  ]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -41,7 +48,9 @@ const PrivateRoute = ({
 
       try {
         const response = await characterAPI.getUserCharacter();
-        const hasCharacter = Boolean(response?.success && response?.data?.character_id);
+        const hasCharacter = Boolean(
+          response?.success && response?.data?.character_id,
+        );
 
         if (!isCancelled) {
           setCharacterCheckStatus(hasCharacter ? "assigned" : "missing");
@@ -51,7 +60,7 @@ const PrivateRoute = ({
           error?.response?.data?.message ||
             error?.response?.data?.error ||
             error?.message ||
-            ""
+            "",
         ).toLowerCase();
         const noCharacterAssigned =
           errorMessage.includes("no character") ||

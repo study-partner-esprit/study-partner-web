@@ -118,8 +118,11 @@ const extractProgressSignalsFromBackend = ({
   rankPayload,
   friendsPayload,
 }) => {
-  const stats = gamificationPayload?.stats || gamificationPayload?.data?.stats || {};
-  const streakFromRank = rankPayload?.profile?.currentStreak ?? rankPayload?.data?.profile?.currentStreak;
+  const stats =
+    gamificationPayload?.stats || gamificationPayload?.data?.stats || {};
+  const streakFromRank =
+    rankPayload?.profile?.currentStreak ??
+    rankPayload?.data?.profile?.currentStreak;
   const streakFromStats = stats.currentStreak ?? stats.current_streak;
 
   return {
@@ -158,7 +161,12 @@ const getProgressRatio = (progressItem) => {
   return clampNumber(current / required, 0, 1);
 };
 
-const resolveGlyphLevel = ({ isOwned, isActive, progressItem, masteryLevel }) => {
+const resolveGlyphLevel = ({
+  isOwned,
+  isActive,
+  progressItem,
+  masteryLevel,
+}) => {
   const normalizedMastery = Number(masteryLevel);
 
   if (isActive && Number.isFinite(normalizedMastery)) {
@@ -174,9 +182,19 @@ const resolveGlyphLevel = ({ isOwned, isActive, progressItem, masteryLevel }) =>
   return clampNumber(1 + Math.floor(progressRatio * 5), 1, 10);
 };
 
-const buildGlyphBonuses = ({ glyphLevel, abilities = [], layer = "base", progressRatio = 0 }) => {
+const buildGlyphBonuses = ({
+  glyphLevel,
+  abilities = [],
+  layer = "base",
+  progressRatio = 0,
+}) => {
   const normalizedLayer = String(layer || "").toLowerCase();
-  const layerBonus = normalizedLayer === "endgame" ? 4 : normalizedLayer === "progression" ? 2 : 1;
+  const layerBonus =
+    normalizedLayer === "endgame"
+      ? 4
+      : normalizedLayer === "progression"
+        ? 2
+        : 1;
   const abilitySignal = abilities.reduce((sum, ability) => {
     const value = Number(ability?.effect_value);
     if (!Number.isFinite(value)) return sum;
@@ -189,16 +207,43 @@ const buildGlyphBonuses = ({ glyphLevel, abilities = [], layer = "base", progres
   const progressPower = Math.round(progressRatio * 6);
 
   return [
-    { label: "Attack", value: `+${Math.round(levelPower * 2 + layerBonus + signalBonus)}` },
-    { label: "Health", value: `+${Math.round(levelPower * 3 + layerBonus * 2)}` },
-    { label: "Defense", value: `+${Math.round(levelPower * 1.8 + progressPower)}` },
+    {
+      label: "Attack",
+      value: `+${Math.round(levelPower * 2 + layerBonus + signalBonus)}`,
+    },
+    {
+      label: "Health",
+      value: `+${Math.round(levelPower * 3 + layerBonus * 2)}`,
+    },
+    {
+      label: "Defense",
+      value: `+${Math.round(levelPower * 1.8 + progressPower)}`,
+    },
     { label: "Speed", value: `+${Math.round(levelPower + progressPower)}%` },
-    { label: "Crit. Rate", value: `+${Math.round(levelPower * 0.9 + signalBonus)}%` },
-    { label: "Crit. Damage", value: `+${Math.round(levelPower * 1.3 + signalBonus)}%` },
-    { label: "Focus", value: `+${Math.round(levelPower * 0.8 + progressPower)}%` },
-    { label: "Resistance", value: `+${Math.round(levelPower * 0.9 + layerBonus)}%` },
-    { label: "Agility", value: `+${Math.round(levelPower * 1.2 + progressPower)}` },
-    { label: "Precision", value: `+${Math.round(levelPower * 1.1 + signalBonus)}` },
+    {
+      label: "Crit. Rate",
+      value: `+${Math.round(levelPower * 0.9 + signalBonus)}%`,
+    },
+    {
+      label: "Crit. Damage",
+      value: `+${Math.round(levelPower * 1.3 + signalBonus)}%`,
+    },
+    {
+      label: "Focus",
+      value: `+${Math.round(levelPower * 0.8 + progressPower)}%`,
+    },
+    {
+      label: "Resistance",
+      value: `+${Math.round(levelPower * 0.9 + layerBonus)}%`,
+    },
+    {
+      label: "Agility",
+      value: `+${Math.round(levelPower * 1.2 + progressPower)}`,
+    },
+    {
+      label: "Precision",
+      value: `+${Math.round(levelPower * 1.1 + signalBonus)}`,
+    },
   ];
 };
 
@@ -241,18 +286,20 @@ const Characters = () => {
           gamificationResult,
           rankResult,
           friendsResult,
-        ] =
-          await Promise.allSettled([
-            characterAPI.getCharacters(),
-            characterAPI.getOwnedCharacters(),
-            characterAPI.getUnlockProgress(),
-            characterAPI.getUserCharacter(),
-            gamificationAPI.getProfile(),
-            gamificationAPI.getRankProfile(),
-            friendsAPI.getAll(),
-          ]);
+        ] = await Promise.allSettled([
+          characterAPI.getCharacters(),
+          characterAPI.getOwnedCharacters(),
+          characterAPI.getUnlockProgress(),
+          characterAPI.getUserCharacter(),
+          gamificationAPI.getProfile(),
+          gamificationAPI.getRankProfile(),
+          friendsAPI.getAll(),
+        ]);
 
-        if (charactersResult.status === "fulfilled" && charactersResult.value?.success) {
+        if (
+          charactersResult.status === "fulfilled" &&
+          charactersResult.value?.success
+        ) {
           resolvedCatalog = charactersResult.value.data || [];
           setCatalog(resolvedCatalog);
         }
@@ -262,12 +309,17 @@ const Characters = () => {
           const owned = ownedData.owned_characters || [];
           setOwnedCharacters(owned);
           resolvedActiveCharacterId = String(
-            ownedData.active_character_id?._id || ownedData.active_character_id || "",
+            ownedData.active_character_id?._id ||
+              ownedData.active_character_id ||
+              "",
           );
           setActiveCharacterId(resolvedActiveCharacterId);
         }
 
-        if (progressResult.status === "fulfilled" && progressResult.value?.success) {
+        if (
+          progressResult.status === "fulfilled" &&
+          progressResult.value?.success
+        ) {
           setUnlockProgress(progressResult.value.data || []);
         }
 
@@ -277,23 +329,31 @@ const Characters = () => {
           !resolvedActiveCharacterId
         ) {
           const selectedChar =
-            selectedResult.value.data?.character_id || selectedResult.value.data?.character;
+            selectedResult.value.data?.character_id ||
+            selectedResult.value.data?.character;
           if (selectedChar?._id) {
             resolvedSelectedCharacterId = String(selectedChar._id);
             setActiveCharacterId(resolvedSelectedCharacterId);
           }
         }
 
-        if (selectedResult.status === "fulfilled" && selectedResult.value?.success) {
+        if (
+          selectedResult.status === "fulfilled" &&
+          selectedResult.value?.success
+        ) {
           setUserCharacterProgress(selectedResult.value.data || null);
         }
 
         setProgressSignals(
           extractProgressSignalsFromBackend({
             gamificationPayload:
-              gamificationResult.status === "fulfilled" ? gamificationResult.value : null,
-            rankPayload: rankResult.status === "fulfilled" ? rankResult.value : null,
-            friendsPayload: friendsResult.status === "fulfilled" ? friendsResult.value : null,
+              gamificationResult.status === "fulfilled"
+                ? gamificationResult.value
+                : null,
+            rankPayload:
+              rankResult.status === "fulfilled" ? rankResult.value : null,
+            friendsPayload:
+              friendsResult.status === "fulfilled" ? friendsResult.value : null,
           }),
         );
 
@@ -304,7 +364,9 @@ const Characters = () => {
 
         setFocusCharacterId(fallbackFocusId);
       } catch (err) {
-        setError(err?.response?.data?.message || "Failed to load character data.");
+        setError(
+          err?.response?.data?.message || "Failed to load character data.",
+        );
       } finally {
         setLoading(false);
       }
@@ -318,7 +380,12 @@ const Characters = () => {
   }, [ownedCharacters]);
 
   const catalogById = useMemo(() => {
-    return new Map((catalog || []).map((character) => [String(character?._id || ""), character]));
+    return new Map(
+      (catalog || []).map((character) => [
+        String(character?._id || ""),
+        character,
+      ]),
+    );
   }, [catalog]);
 
   const normalizedOwnedCharacters = useMemo(() => {
@@ -336,7 +403,9 @@ const Characters = () => {
   const unlockByCharacterId = useMemo(() => {
     const map = new Map();
     (unlockProgress || []).forEach((item) => {
-      const characterId = String(item?.character_id?._id || item?.character_id || "");
+      const characterId = String(
+        item?.character_id?._id || item?.character_id || "",
+      );
       if (characterId) {
         map.set(characterId, item);
       }
@@ -360,7 +429,8 @@ const Characters = () => {
       const characterId = String(character._id || "");
       const isOwned = ownedIdSet.has(characterId);
       const isPurchasable =
-        Boolean(character.is_purchasable) && Number(character.purchase_price_usd_cents || 0) > 0;
+        Boolean(character.is_purchasable) &&
+        Number(character.purchase_price_usd_cents || 0) > 0;
       return count + (!isOwned && isPurchasable ? 1 : 0);
     }, 0);
   }, [sortedCatalog, ownedIdSet]);
@@ -370,8 +440,9 @@ const Characters = () => {
     if (!focusCharacterId) return fallback;
 
     return (
-      sortedCatalog.find((character) => String(character._id) === String(focusCharacterId)) ||
-      fallback
+      sortedCatalog.find(
+        (character) => String(character._id) === String(focusCharacterId),
+      ) || fallback
     );
   }, [sortedCatalog, focusCharacterId]);
 
@@ -404,7 +475,9 @@ const Characters = () => {
 
   const focusAbilities = useMemo(() => {
     if (!focusCharacter) return [];
-    return Array.isArray(focusCharacter.abilities) ? focusCharacter.abilities.slice(0, 4) : [];
+    return Array.isArray(focusCharacter.abilities)
+      ? focusCharacter.abilities.slice(0, 4)
+      : [];
   }, [focusCharacter]);
 
   const selectedAbility = useMemo(() => {
@@ -413,7 +486,10 @@ const Characters = () => {
   }, [focusAbilities, activeAbilityIndex]);
 
   const teamRoster = useMemo(() => {
-    const source = normalizedOwnedCharacters.length > 0 ? normalizedOwnedCharacters : sortedCatalog;
+    const source =
+      normalizedOwnedCharacters.length > 0
+        ? normalizedOwnedCharacters
+        : sortedCatalog;
 
     return source.slice(0, 6).map((character, index) => ({
       ...character,
@@ -444,7 +520,11 @@ const Characters = () => {
   }, [focusGlyphLevel, focusAbilities, focusCharacter, focusProgressRatio]);
 
   const masteryLevel = useMemo(() => {
-    return clampNumber(toSafeCount(userCharacterProgress?.mastery_level, 0), 0, 10);
+    return clampNumber(
+      toSafeCount(userCharacterProgress?.mastery_level, 0),
+      0,
+      10,
+    );
   }, [userCharacterProgress]);
 
   const masteryPoints = useMemo(() => {
@@ -461,11 +541,17 @@ const Characters = () => {
   }, [focusProgressRatio]);
 
   const focusUnlockCurrent = useMemo(() => {
-    return toSafeCount(focusCharacterState.progressItem?.current_progress, focusCharacterState.isOwned ? 1 : 0);
+    return toSafeCount(
+      focusCharacterState.progressItem?.current_progress,
+      focusCharacterState.isOwned ? 1 : 0,
+    );
   }, [focusCharacterState]);
 
   const focusUnlockRequired = useMemo(() => {
-    const required = toSafeCount(focusCharacterState.progressItem?.required_progress, 0);
+    const required = toSafeCount(
+      focusCharacterState.progressItem?.required_progress,
+      0,
+    );
     if (required > 0) return required;
     return focusCharacterState.isOwned ? 1 : 0;
   }, [focusCharacterState]);
@@ -526,7 +612,9 @@ const Characters = () => {
       window.location.assign(checkoutUrl);
     } catch (err) {
       setPurchaseError(
-        err?.response?.data?.message || err?.message || "Failed to start character purchase.",
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to start character purchase.",
       );
       setPurchaseInFlightId("");
     }
@@ -537,7 +625,9 @@ const Characters = () => {
       <div className="min-h-screen bg-transparent pt-24 px-6 text-foreground">
         <div className="max-w-7xl mx-auto">
           <div className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-xl p-8 animate-pulse">
-            <p className="text-lg font-bold tracking-wider">Loading character armory...</p>
+            <p className="text-lg font-bold tracking-wider">
+              Loading character armory...
+            </p>
           </div>
         </div>
       </div>
@@ -596,30 +686,48 @@ const Characters = () => {
                 {teamRoster.map((character) => {
                   const characterId = String(character?._id || "");
                   const isFocused = characterId === String(focusCharacterId);
-                  const isActive = characterId && characterId === String(activeCharacterId);
+                  const isActive =
+                    characterId && characterId === String(activeCharacterId);
 
                   return (
                     <button
                       key={characterId || character.name}
                       type="button"
                       className={`agent-player-card ${isFocused ? "focused" : ""}`}
-                      onClick={() => characterId && setFocusCharacterId(characterId)}
+                      onClick={() =>
+                        characterId && setFocusCharacterId(characterId)
+                      }
                     >
                       <div className="agent-player-thumb">
                         {character?.image_asset_path ? (
-                          <img src={character.image_asset_path} alt={character?.name || "Character"} />
+                          <img
+                            src={character.image_asset_path}
+                            alt={character?.name || "Character"}
+                          />
                         ) : (
-                          <div className="agent-player-fallback">{character?.name?.[0] || "?"}</div>
+                          <div className="agent-player-fallback">
+                            {character?.name?.[0] || "?"}
+                          </div>
                         )}
                       </div>
 
                       <div className="agent-player-meta">
-                        <p className="agent-player-name">{character?.name || "Unknown"}</p>
-                        <p className="agent-player-state">{character?.stateLabel || "Ready"}</p>
+                        <p className="agent-player-name">
+                          {character?.name || "Unknown"}
+                        </p>
+                        <p className="agent-player-state">
+                          {character?.stateLabel || "Ready"}
+                        </p>
                       </div>
 
-                      <div className={`agent-player-indicator ${isActive ? "active" : ""}`}>
-                        {isActive ? <Crown className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />}
+                      <div
+                        className={`agent-player-indicator ${isActive ? "active" : ""}`}
+                      >
+                        {isActive ? (
+                          <Crown className="w-3 h-3" />
+                        ) : (
+                          <ShieldCheck className="w-3 h-3" />
+                        )}
                       </div>
                     </button>
                   );
@@ -662,12 +770,20 @@ const Characters = () => {
                       className="agent-hero-art"
                     />
                   ) : (
-                    <div className="agent-hero-fallback">{focusCharacter?.name?.[0] || "?"}</div>
+                    <div className="agent-hero-fallback">
+                      {focusCharacter?.name?.[0] || "?"}
+                    </div>
                   )}
 
                   <div className="agent-hero-nameplate">
-                    <span className="agent-nameplate-type">{String(getLayerLabel(focusCharacter?.layer || "field")).toUpperCase()}</span>
-                    <strong className="agent-nameplate-name">{String(focusCharacter?.name || "Unknown").toUpperCase()}</strong>
+                    <span className="agent-nameplate-type">
+                      {String(
+                        getLayerLabel(focusCharacter?.layer || "field"),
+                      ).toUpperCase()}
+                    </span>
+                    <strong className="agent-nameplate-name">
+                      {String(focusCharacter?.name || "Unknown").toUpperCase()}
+                    </strong>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -682,17 +798,25 @@ const Characters = () => {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.24, ease: "easeOut" }}
                 >
-                  <p className="agent-panel-kicker right">{String(getLayerLabel(focusCharacter?.layer)).toUpperCase()}</p>
-                  <h3 className="agent-focus-name">{String(focusCharacter?.name || "Unknown").toUpperCase()}</h3>
+                  <p className="agent-panel-kicker right">
+                    {String(getLayerLabel(focusCharacter?.layer)).toUpperCase()}
+                  </p>
+                  <h3 className="agent-focus-name">
+                    {String(focusCharacter?.name || "Unknown").toUpperCase()}
+                  </h3>
                   <p className="agent-focus-description">
-                    {focusCharacter?.description || "No character data available."}
+                    {focusCharacter?.description ||
+                      "No character data available."}
                   </p>
 
                   <div className="agent-ability-icons">
                     {focusAbilities.length > 0 ? (
                       focusAbilities.map((ability, index) => (
                         <button
-                          key={ability?._id || `${ability?.name || "ability"}-${index}`}
+                          key={
+                            ability?._id ||
+                            `${ability?.name || "ability"}-${index}`
+                          }
                           type="button"
                           className={`agent-ability-icon-btn ${index === activeAbilityIndex ? "active" : ""}`}
                           onClick={() => setActiveAbilityIndex(index)}
@@ -702,7 +826,9 @@ const Characters = () => {
                         </button>
                       ))
                     ) : (
-                      <p className="agent-ability-empty">No abilities registered.</p>
+                      <p className="agent-ability-empty">
+                        No abilities registered.
+                      </p>
                     )}
                   </div>
 
@@ -715,9 +841,12 @@ const Characters = () => {
                       transition={{ duration: 0.18, ease: "easeOut" }}
                       className="agent-ability-detail"
                     >
-                      <p className="agent-ability-title">{selectedAbility?.name || "Ability Preview"}</p>
+                      <p className="agent-ability-title">
+                        {selectedAbility?.name || "Ability Preview"}
+                      </p>
                       <p className="agent-ability-desc">
-                        {selectedAbility?.description || "Select an ability icon to inspect details."}
+                        {selectedAbility?.description ||
+                          "Select an ability icon to inspect details."}
                       </p>
                       <p className="agent-ability-effect">
                         <Activity className="w-3 h-3" />
@@ -734,7 +863,10 @@ const Characters = () => {
                       <span>{masteryProgressPercent}%</span>
                     </div>
                     <div className="agent-meter-track">
-                      <div className="agent-meter-fill mastery" style={{ width: `${masteryProgressPercent}%` }} />
+                      <div
+                        className="agent-meter-fill mastery"
+                        style={{ width: `${masteryProgressPercent}%` }}
+                      />
                     </div>
 
                     <div className="agent-meter-row">
@@ -742,11 +874,15 @@ const Characters = () => {
                       <span>{focusUnlockPercent}%</span>
                     </div>
                     <div className="agent-meter-track">
-                      <div className="agent-meter-fill unlock" style={{ width: `${focusUnlockPercent}%` }} />
+                      <div
+                        className="agent-meter-fill unlock"
+                        style={{ width: `${focusUnlockPercent}%` }}
+                      />
                     </div>
 
                     <div className="agent-progress-copy">
-                      {focusUnlockCurrent}/{focusUnlockRequired || "-"} • {getUnlockHint(focusCharacterState.progressItem)}
+                      {focusUnlockCurrent}/{focusUnlockRequired || "-"} •{" "}
+                      {getUnlockHint(focusCharacterState.progressItem)}
                     </div>
 
                     <div className="agent-signal-cards">
@@ -790,8 +926,12 @@ const Characters = () => {
                     ) : focusCharacterState.isPurchasable ? (
                       <button
                         type="button"
-                        disabled={purchaseInFlightId === focusCharacterState.focusId}
-                        onClick={() => handlePurchaseCharacter(focusCharacterState.focusId)}
+                        disabled={
+                          purchaseInFlightId === focusCharacterState.focusId
+                        }
+                        onClick={() =>
+                          handlePurchaseCharacter(focusCharacterState.focusId)
+                        }
                         className="characters-action-btn buy inventory-action-btn disabled:opacity-70 disabled:cursor-wait inline-flex items-center justify-center gap-2"
                       >
                         <ShoppingCart className="w-4 h-4" />
@@ -816,7 +956,8 @@ const Characters = () => {
                 const isOwned = ownedIdSet.has(characterId);
                 const isActive = String(activeCharacterId) === characterId;
                 const isPurchasable =
-                  Boolean(character.is_purchasable) && Number(character.purchase_price_usd_cents || 0) > 0;
+                  Boolean(character.is_purchasable) &&
+                  Number(character.purchase_price_usd_cents || 0) > 0;
 
                 return (
                   <motion.div
@@ -837,13 +978,20 @@ const Characters = () => {
                   >
                     <div className="agent-select-thumb">
                       {character.image_asset_path ? (
-                        <img src={character.image_asset_path} alt={character.name} />
+                        <img
+                          src={character.image_asset_path}
+                          alt={character.name}
+                        />
                       ) : (
-                        <div className="agent-select-fallback">{character.name?.[0] || "?"}</div>
+                        <div className="agent-select-fallback">
+                          {character.name?.[0] || "?"}
+                        </div>
                       )}
                     </div>
 
-                    <p className="agent-select-name">{String(character.name || "Unknown").toUpperCase()}</p>
+                    <p className="agent-select-name">
+                      {String(character.name || "Unknown").toUpperCase()}
+                    </p>
                     <p className="agent-select-state">
                       {isActive
                         ? "Active"
@@ -855,7 +1003,13 @@ const Characters = () => {
                     </p>
 
                     <div className="agent-select-marker">
-                      {isActive ? <Zap className="w-3 h-3" /> : isOwned ? <ShieldCheck className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                      {isActive ? (
+                        <Zap className="w-3 h-3" />
+                      ) : isOwned ? (
+                        <ShieldCheck className="w-3 h-3" />
+                      ) : (
+                        <Lock className="w-3 h-3" />
+                      )}
                     </div>
 
                     {isFocused && (
@@ -881,12 +1035,12 @@ const Characters = () => {
                             }}
                             className="agent-lock-in-btn buy"
                           >
-                            {purchaseInFlightId === characterId ? "..." : `BUY ${formatUsd(character.purchase_price_usd_cents)}`}
+                            {purchaseInFlightId === characterId
+                              ? "..."
+                              : `BUY ${formatUsd(character.purchase_price_usd_cents)}`}
                           </button>
                         ) : (
-                          <div className="agent-lock-in-btn locked">
-                            LOCKED
-                          </div>
+                          <div className="agent-lock-in-btn locked">LOCKED</div>
                         )}
                       </div>
                     )}

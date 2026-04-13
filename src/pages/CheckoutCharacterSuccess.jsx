@@ -49,7 +49,9 @@ export default function CheckoutCharacterSuccess() {
           className="mx-auto mb-4 text-[var(--accent-color-dynamic)]"
           size={52}
         />
-        <h1 className="text-2xl font-bold mb-2">Character purchase successful</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          Character purchase successful
+        </h1>
         <p className="text-gray-400 mb-6">
           {purchasedCharacterName
             ? `${purchasedCharacterName} is now in your owned characters list.`
@@ -61,7 +63,9 @@ export default function CheckoutCharacterSuccess() {
         )}
 
         {error && (
-          <p className="text-sm text-[var(--accent-color-dynamic)] mb-4">{error}</p>
+          <p className="text-sm text-[var(--accent-color-dynamic)] mb-4">
+            {error}
+          </p>
         )}
 
         <div className="flex items-center justify-center gap-3">

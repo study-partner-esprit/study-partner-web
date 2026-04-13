@@ -53,11 +53,12 @@ const Lobby = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const [profileResult, ownedResult, characterResult] = await Promise.allSettled([
-          profileAPI.get(),
-          characterAPI.getOwnedCharacters(),
-          characterAPI.getUserCharacter(),
-        ]);
+        const [profileResult, ownedResult, characterResult] =
+          await Promise.allSettled([
+            profileAPI.get(),
+            characterAPI.getOwnedCharacters(),
+            characterAPI.getUserCharacter(),
+          ]);
 
         if (profileResult.status === "fulfilled") {
           setProfile(profileResult.value.data.profile);
@@ -72,7 +73,9 @@ const Lobby = () => {
             "";
 
           setOwnedCharacters(ownedList);
-          setSelectedCharacterId(String(activeCharacterId || ownedList[0]?._id || ""));
+          setSelectedCharacterId(
+            String(activeCharacterId || ownedList[0]?._id || ""),
+          );
 
           const activeCharacter = ownedList.find(
             (character) =>
@@ -95,7 +98,9 @@ const Lobby = () => {
           setUserCharacter((prev) => prev || currentCharacter);
 
           if (currentCharacter?._id) {
-            setSelectedCharacterId((prev) => prev || String(currentCharacter._id));
+            setSelectedCharacterId(
+              (prev) => prev || String(currentCharacter._id),
+            );
           }
         }
       } catch (e) {
@@ -359,7 +364,8 @@ const Lobby = () => {
                       ))}
                     </select>
                     <p className="text-xs text-gray-500 mt-2">
-                      Onboarding choice is permanent. Lobby choice is reversible.
+                      Onboarding choice is permanent. Lobby choice is
+                      reversible.
                     </p>
                   </div>
                 </div>
@@ -415,7 +421,11 @@ const Lobby = () => {
               "polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)",
           }}
         >
-          {lockedIn ? isUpdatingCharacter ? "APPLYING CHARACTER..." : "STARTING..." : "LOCK IN"}
+          {lockedIn
+            ? isUpdatingCharacter
+              ? "APPLYING CHARACTER..."
+              : "STARTING..."
+            : "LOCK IN"}
         </button>
       </div>
     </div>

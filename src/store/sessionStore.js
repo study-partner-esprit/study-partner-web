@@ -261,10 +261,13 @@ const useSessionStore = create((set, get) => ({
 
     if (!alreadyCompleted) {
       try {
-        const sessionUpdateResult = await sessionsAPI.update(activeSession._id, {
-          status: "completed",
-          endTime: new Date().toISOString(),
-        });
+        const sessionUpdateResult = await sessionsAPI.update(
+          activeSession._id,
+          {
+            status: "completed",
+            endTime: new Date().toISOString(),
+          },
+        );
 
         completionRewardsData =
           sessionUpdateResult?.data?.completionRewards || completionRewardsData;
@@ -278,7 +281,8 @@ const useSessionStore = create((set, get) => ({
     const skippedCount = tasks.filter((t) => t.status === "skipped").length;
     const taskBasedXP = tasks.reduce((sum, t) => sum + (t.xpEarned || 0), 0);
     const awardedXP = Number(completionRewardsData?.awardedXP);
-    const totalXP = Number.isFinite(awardedXP) && awardedXP > 0 ? awardedXP : taskBasedXP;
+    const totalXP =
+      Number.isFinite(awardedXP) && awardedXP > 0 ? awardedXP : taskBasedXP;
     const kpResult = options.kpResult || null;
 
     set({

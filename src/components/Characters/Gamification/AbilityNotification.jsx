@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import './AbilityNotification.css';
+import React, { useEffect, useState } from "react";
+import "./AbilityNotification.css";
 
 /**
  * Ability Notification Component
@@ -34,24 +34,24 @@ function AbilityNotification({
 
   const getAbilityColor = (effectType) => {
     const colors = {
-      XP_MULTIPLIER: '#FFD700', // Gold
-      CHALLENGE_MULTIPLIER: '#FF6B6B', // Red
-      TEAM_XP_BOOST: '#4A90E2', // Blue
-      STREAK_PRESERVATION: '#2ECC71', // Green
-      MULTI_BENEFIT: '#9B59B6', // Purple
+      XP_MULTIPLIER: "#FFD700", // Gold
+      CHALLENGE_MULTIPLIER: "#FF6B6B", // Red
+      TEAM_XP_BOOST: "#4A90E2", // Blue
+      STREAK_PRESERVATION: "#2ECC71", // Green
+      MULTI_BENEFIT: "#9B59B6", // Purple
     };
-    return colors[effectType] || '#999';
+    return colors[effectType] || "#999";
   };
 
   const getAbilityIcon = (effectType) => {
     const icons = {
-      XP_MULTIPLIER: '⭐',
-      CHALLENGE_MULTIPLIER: '🏆',
-      TEAM_XP_BOOST: '👥',
-      STREAK_PRESERVATION: '🔥',
-      MULTI_BENEFIT: '👑',
+      XP_MULTIPLIER: "⭐",
+      CHALLENGE_MULTIPLIER: "🏆",
+      TEAM_XP_BOOST: "👥",
+      STREAK_PRESERVATION: "🔥",
+      MULTI_BENEFIT: "👑",
     };
-    return icons[effectType] || '✨';
+    return icons[effectType] || "✨";
   };
 
   const bonusXp = xpGain - baseXp;
@@ -122,9 +122,7 @@ function AbilityNotification({
                 </div>
               )}
               {debugInfo.hardCapApplied && (
-                <div className="debug-item warning">
-                  ⚠️ Hard cap applied
-                </div>
+                <div className="debug-item warning">⚠️ Hard cap applied</div>
               )}
             </div>
           )}

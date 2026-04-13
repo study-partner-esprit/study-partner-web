@@ -165,6 +165,8 @@ describe("TeamLobby", () => {
       expect(characterAPI.changeCharacter).toHaveBeenCalledWith("char-2");
     });
 
-    expect(mockFetchParticipants.mock.calls.length).toBeGreaterThan(callsBeforeChange);
+    expect(mockFetchParticipants.mock.calls.length).toBeGreaterThan(
+      callsBeforeChange,
+    );
   });
 });

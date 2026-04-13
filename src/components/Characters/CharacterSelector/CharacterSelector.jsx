@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './CharacterSelector.css';
-import { characterAPI } from '../../../services/api';
+import React, { useState, useEffect } from "react";
+import "./CharacterSelector.css";
+import { characterAPI } from "../../../services/api";
 
 /**
  * Character Selection Component
@@ -23,10 +23,10 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
         if (data.success) {
           setCharacters(data.data);
         } else {
-          setError('Failed to load characters');
+          setError("Failed to load characters");
         }
       } catch (err) {
-        setError('Error fetching characters: ' + err.message);
+        setError("Error fetching characters: " + err.message);
       } finally {
         setIsLoading(false);
       }
@@ -43,7 +43,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
     e.preventDefault();
 
     if (!selectedCharacterId) {
-      setError('Please select a character');
+      setError("Please select a character");
       return;
     }
 
@@ -54,11 +54,11 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
       if (data.success) {
         onCharacterSelected(data.data);
       } else {
-        setError(data.message || 'Failed to select character');
+        setError(data.message || "Failed to select character");
       }
     } catch (err) {
       const message = err?.response?.data?.message || err.message;
-      setError('Error selecting character: ' + message);
+      setError("Error selecting character: " + message);
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +88,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
               <div
                 key={character._id}
                 className={`character-card ${
-                  selectedCharacterId === character._id ? 'selected' : ''
+                  selectedCharacterId === character._id ? "selected" : ""
                 }`}
                 onClick={() => handleCharacterClick(character._id)}
               >
@@ -98,7 +98,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
                       src={character.image_asset_path}
                       alt={character.name}
                       onError={(e) => {
-                        e.target.style.display = 'none';
+                        e.target.style.display = "none";
                       }}
                     />
                   </div>
@@ -123,9 +123,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
                   )}
 
                   <div className="character-rarity">
-                    <span
-                      className={`rarity-badge rarity-${character.rarity}`}
-                    >
+                    <span className={`rarity-badge rarity-${character.rarity}`}>
                       {character.rarity.toUpperCase()}
                     </span>
                   </div>
@@ -154,7 +152,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
               disabled={!selectedCharacterId || isSubmitting}
               className="btn-select-character"
             >
-              {isSubmitting ? 'Selecting...' : 'Select Character'}
+              {isSubmitting ? "Selecting..." : "Select Character"}
             </button>
           </div>
         </form>

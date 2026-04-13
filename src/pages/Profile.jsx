@@ -265,7 +265,9 @@ const Profile = () => {
                       <div className="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-border">
                         {getRankBadgeSrc(rankProfile?.rankBadge?.imagePath) && (
                           <img
-                            src={getRankBadgeSrc(rankProfile.rankBadge.imagePath)}
+                            src={getRankBadgeSrc(
+                              rankProfile.rankBadge.imagePath,
+                            )}
                             alt={rankProfile.profile.rankName}
                             className="w-8 h-8 object-contain"
                           />

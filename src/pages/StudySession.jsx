@@ -244,7 +244,9 @@ export const SessionSummary = ({ summary, onRestart, onGoHome }) => {
                 )}
                 {Number.isFinite(completionTotalKnowledgePoints) && (
                   <div className="flex items-center justify-between text-sm mt-1">
-                    <span className="text-gray-400">Total Knowledge Points</span>
+                    <span className="text-gray-400">
+                      Total Knowledge Points
+                    </span>
                     <span className="font-bold text-white">
                       {completionTotalKnowledgePoints}
                     </span>
