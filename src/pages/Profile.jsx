@@ -167,8 +167,6 @@ const Profile = () => {
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
-        
-
         {/* Profile Header Card */}
         <div className="relative mb-12">
           {/* Card Container - Glassmorphism Valorant Style */}

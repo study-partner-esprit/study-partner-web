@@ -76,7 +76,10 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
   return (
     <div className="character-selector">
       {hoveredCharacterImage && (
-        <div className="character-wallpaper" style={{ backgroundImage: `url(${hoveredCharacterImage})` }}></div>
+        <div
+          className="character-wallpaper"
+          style={{ backgroundImage: `url(${hoveredCharacterImage})` }}
+        ></div>
       )}
       <div className="character-selector-container">
         <h1 className="character-selector-title">Choose Your Character</h1>
@@ -95,7 +98,10 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
                   selectedCharacterId === character._id ? "selected" : ""
                 }`}
                 onClick={() => handleCharacterClick(character._id)}
-                onMouseEnter={() => character.image_asset_path && setHoveredCharacterImage(character.image_asset_path)}
+                onMouseEnter={() =>
+                  character.image_asset_path &&
+                  setHoveredCharacterImage(character.image_asset_path)
+                }
                 onMouseLeave={() => setHoveredCharacterImage(null)}
               >
                 {character.image_asset_path && (

@@ -1055,7 +1055,7 @@
 .agent-shell-vignette {
   display: block;
   z-index: 2;
- }
+}
 
 .agent-hud-strip {
   position: absolute;
@@ -1431,13 +1431,12 @@
   grid-row: 1;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(6, 10, 18, 0.56) 0%,
-      rgba(6, 10, 18, 0.34) 52%,
-      rgba(6, 10, 18, 0.48) 100%
-    );
+  background: linear-gradient(
+    160deg,
+    rgba(6, 10, 18, 0.56) 0%,
+    rgba(6, 10, 18, 0.34) 52%,
+    rgba(6, 10, 18, 0.48) 100%
+  );
   padding: 14px;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
