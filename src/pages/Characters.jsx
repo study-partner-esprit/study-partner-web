@@ -656,16 +656,23 @@ const Characters = () => {
 
         <section className="agent-select-section h-full w-full">
           <div className="agent-select-shell">
-            <div
-              className="agent-shell-background"
-              style={
-                focusCharacter?.image_asset_path
-                  ? {
-                      backgroundImage: `linear-gradient(120deg, rgba(3, 7, 13, 0.72), rgba(9, 14, 22, 0.68)), url(${focusCharacter.image_asset_path})`,
-                    }
-                  : undefined
-              }
-            />
+            <AnimatePresence mode="sync" initial={false}>
+              <motion.div
+                key={`agent-shell-bg-${focusCharacterState.focusId || focusCharacter?.image_asset_path || "none"}`}
+                className="agent-shell-background"
+                style={
+                  focusCharacter?.image_asset_path
+                    ? {
+                        backgroundImage: `url(${focusCharacter.image_asset_path})`,
+                      }
+                    : undefined
+                }
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
+              />
+            </AnimatePresence>
             <div className="agent-shell-vignette" />
 
             <div className="agent-hud-strip">
@@ -798,9 +805,6 @@ const Characters = () => {
                   exit={{ opacity: 0, x: -12 }}
                   transition={{ duration: 0.24, ease: "easeOut" }}
                 >
-                  <p className="agent-panel-kicker right">
-                    {String(getLayerLabel(focusCharacter?.layer)).toUpperCase()}
-                  </p>
                   <h3 className="agent-focus-name">
                     {String(focusCharacter?.name || "Unknown").toUpperCase()}
                   </h3>
@@ -808,29 +812,6 @@ const Characters = () => {
                     {focusCharacter?.description ||
                       "No character data available."}
                   </p>
-
-                  <div className="agent-ability-icons">
-                    {focusAbilities.length > 0 ? (
-                      focusAbilities.map((ability, index) => (
-                        <button
-                          key={
-                            ability?._id ||
-                            `${ability?.name || "ability"}-${index}`
-                          }
-                          type="button"
-                          className={`agent-ability-icon-btn ${index === activeAbilityIndex ? "active" : ""}`}
-                          onClick={() => setActiveAbilityIndex(index)}
-                          aria-label={`View ${ability?.name || "ability"}`}
-                        >
-                          <span>{ability?.name?.[0] || index + 1}</span>
-                        </button>
-                      ))
-                    ) : (
-                      <p className="agent-ability-empty">
-                        No abilities registered.
-                      </p>
-                    )}
-                  </div>
 
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
@@ -846,7 +827,7 @@ const Characters = () => {
                       </p>
                       <p className="agent-ability-desc">
                         {selectedAbility?.description ||
-                          "Select an ability icon to inspect details."}
+                          "No ability details available."}
                       </p>
                       <p className="agent-ability-effect">
                         <Activity className="w-3 h-3" />

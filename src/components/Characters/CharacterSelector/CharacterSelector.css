@@ -10,6 +10,24 @@
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.character-wallpaper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: min(50vw, 560px) auto;
+  background-position: right clamp(12px, 4vw, 48px) center;
+  background-repeat: no-repeat;
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  transition: background-image 0.3s ease;
 }
 
 .character-selector-container {
@@ -19,6 +37,8 @@
   padding: 40px;
   max-width: 1200px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .character-selector-title {
@@ -83,7 +103,7 @@
 
 .character-image {
   width: 100%;
-  height: 250px;
+  height: clamp(140px, 22vh, 200px);
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 8px;
   display: flex;
@@ -94,6 +114,8 @@
 }
 
 .character-image img {
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -275,6 +297,12 @@
 /* Responsive Design */
 
 @media (max-width: 768px) {
+  .character-wallpaper {
+    background-size: min(60vw, 420px) auto;
+    background-position: right 12px center;
+    opacity: 0.06;
+  }
+
   .character-selector-container {
     padding: 25px;
   }
@@ -289,7 +317,7 @@
   }
 
   .character-image {
-    height: 200px;
+    height: clamp(130px, 25vh, 180px);
   }
 
   .btn-select-character {
@@ -299,6 +327,12 @@
 }
 
 @media (max-width: 480px) {
+  .character-wallpaper {
+    background-size: min(72vw, 320px) auto;
+    background-position: center 20%;
+    opacity: 0.05;
+  }
+
   .character-selector {
     padding: 10px;
   }
