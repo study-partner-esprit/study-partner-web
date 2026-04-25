@@ -21,6 +21,7 @@ import useFriendsStore from "../store/friendsStore";
 import useNotificationStore from "../store/notificationStore";
 import { profileAPI, teamSessionsAPI, characterAPI } from "../services/api";
 import CharacterBadge from "../components/Characters/CharacterBadge/CharacterBadge";
+import SessionCharacterPicker from "../components/Characters/SessionCharacterPicker";
 import VoiceButton from "../components/VoiceChat/VoiceButton";
 
 // XP Multiplier table
@@ -372,8 +373,8 @@ const TeamLobby = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#0f1923] overflow-hidden relative text-white font-sans">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1a2633] via-[#0f1923] to-[#0f1923] z-0" />
+    <div className="min-h-screen overflow-x-hidden relative text-white font-sans">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1a2633]/55 via-[#0f1923]/38 to-[#0f1923]/55 z-0 pointer-events-none" />
 
       {/* Ambient glow */}
       <div className="absolute inset-0 z-0 opacity-10">
@@ -412,26 +413,16 @@ const TeamLobby = () => {
 
         {/* XP Multiplier Badge */}
         <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-[#1a2633]/70 border border-[#ffffff10] rounded-lg px-3 py-2">
-            <span className="text-xs uppercase tracking-wider text-gray-500">
-              Character
-            </span>
-            <select
-              value={selectedCharacterId}
-              onChange={(e) => handleLobbyCharacterChange(e.target.value)}
-              className="bg-transparent text-sm text-white outline-none"
+          <div className="w-[300px]">
+            <SessionCharacterPicker
+              characters={ownedCharacters}
+              selectedCharacterId={selectedCharacterId}
+              onSelect={handleLobbyCharacterChange}
               disabled={isUpdatingCharacter || ownedCharacters.length === 0}
-            >
-              {ownedCharacters.map((character) => (
-                <option
-                  key={character._id}
-                  value={character._id}
-                  className="bg-[#0f1923]"
-                >
-                  {character.name}
-                </option>
-              ))}
-            </select>
+              compact={true}
+              title="Lobby Character"
+              subtitle=""
+            />
           </div>
 
           <div

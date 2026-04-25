@@ -135,25 +135,6 @@
 }
 
 @layer base {
-  html {
-    overflow: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-  }
-
-  html,
-  html * {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-  }
-
-  html::-webkit-scrollbar,
-  html *::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-
   * {
     @apply border-border;
   }
@@ -166,9 +147,6 @@
       transparent 70%
     );
     background-attachment: fixed;
-    overflow: hidden !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
   }
 }
 

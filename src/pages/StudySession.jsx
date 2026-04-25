@@ -27,6 +27,7 @@ import useSessionStore from "../store/sessionStore";
 import WebcamCapture from "../components/WebcamCapture";
 import ChatWindow from "../components/SessionChat/ChatWindow";
 import TeamSessionPanel from "../components/TeamSessionPanel";
+import VoiceButton from "../components/VoiceChat/VoiceButton";
 import AbilityNotification from "../components/Characters/Gamification/AbilityNotification";
 import AbilityActiveIndicator from "../components/Characters/Gamification/AbilityActiveIndicator";
 import "./StudySession.css";
@@ -1069,12 +1070,20 @@ const StudySession = () => {
                 {/* Sidebar */}
                 <div className="space-y-4">
                   {isTeamSession && liveTeamSessionId && (
-                    <TeamSessionPanel
-                      sessionId={liveTeamSessionId}
-                      isHost={isTeamHost}
-                      inviteCode={inviteCode || activeSession?.inviteCode}
-                      showActions={false}
-                    />
+                    <>
+                      <TeamSessionPanel
+                        sessionId={liveTeamSessionId}
+                        isHost={isTeamHost}
+                        inviteCode={inviteCode || activeSession?.inviteCode}
+                        showActions={false}
+                      />
+                      {user?._id && (
+                        <VoiceButton
+                          sessionId={liveTeamSessionId}
+                          userId={user._id}
+                        />
+                      )}
+                    </>
                   )}
 
                   {sessionActive && (
@@ -1313,6 +1322,11 @@ const StudySession = () => {
             inviteCode={inviteCode || activeSession?.inviteCode}
             showActions={false}
           />
+          {user?._id && (
+            <div style={{ marginTop: "12px" }}>
+              <VoiceButton sessionId={liveTeamSessionId} userId={user._id} />
+            </div>
+          )}
         </div>
       )}
 

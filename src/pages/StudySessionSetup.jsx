@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import useSessionStore from "../store/sessionStore";
 import useFriendsStore from "../store/friendsStore";
+import { characterAPI } from "../services/api";
+import SessionCharacterPicker from "../components/Characters/SessionCharacterPicker";
 
 const SESSION_MODES = [
   {
@@ -71,11 +73,49 @@ const StudySessionSetup = () => {
   const [joinCode, setJoinCode] = useState("");
   const [joinCodeLoading, setJoinCodeLoading] = useState(false);
   const [joinCodeError, setJoinCodeError] = useState("");
+  const [ownedCharacters, setOwnedCharacters] = useState([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState("");
+  const [characterLoading, setCharacterLoading] = useState(false);
+  const [characterError, setCharacterError] = useState("");
 
   useEffect(() => {
     fetchCourses();
     fetchFriends();
   }, [fetchCourses, fetchFriends]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCharacters = async () => {
+      setCharacterLoading(true);
+      try {
+        const result = await characterAPI.getOwnedCharacters();
+        const ownedData = result?.data || {};
+        const ownedList = ownedData.owned_characters || [];
+        const activeCharacterId =
+          ownedData.active_character_id?._id || ownedData.active_character_id || "";
+
+        if (cancelled) return;
+
+        setOwnedCharacters(ownedList);
+        setSelectedCharacterId(String(activeCharacterId || ownedList[0]?._id || ""));
+      } catch {
+        if (!cancelled) {
+          setCharacterError("Unable to load owned characters.");
+        }
+      } finally {
+        if (!cancelled) {
+          setCharacterLoading(false);
+        }
+      }
+    };
+
+    loadCharacters();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleJoinByCode = async () => {
     const code = joinCode.trim().toUpperCase();
@@ -119,11 +159,16 @@ const StudySessionSetup = () => {
   };
 
   const handleStart = async () => {
+    if (!selectedCharacterId) {
+      setCharacterError("Choose a character before starting.");
+      return;
+    }
+
     if (selectedType === "solo") {
-      await setupSoloSession();
+      await setupSoloSession(selectedCharacterId);
       navigate("/session-live");
     } else {
-      const session = await setupTeamSession();
+      const session = await setupTeamSession(selectedCharacterId);
       // Use returned session or fall back to store value
       const sid = session?._id || teamSession?._id;
       if (sid && selectedFriends.size > 0) {
@@ -160,9 +205,9 @@ const StudySessionSetup = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#0f1923] overflow-hidden relative text-white font-sans flex flex-col">
+    <div className="min-h-screen overflow-x-hidden overflow-y-auto relative text-white font-sans flex flex-col">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1a2633] via-[#0f1923] to-[#0f1923] z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1a2633]/55 via-[#0f1923]/40 to-[#0f1923]/55 z-0 pointer-events-none" />
 
       {/* Top bar */}
       <div className="relative z-20 h-20 px-8 flex items-center border-b border-[#ffffff10] bg-[#0f1923]/80 backdrop-blur-md">
@@ -729,6 +774,27 @@ const StudySessionSetup = () => {
                   tasks
                 </p>
 
+                {characterLoading ? (
+                  <div className="mb-4 text-xs text-gray-400 tracking-wider uppercase">
+                    Loading characters...
+                  </div>
+                ) : (
+                  <div className="mb-4">
+                    <SessionCharacterPicker
+                      characters={ownedCharacters}
+                      selectedCharacterId={selectedCharacterId}
+                      onSelect={(characterId) => {
+                        setCharacterError("");
+                        setSelectedCharacterId(characterId);
+                      }}
+                      compact={true}
+                      disabled={sessionLoading}
+                      title="Session Character"
+                      subtitle=""
+                    />
+                  </div>
+                )}
+
                 {/* Show invited friends summary */}
                 {selectedType === "team" && selectedFriends.size > 0 && (
                   <div className="flex items-center justify-center gap-2 mb-4 flex-wrap">
@@ -760,6 +826,12 @@ const StudySessionSetup = () => {
                 {error && (
                   <div className="mb-4 p-3 bg-[var(--accent-color-dynamic)]/10 border border-[var(--accent-color-dynamic)]/20 rounded-lg text-[var(--accent-color-dynamic)] text-sm">
                     {error}
+                  </div>
+                )}
+
+                {characterError && (
+                  <div className="mb-4 p-3 bg-[var(--accent-color-dynamic)]/10 border border-[var(--accent-color-dynamic)]/20 rounded-lg text-[var(--accent-color-dynamic)] text-sm">
+                    {characterError}
                   </div>
                 )}
 

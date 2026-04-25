@@ -84,7 +84,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
       <div className="character-selector-container">
         <h1 className="character-selector-title">Choose Your Character</h1>
         <p className="character-selector-subtitle">
-          Each character has a unique ability to enhance your study experience.
+          Lock in a starter character with unique abilities for your study runs.
         </p>
 
         {error && <div className="character-selector-error">{error}</div>}
@@ -164,7 +164,7 @@ function CharacterSelector({ onCharacterSelected, loading = false }) {
               disabled={!selectedCharacterId || isSubmitting}
               className="btn-select-character"
             >
-              {isSubmitting ? "Selecting..." : "Select Character"}
+              {isSubmitting ? "Locking In..." : "Lock In Character"}
             </button>
           </div>
         </form>

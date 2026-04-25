@@ -53,6 +53,11 @@ vi.mock("../components/SessionChat/ChatWindow", () => ({
   default: () => <div data-testid="chat-window">Chat Window</div>,
 }));
 
+vi.mock("../components/VoiceChat/VoiceButton", () => ({
+  __esModule: true,
+  default: () => <div data-testid="voice-button">Voice Button</div>,
+}));
+
 vi.mock("framer-motion", () => ({
   motion: {
     div: React.forwardRef((p, r) => {

@@ -59,7 +59,7 @@ const useSessionStore = create((set, get) => ({
   selectCourse: (course) => set({ selectedCourse: course }),
 
   // Setup solo session
-  setupSoloSession: async () => {
+  setupSoloSession: async (selectedCharacterId = "") => {
     const { selectedCourse, sessionMode } = get();
     if (!selectedCourse) return;
 
@@ -68,6 +68,7 @@ const useSessionStore = create((set, get) => ({
       const result = await sessionSetupAPI.setup({
         courseId: selectedCourse._id || selectedCourse.id,
         mode: sessionMode,
+        ...(selectedCharacterId ? { selectedCharacterId } : {}),
       });
 
       const session = result.session;
@@ -95,7 +96,7 @@ const useSessionStore = create((set, get) => ({
   },
 
   // Setup team session
-  setupTeamSession: async () => {
+  setupTeamSession: async (selectedCharacterId = "") => {
     const { selectedCourse, sessionMode } = get();
     if (!selectedCourse) return null;
 
@@ -105,6 +106,7 @@ const useSessionStore = create((set, get) => ({
         courseId: selectedCourse._id || selectedCourse.id,
         mode: sessionMode,
         maxParticipants: 4,
+        ...(selectedCharacterId ? { selectedCharacterId } : {}),
       });
 
       const session = result.session;

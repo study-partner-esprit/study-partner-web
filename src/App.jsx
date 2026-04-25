@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { authAPI, profileAPI } from "@/services/api";
 import {
@@ -17,7 +17,6 @@ import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./pages/Profile";
 import Characters from "./pages/Characters";
-import Lobby from "./pages/Lobby";
 import CourseUpload from "./pages/CourseUpload";
 import StudyPlanner from "./pages/StudyPlanner";
 import StudySession from "./pages/StudySession";
@@ -101,7 +100,6 @@ function App() {
   const user = useAuthStore((s) => s.user);
   const { startPolling, stopPolling } = useNotificationStore();
   const isLandingPage = location.pathname === "/";
-  const isLobby = location.pathname === "/lobby";
   const isFullscreenPage = ["/team-lobby"].includes(location.pathname);
   const {
     fetchLevelInfo,
@@ -207,7 +205,7 @@ function App() {
   ]);
 
   // Show full navbar on landing page if user is logged in
-  const minimalNav = (isLandingPage || isLobby) && !user;
+  const minimalNav = isLandingPage && !user;
 
   // Start/stop notification polling based on authentication
   useEffect(() => {
@@ -255,7 +253,7 @@ function App() {
   }, [user?._id]);
 
   // Show sidebar for any authenticated user on all pages except the lobby / fullscreen pages
-  const showSidebar = user && !isLobby && !isFullscreenPage;
+  const showSidebar = user && !isFullscreenPage;
 
   return (
     <ErrorBoundary>
@@ -362,7 +360,7 @@ function App() {
             path="/lobby"
             element={
               <PrivateRoute requireStudent>
-                <Lobby />
+                <Navigate to="/session-setup" replace />
               </PrivateRoute>
             }
           />

@@ -899,10 +899,10 @@ const Characters = () => {
                     {focusCharacterState.isOwned ? (
                       <button
                         type="button"
-                        onClick={() => navigate("/lobby")}
+                        onClick={() => navigate("/session-setup")}
                         className="characters-action-btn select inventory-action-btn"
                       >
-                        Select In Lobby
+                        Select In Session
                       </button>
                     ) : focusCharacterState.isPurchasable ? (
                       <button
@@ -1000,7 +1000,7 @@ const Characters = () => {
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-                              navigate("/lobby");
+                              navigate("/session-setup");
                             }}
                             className="agent-lock-in-btn"
                           >

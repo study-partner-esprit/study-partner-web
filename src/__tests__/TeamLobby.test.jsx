@@ -146,20 +146,19 @@ describe("TeamLobby", () => {
       expect(characterAPI.getOwnedCharacters).toHaveBeenCalled();
     });
 
-    const select = await screen.findByRole("combobox");
-    expect(select).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Chrono" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Aegis" })).toBeInTheDocument();
+    expect(await screen.findByText(/Lobby Character/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /CHRONO/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /AEGIS/i })).toBeInTheDocument();
   });
 
   test("changing lobby character calls API and refreshes participants", async () => {
     const user = userEvent.setup();
     renderTeamLobby();
 
-    const select = await screen.findByRole("combobox");
+    const aegisTile = await screen.findByRole("button", { name: /AEGIS/i });
     const callsBeforeChange = mockFetchParticipants.mock.calls.length;
 
-    await user.selectOptions(select, "char-2");
+    await user.click(aegisTile);
 
     await waitFor(() => {
       expect(characterAPI.changeCharacter).toHaveBeenCalledWith("char-2");

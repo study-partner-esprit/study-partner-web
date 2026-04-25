@@ -76,10 +76,10 @@ export default function CheckoutCharacterSuccess() {
             Go to profile
           </button>
           <button
-            onClick={() => navigate("/lobby")}
+            onClick={() => navigate("/session-setup")}
             className="px-4 py-2 rounded-lg border border-[#ffffff20] hover:bg-[#ffffff0a] transition-colors"
           >
-            Choose in lobby
+            Choose in session
           </button>
         </div>
       </div>

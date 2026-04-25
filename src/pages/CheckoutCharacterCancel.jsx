@@ -26,10 +26,10 @@ export default function CheckoutCharacterCancel() {
             Back to profile
           </button>
           <button
-            onClick={() => navigate("/lobby")}
+            onClick={() => navigate("/session-setup")}
             className="px-4 py-2 rounded-lg border border-[#ffffff20] hover:bg-[#ffffff0a] transition-colors"
           >
-            Go to lobby
+            Go to session setup
           </button>
         </div>
       </div>
