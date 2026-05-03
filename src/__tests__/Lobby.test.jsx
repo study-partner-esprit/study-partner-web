@@ -18,6 +18,10 @@ vi.mock("../services/api", () => ({
     getOwnedCharacters: vi.fn(),
     changeCharacter: vi.fn(),
   },
+  gamificationAPI: {
+    getProfile: vi.fn(),
+    getRankProfile: vi.fn(),
+  },
 }));
 
 vi.mock("../store/authStore", () => ({
@@ -64,7 +68,7 @@ vi.mock("framer-motion", () => ({
 }));
 
 import Lobby from "../pages/Lobby";
-import { characterAPI, profileAPI } from "../services/api";
+import { characterAPI, profileAPI, gamificationAPI } from "../services/api";
 
 const renderLobby = () =>
   render(
@@ -100,6 +104,19 @@ describe("Lobby Page", () => {
       success: true,
       data: {
         character_id: { _id: "char-2", name: "Aegis", icon: "🛡️" },
+      },
+    });
+    gamificationAPI.getProfile.mockResolvedValue({
+      success: true,
+      data: { stats: {} },
+    });
+    gamificationAPI.getRankProfile.mockResolvedValue({
+      success: true,
+      profile: { rankName: "Novice", knowledgePoints: 0 },
+      progress: {
+        nextRank: { name: "Scholar" },
+        kpToNextRank: 100,
+        progressPercent: 0,
       },
     });
   });
@@ -140,9 +157,9 @@ describe("Lobby Page", () => {
 
     renderLobby();
 
-    const characterSelect = await screen.findByRole("combobox");
-    await screen.findByRole("option", { name: "Aegis" });
-    await user.selectOptions(characterSelect, "char-2");
+    // Find and click the Aegis character button
+    const aegisButton = await screen.findByRole("button", { name: /Aegis/i });
+    await user.click(aegisButton);
 
     const lockInButton = screen.getByRole("button", { name: /LOCK IN/i });
     await user.click(lockInButton);
