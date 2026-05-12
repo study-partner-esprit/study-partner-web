@@ -2,6 +2,8 @@
 
 React frontend application for Study Partner.
 
+This service was developed as part of the **PIDEV – 3rd Year Engineering Program** at **Esprit School of Engineering** (Academic Year 2025–2026).
+
 ## 🚀 Quick Start
 
 ### Prerequisites
