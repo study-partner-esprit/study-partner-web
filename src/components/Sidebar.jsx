@@ -43,7 +43,6 @@ const Sidebar = ({ topOffset = 80 }) => {
         { path: "/subjects", label: "Subjects", icon: BookOpen },
         { path: "/tasks", label: "Tasks", icon: CheckSquare },
         { path: "/planner", label: "Study Plans", icon: Target },
-        { path: "/reviews", label: "Reviews", icon: Brain },
       ],
     },
     {
