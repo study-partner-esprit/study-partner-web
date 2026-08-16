@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { notificationAPI } from "../services/api";
+import { useAuthStore } from "./authStore";
 
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
@@ -142,7 +143,8 @@ const useNotificationStore = create((set, get) => ({
 
     // Try WebSocket first
     try {
-      const wsUrl = `${WS_BASE}/ws/notifications?userId=${userId}`;
+      const token = useAuthStore.getState().token;
+      const wsUrl = `${WS_BASE}/ws/notifications?userId=${userId}&token=${token}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

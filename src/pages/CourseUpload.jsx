@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { courseAPI, subjectAPI, gamificationAPI } from "../services/api";
+import { courseAPI, subjectAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import "./CourseUpload.css";
 
@@ -83,21 +83,6 @@ const CourseUpload = () => {
       });
 
       const response = await courseAPI.create(formData);
-
-      // Award XP for course upload
-      try {
-        await gamificationAPI.awardXP({
-          action: "course_upload",
-          metadata: {
-            course_title: courseTitle,
-            subject_name: subjectName,
-            file_count: files.length,
-          },
-        });
-      } catch (xpError) {
-        console.error("Failed to award XP:", xpError);
-        // Don't block upload success if XP fails
-      }
 
       setUploadStatus({
         type: "success",

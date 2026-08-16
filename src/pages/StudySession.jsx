@@ -812,25 +812,7 @@ const StudySession = () => {
       console.error("[StudySession] Failed to update stats:", err);
     }
 
-    // Award XP for perfect focus session (score > 80)
-    if (
-      focusScore > 80 ||
-      (focusSummary?.avgFocusLevel && focusSummary.avgFocusLevel > 80)
-    ) {
-      try {
-        await gamificationAPI.awardXP({
-          action: "perfect_focus_session",
-          metadata: {
-            sessionId:
-              focusSessionIdRef.current || completedStudySessionId || null,
-            focusScore: focusSummary?.avgFocusLevel || focusScore || 0,
-          },
-        });
-        console.log("[StudySession] Awarded XP for perfect focus session!");
-      } catch (err) {
-        console.error("[StudySession] Failed to award XP:", err);
-      }
-    }
+    // Perfect-focus XP is awarded server-side by the signal-processing service.
 
     let kpSessionResult = null;
     if (completedStudySessionId) {

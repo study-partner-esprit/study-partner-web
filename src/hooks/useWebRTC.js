@@ -3,6 +3,7 @@ import {
   createPeerConnection,
   defaultIceServers,
 } from "@/services/webrtcService";
+import { useAuthStore } from "../store/authStore";
 
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
@@ -172,8 +173,9 @@ export default function useWebRTC({ sessionId, userId, localStream, enabled }) {
     // be discovered and we can negotiate later when media becomes available.
     if (!enabled || !sessionId || !userId) return undefined;
 
+    const token = useAuthStore.getState().token;
     const ws = new WebSocket(
-      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,
+      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}&token=${token}`,
     );
     const peers = peersRef.current;
     const remoteAudios = remoteAudioRef.current;

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "../store/authStore";
 
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
@@ -11,8 +12,9 @@ export default function useChatWebSocket({ sessionId, userId, onMessage }) {
   useEffect(() => {
     if (!sessionId || !userId) return undefined;
 
+    const token = useAuthStore.getState().token;
     const ws = new WebSocket(
-      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,
+      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}&token=${token}`,
     );
     socketRef.current = ws;
 
