@@ -48,18 +48,15 @@ const Login = () => {
 
     try {
       const response = await authAPI.login(formData);
-      // Support backends that return { token, user } or { data: { token, user } }
       const data = response.data?.data || response.data;
-      const token = data?.token || data?.accessToken || data?.authToken;
-      const refreshToken = data?.refreshToken;
       const user = data?.user || data?.profile || data?.userData;
 
-      if (!token || !user) {
+      if (!user) {
         throw new Error("Invalid auth response");
       }
 
-      // Save auth data with refresh token
-      login(user, token, refreshToken);
+      // Tokens are now in httpOnly cookies — only persist user data
+      login(user);
 
       // Redirect based on role
       // Fire-and-forget login event for analytics (don't block navigation)

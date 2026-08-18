@@ -7,6 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 180000, // Increased timeout for complex operations like study plan creation (3 mins)
+  withCredentials: true, // Send cookies (httpOnly accessToken/refreshToken) on every request
 });
 
 const PUBLIC_AUTH_PATHS = [
@@ -24,41 +25,54 @@ const PUBLIC_AUTH_PATHS = [
 const isPublicAuthRequest = (url = "") =>
   PUBLIC_AUTH_PATHS.some((path) => url.includes(path));
 
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  async (config) => {
-    // Skip token only for public auth endpoints.
-    // Protected auth routes like /auth/stripe/* still require Authorization.
-    if (isPublicAuthRequest(config.url)) {
-      return config;
-    }
+// ---- Refresh-token race-condition guard ----
+// Only one refresh request runs at a time; queued callers receive the same promise.
+let _pendingRefresh = null;
 
-    try {
-      // Import auth store dynamically to avoid circular imports
+async function _doRefresh() {
+  const { useAuthStore } = await import("../store/authStore");
+  const { refreshToken, isRefreshing } = useAuthStore.getState();
+
+  if (!refreshToken) throw new Error("No refresh token");
+
+  // POST /auth/refresh reads refreshToken from cookie (httpOnly) or body
+  const res = await api.post("/api/v1/auth/refresh", { refreshToken });
+  return res.data;
+}
+
+function _getRefreshPromise() {
+  if (_pendingRefresh) return _pendingRefresh;
+
+  _pendingRefresh = _doRefresh()
+    .then(async (data) => {
+      // The server now sets httpOnly cookies; it may also return user data.
+      // Re-fetch /auth/me to get the fresh user object.
       const { useAuthStore } = await import("../store/authStore");
+      const meRes = await api.get("/api/v1/auth/me");
+      useAuthStore.getState().login(meRes.data.user || meRes.data);
+      return true;
+    })
+    .catch(async (err) => {
+      const { useAuthStore } = await import("../store/authStore");
+      useAuthStore.getState().logout();
+      throw err;
+    })
+    .finally(() => {
+      _pendingRefresh = null;
+    });
 
-      // Get a valid token (will refresh if needed)
-      const token = await useAuthStore.getState().getValidToken();
+  return _pendingRefresh;
+}
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    } catch (error) {
-      console.error("[API] Error in request interceptor:", error);
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
+// Request interceptor — no longer attaches Authorization header (cookies handle auth)
+api.interceptors.request.use(
+  (config) => config,
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor to handle token refresh on 401
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
@@ -66,7 +80,6 @@ api.interceptors.response.use(
     if (error.response?.status === 403) {
       const { code, requiredTier, currentTier } = error.response.data || {};
       if (code === "TIER_REQUIRED" || code === "TRIAL_EXPIRED") {
-        // Dispatch a custom event so UI components can react
         window.dispatchEvent(
           new CustomEvent("tier-upgrade-required", {
             detail: { code, requiredTier, currentTier, url: error.config?.url },
@@ -88,28 +101,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Import auth store dynamically
-        const { useAuthStore } = await import("../store/authStore");
-        const authStore = useAuthStore.getState();
-
-        // Try to refresh token
-        const refreshed = await authStore.refreshTokenAsync();
-
-        if (refreshed) {
-          // Retry the original request with new token
-          const newToken = authStore.token;
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return api(originalRequest);
-        }
+        await _getRefreshPromise();
+        // Retry the original request — cookies now contain the new accessToken
+        return api(originalRequest);
       } catch (refreshError) {
         console.error("[API] Token refresh failed:", refreshError);
       }
 
-      // If refresh failed or no refresh token, logout user
-      const { useAuthStore } = await import("../store/authStore");
-      useAuthStore.getState().logout();
-
-      // Redirect to login if not already there
+      // If refresh failed, redirect to login
       if (window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
@@ -119,11 +118,11 @@ api.interceptors.response.use(
   },
 );
 
-// Auth API
+// Auth API — login/register now return user only (tokens in httpOnly cookies)
 export const authAPI = {
   register: (data) => api.post("/api/v1/auth/register", data),
   login: (data) => api.post("/api/v1/auth/login", data),
-  refresh: (refreshToken) => api.post("/api/v1/auth/refresh", { refreshToken }),
+  refresh: () => api.post("/api/v1/auth/refresh"),
   getMe: () => api.get("/api/v1/auth/me"),
   updateTier: (tier) => api.put("/api/v1/auth/tier", { tier }),
   getStripeConfig: () => api.get("/api/v1/auth/stripe/config"),
@@ -140,6 +139,7 @@ export const authAPI = {
     api.post("/api/v1/auth/forgot-password", { email }),
   resetPassword: (token, newPassword) =>
     api.post("/api/v1/auth/reset-password", { token, newPassword }),
+  logout: () => api.post("/api/v1/auth/logout"),
   redeemCoupon: (coupon, expectedTier) =>
     api.post("/api/v1/auth/coupon/redeem", { coupon, expectedTier }),
   listCoupons: () => api.get("/api/v1/auth/coupon/list"),

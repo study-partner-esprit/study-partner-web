@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { notificationAPI } from "../services/api";
-import { useAuthStore } from "./authStore";
-
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
-  `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.hostname}:3007`;
+  `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`;
 
 const useNotificationStore = create((set, get) => ({
   notifications: [],
@@ -143,8 +141,7 @@ const useNotificationStore = create((set, get) => ({
 
     // Try WebSocket first
     try {
-      const token = useAuthStore.getState().token;
-      const wsUrl = `${WS_BASE}/ws/notifications?userId=${userId}&token=${token}`;
+      const wsUrl = `${WS_BASE}/ws/notifications?userId=${userId}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

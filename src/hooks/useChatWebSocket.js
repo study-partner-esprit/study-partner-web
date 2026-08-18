@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAuthStore } from "../store/authStore";
 
 const WS_BASE =
   import.meta.env.VITE_WS_URL ||
-  `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.hostname}:3007`;
+  `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`;
 
 export default function useChatWebSocket({ sessionId, userId, onMessage }) {
   const socketRef = useRef(null);
@@ -12,9 +11,9 @@ export default function useChatWebSocket({ sessionId, userId, onMessage }) {
   useEffect(() => {
     if (!sessionId || !userId) return undefined;
 
-    const token = useAuthStore.getState().token;
+    // Cookies are sent automatically on same-origin WS connections
     const ws = new WebSocket(
-      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}&token=${token}`,
+      `${WS_BASE}/ws/realtime?sessionId=${sessionId}&userId=${userId}`,
     );
     socketRef.current = ws;
 

@@ -2,24 +2,26 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 
 const SessionManager = () => {
-  const { isAuthenticated, shouldRefreshToken, refreshTokenAsync } =
-    useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // Check token status every minute
+    // Periodically validate the session by calling /auth/me.
+    // If the cookie is expired the server returns 401, triggering the
+    // response interceptor refresh flow automatically.
     const checkInterval = setInterval(async () => {
-      if (shouldRefreshToken()) {
-        await refreshTokenAsync();
+      try {
+        const { authAPI } = await import("../services/api");
+        await authAPI.getMe();
+      } catch {
+        // 401 is handled by the response interceptor — nothing to do here.
       }
-    }, 60 * 1000); // Check every minute
+    }, 5 * 60 * 1000); // every 5 minutes
 
-    // Cleanup on unmount
     return () => clearInterval(checkInterval);
-  }, [isAuthenticated, shouldRefreshToken, refreshTokenAsync]);
+  }, [isAuthenticated]);
 
-  // This component doesn't render anything
   return null;
 };
 

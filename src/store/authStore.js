@@ -54,16 +54,13 @@ const useAuthStore = create(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
-      refreshToken: null,
       isAuthenticated: false,
       sessionExpiry: null,
-      isRefreshing: false,
 
       // Initialize authentication state from persisted data
       initializeAuth: () => {
-        const { token, user, sessionExpiry } = get();
-        if (token && user && sessionExpiry) {
+        const { user, sessionExpiry } = get();
+        if (user && sessionExpiry) {
           const now = new Date().getTime();
           if (sessionExpiry > now) {
             set({ isAuthenticated: true });
@@ -74,27 +71,27 @@ const useAuthStore = create(
         }
       },
 
-      login: (userData, token, refreshToken) => {
+      // login(userData) — tokens live in httpOnly cookies now
+      login: (userData) => {
         const expiry = new Date();
-        expiry.setHours(expiry.getHours() + 1); // Token expires in 1 hour
+        expiry.setHours(expiry.getHours() + 1);
 
         set({
           user: userData,
-          token,
-          refreshToken,
           isAuthenticated: true,
           sessionExpiry: expiry.getTime(),
         });
       },
 
       logout: () => {
+        // Best-effort server-side revocation + cookie clearing (fire-and-forget)
+        import("../services/api").then(({ authAPI }) => {
+          authAPI.logout().catch(() => {});
+        });
         set({
           user: null,
-          token: null,
-          refreshToken: null,
           isAuthenticated: false,
           sessionExpiry: null,
-          isRefreshing: false,
         });
       },
 
@@ -104,80 +101,9 @@ const useAuthStore = create(
 
       // Check if session is still valid
       isSessionValid: () => {
-        const { sessionExpiry, token } = get();
-        if (!token || !sessionExpiry) return false;
-
-        const now = new Date().getTime();
-        const timeUntilExpiry = sessionExpiry - now;
-
-        // Consider session valid if it expires in more than 5 minutes
-        return timeUntilExpiry > 5 * 60 * 1000;
-      },
-
-      // Check if token needs refresh (expires in less than 15 minutes)
-      shouldRefreshToken: () => {
-        const { sessionExpiry } = get();
-        if (!sessionExpiry) return false;
-
-        const now = new Date().getTime();
-        const timeUntilExpiry = sessionExpiry - now;
-
-        return timeUntilExpiry < 15 * 60 * 1000; // 15 minutes
-      },
-
-      // Refresh the access token
-      refreshTokenAsync: async () => {
-        const { refreshToken, isRefreshing } = get();
-
-        if (!refreshToken || isRefreshing) {
-          return false;
-        }
-
-        set({ isRefreshing: true });
-
-        try {
-          const response = await authAPI.refresh(refreshToken);
-          const { token: newToken, refreshToken: newRefreshToken } =
-            response.data;
-
-          const expiry = new Date();
-          expiry.setHours(expiry.getHours() + 1);
-
-          set({
-            token: newToken,
-            refreshToken: newRefreshToken,
-            sessionExpiry: expiry.getTime(),
-            isRefreshing: false,
-          });
-          return true;
-        } catch (error) {
-          console.error("[Auth] Token refresh failed:", error);
-          set({ isRefreshing: false });
-          // If refresh fails, logout user
-          get().logout();
-          return false;
-        }
-      },
-
-      // Get valid token (refresh if needed)
-      getValidToken: async () => {
-        const { token, isSessionValid, shouldRefreshToken, refreshTokenAsync } =
-          get();
-
-        if (!token) return null;
-
-        if (isSessionValid()) {
-          return token;
-        }
-
-        if (shouldRefreshToken()) {
-          const refreshed = await refreshTokenAsync();
-          if (refreshed) {
-            return get().token;
-          }
-        }
-
-        return null;
+        const { sessionExpiry, isAuthenticated } = get();
+        if (!isAuthenticated || !sessionExpiry) return false;
+        return sessionExpiry > new Date().getTime() + 5 * 60 * 1000;
       },
 
       // Role-based access control methods
@@ -273,11 +199,9 @@ const useAuthStore = create(
     }),
     {
       name: "auth-storage",
-      // Only persist these fields
+      // Only persist user + sessionExpiry (tokens are in httpOnly cookies)
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
-        refreshToken: state.refreshToken,
         sessionExpiry: state.sessionExpiry,
       }),
     },
