@@ -167,7 +167,7 @@ const NotificationItem = ({ notification }) => {
                 notification.priority === "urgent"
                   ? "bg-[var(--accent-color-dynamic)]/15 text-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]"
                   : notification.priority === "high"
-                    ? "bg-[var(--accent-color-dynamic)] text-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)] dark:text-[var(--accent-color-dynamic)]"
+                    ? "bg-[var(--accent-color-dynamic)]/15 text-[var(--accent-color-dynamic)] dark:bg-[var(--accent-color-dynamic)]/20 dark:text-[var(--accent-color-dynamic)]"
                     : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
               }`}
             >

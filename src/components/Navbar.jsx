@@ -116,6 +116,7 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
               className="w-10 h-10 rounded-full bg-muted/50 hover:bg-muted border border-border flex items-center justify-center transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             >
               {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-[var(--accent-color-dynamic)]" />
@@ -184,6 +185,7 @@ const Navbar = ({ minimal = false, topOffset = 80 }) => {
                   className="w-10 h-10 flex min-[800px]:hidden items-center justify-center rounded-xl bg-muted/40 hover:bg-muted/60 border border-border transition-colors text-foreground ml-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 >
                   {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </motion.button>

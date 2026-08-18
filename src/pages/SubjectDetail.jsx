@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { subjectAPI, courseAPI, studyPlanAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
@@ -91,14 +91,50 @@ const AddFilesModal = ({ isOpen, onClose, onUploadComplete, course }) => {
     }
   };
 
+  const modalRef = useRef(null);
+
+  // Focus-trap + Escape key
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+    const el = modalRef.current;
+    const prev = document.activeElement;
+    el.focus();
+    const handleKey = (e) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "Tab") {
+        const focusable = el.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      }
+    };
+    el.addEventListener("keydown", handleKey);
+    return () => { el.removeEventListener("keydown", handleKey); if (prev) prev.focus(); };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-files-title"
+        className="modal-container"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
-          <h2>Add Files to "{course.title}"</h2>
-          <button onClick={onClose} className="close-btn">
+          <h2 id="add-files-title">Add Files to "{course.title}"</h2>
+          <button onClick={onClose} className="close-btn" aria-label="Close modal">
             <X size={24} />
           </button>
         </div>

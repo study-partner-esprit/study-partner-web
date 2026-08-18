@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
 import "./LevelUpModal.css";
 
 const CONFETTI_COLORS = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff6b9d"];
@@ -11,11 +11,47 @@ const CONFETTI_DATA = Array.from({ length: 30 }, (_, i) => ({
 }));
 
 const LevelUpModal = ({ visible, newLevel, totalXP, onClose }) => {
+  const modalRef = useRef(null);
+
+  // Focus-trap + Escape
+  useEffect(() => {
+    if (!visible || !modalRef.current) return;
+    const el = modalRef.current;
+    const prev = document.activeElement;
+    el.focus();
+    const handleKey = (e) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "Tab") {
+        const focusable = el.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      }
+    };
+    el.addEventListener("keydown", handleKey);
+    return () => { el.removeEventListener("keydown", handleKey); if (prev) prev.focus(); };
+  }, [visible, onClose]);
+
   if (!visible) return null;
 
   return (
     <div className="levelup-overlay" onClick={onClose}>
-      <div className="levelup-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="levelup-title"
+        className="levelup-modal"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="levelup-confetti">
           {CONFETTI_DATA.map((piece, i) => (
             <div
@@ -32,7 +68,7 @@ const LevelUpModal = ({ visible, newLevel, totalXP, onClose }) => {
 
         <div className="levelup-content">
           <div className="levelup-icon">🎉</div>
-          <h2 className="levelup-title">LEVEL UP!</h2>
+          <h2 id="levelup-title" className="levelup-title">LEVEL UP!</h2>
           <div className="levelup-level">
             <span className="level-label">Level</span>
             <span className="level-number">{newLevel}</span>

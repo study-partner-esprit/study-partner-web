@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { authAPI, profileAPI } from "@/services/api";
@@ -7,55 +7,63 @@ import {
   extractColorFromVideo,
 } from "@/utils/colorExtractor";
 import "@/styles/dynamicAccent.css";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Sessions from "./pages/Sessions";
-import Tasks from "./pages/Tasks";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
-import Profile from "./pages/Profile";
-import Characters from "./pages/Characters";
-import CourseUpload from "./pages/CourseUpload";
-import StudyPlanner from "./pages/StudyPlanner";
-import StudySession from "./pages/StudySession";
-import Subjects from "./pages/Subjects";
-import SubjectDetail from "./pages/SubjectDetail";
-import Calendar from "./pages/Calendar";
-import Leaderboard from "./pages/Leaderboard";
-import ReviewCenter from "./pages/ReviewCenter";
-import AISearch from "./pages/AISearch";
-import Friends from "./pages/Friends";
-import Analytics from "./pages/Analytics";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminCoupons from "./pages/AdminCoupons";
-import AdminUsers from "./pages/AdminUsers";
-import AdminSubscriptions from "./pages/AdminSubscriptions";
-import AdminAnalytics from "./pages/AdminAnalytics";
-import Pricing from "./pages/Pricing";
-import CheckoutSuccess from "./pages/CheckoutSuccess";
-import CheckoutCancel from "./pages/CheckoutCancel";
-import CheckoutCharacterSuccess from "./pages/CheckoutCharacterSuccess";
-import CheckoutCharacterCancel from "./pages/CheckoutCharacterCancel";
-import StudySessionSetup from "./pages/StudySessionSetup";
-import TeamLobby from "./pages/TeamLobby";
-import BackgroundCustomizer from "./pages/BackgroundCustomizer";
-import AnimatedBackgroundCustomizer from "./pages/AnimatedBackgroundCustomizer";
-import LevelUpNotification from "./components/LevelUpNotification";
-import SessionInvitePopup from "./components/SessionInvitePopup";
-import useGamificationStore from "./store/gamificationStore";
-import VerifyEmail from "./pages/VerifyEmail";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import CharacterSelectionStep from "./pages/CharacterSelectionStep";
 import SessionManager from "./components/SessionManager";
 import NotificationCenter from "./components/NotificationCenter";
 import UpgradePrompt from "./components/UpgradePrompt";
 import TrialBanner from "./components/TrialBanner";
 import Sidebar from "./components/Sidebar";
 import { ErrorBoundary } from "./components/shared";
+import LevelUpNotification from "./components/LevelUpNotification";
+import SessionInvitePopup from "./components/SessionInvitePopup";
+import useGamificationStore from "./store/gamificationStore";
 import useNotificationStore from "./store/notificationStore";
+
+// --- Lazy-loaded pages (code-split per route) ---
+const Landing = React.lazy(() => import("./pages/Landing"));
+const Login = React.lazy(() => import("./pages/Login"));
+const Register = React.lazy(() => import("./pages/Register"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Sessions = React.lazy(() => import("./pages/Sessions"));
+const Tasks = React.lazy(() => import("./pages/Tasks"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const Characters = React.lazy(() => import("./pages/Characters"));
+const CourseUpload = React.lazy(() => import("./pages/CourseUpload"));
+const StudyPlanner = React.lazy(() => import("./pages/StudyPlanner"));
+const StudySession = React.lazy(() => import("./pages/StudySession"));
+const Subjects = React.lazy(() => import("./pages/Subjects"));
+const SubjectDetail = React.lazy(() => import("./pages/SubjectDetail"));
+const Calendar = React.lazy(() => import("./pages/Calendar"));
+const Leaderboard = React.lazy(() => import("./pages/Leaderboard"));
+const ReviewCenter = React.lazy(() => import("./pages/ReviewCenter"));
+const AISearch = React.lazy(() => import("./pages/AISearch"));
+const Friends = React.lazy(() => import("./pages/Friends"));
+const Analytics = React.lazy(() => import("./pages/Analytics"));
+const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
+const AdminCoupons = React.lazy(() => import("./pages/AdminCoupons"));
+const AdminUsers = React.lazy(() => import("./pages/AdminUsers"));
+const AdminSubscriptions = React.lazy(() => import("./pages/AdminSubscriptions"));
+const AdminAnalytics = React.lazy(() => import("./pages/AdminAnalytics"));
+const Pricing = React.lazy(() => import("./pages/Pricing"));
+const CheckoutSuccess = React.lazy(() => import("./pages/CheckoutSuccess"));
+const CheckoutCancel = React.lazy(() => import("./pages/CheckoutCancel"));
+const CheckoutCharacterSuccess = React.lazy(() => import("./pages/CheckoutCharacterSuccess"));
+const CheckoutCharacterCancel = React.lazy(() => import("./pages/CheckoutCharacterCancel"));
+const StudySessionSetup = React.lazy(() => import("./pages/StudySessionSetup"));
+const TeamLobby = React.lazy(() => import("./pages/TeamLobby"));
+const BackgroundCustomizer = React.lazy(() => import("./pages/BackgroundCustomizer"));
+const AnimatedBackgroundCustomizer = React.lazy(() => import("./pages/AnimatedBackgroundCustomizer"));
+const VerifyEmail = React.lazy(() => import("./pages/VerifyEmail"));
+const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
+const CharacterSelectionStep = React.lazy(() => import("./pages/CharacterSelectionStep"));
+
+const PageSpinner = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="w-8 h-8 border-2 border-[var(--accent-color,#4fb8ce)] border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 const hexToRgb = (hex) => {
   const normalized = (hex || "").replace("#", "").trim();
@@ -133,8 +141,8 @@ function App() {
   useEffect(() => {
     const refreshUserData = async () => {
       try {
-        const { user: currentUser, token } = useAuthStore.getState();
-        if (currentUser && token) {
+        const { user: currentUser, isAuthenticated } = useAuthStore.getState();
+        if (currentUser && isAuthenticated) {
           const response = await authAPI.getMe();
           const freshUser = response.data?.user;
           if (freshUser) {
@@ -329,6 +337,7 @@ function App() {
         className={`relative z-10 w-full min-h-screen transition-all duration-300 ${showSidebar ? "min-[800px]:pl-[72px]" : ""}`}
         style={{ paddingTop: isLandingPage ? topOffsetPx : topOffsetPx }}
       >
+        <Suspense fallback={<PageSpinner />}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -565,6 +574,7 @@ function App() {
             }
           />
         </Routes>
+        </Suspense>
       </div>
     </ErrorBoundary>
   );

@@ -9,7 +9,7 @@ const NotificationBell = () => {
     <button
       onClick={toggleNotificationCenter}
       className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-      title="Notifications"
+      aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
     >
       <Bell size={20} className="text-gray-600 dark:text-gray-300" />
 

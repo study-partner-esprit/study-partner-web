@@ -7,7 +7,7 @@ export const PermissionGuard = ({
   fallback = null,
   children,
 }) => {
-  const { user, hasPermission, hasAnyRole } = useAuthStore();
+  const { user, hasPermission } = useAuthStore();
 
   if (!user) return fallback;
 
@@ -17,7 +17,7 @@ export const PermissionGuard = ({
   }
 
   // Check multiple permissions (any of them)
-  if (permissions && permissions.length > 0 && !hasAnyRole(permissions)) {
+  if (permissions && permissions.length > 0 && !permissions.some((p) => hasPermission(p))) {
     return fallback;
   }
 

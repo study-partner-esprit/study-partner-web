@@ -5,9 +5,11 @@ const WebcamCapture = ({
   onFrameCapture,
   captureInterval = 2000,
   enabled = true,
+  diffThreshold = 0.03,
 }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const prevFrameRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
   const intervalRef = useRef(null);
@@ -142,14 +144,39 @@ const WebcamCapture = ({
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    // Set canvas dimensions to match video
+    // Downscale for diff computation (8x8 = 64 pixels — fast)
+    const W = 8;
+    const H = 6;
+    canvas.width = W;
+    canvas.height = H;
+    context.drawImage(video, 0, 0, W, H);
+    const currentData = context.getImageData(0, 0, W, H).data;
+
+    // Compare with previous frame
+    const prev = prevFrameRef.current;
+    if (prev) {
+      let diffCount = 0;
+      const totalPixels = W * H;
+      for (let i = 0; i < currentData.length; i += 4) {
+        const dr = Math.abs(currentData[i] - prev[i]);
+        const dg = Math.abs(currentData[i + 1] - prev[i + 1]);
+        const db = Math.abs(currentData[i + 2] - prev[i + 2]);
+        if (dr + dg + db > 60) diffCount++;
+      }
+      if (diffCount / totalPixels < diffThreshold) {
+        // Frame is essentially the same — skip the network request
+        return;
+      }
+    }
+
+    // Store current downscaled frame for next comparison
+    prevFrameRef.current = new Uint8ClampedArray(currentData);
+
+    // Full-resolution capture for the server
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
-    // Draw video frame to canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Convert canvas to blob
     canvas.toBlob(
       (blob) => {
         if (blob && onFrameCapture) {
