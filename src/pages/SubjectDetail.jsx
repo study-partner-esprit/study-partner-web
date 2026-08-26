@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { subjectAPI, courseAPI, studyPlanAPI } from "../services/api";
+import { subjectAPI, courseAPI, studyPlanAPI, aiAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
 import {
   BookOpen,
@@ -391,6 +391,8 @@ const SubjectDetail = () => {
   const [selectedCourseForDetail, setSelectedCourseForDetail] = useState(null);
   const [isCourseDetailModalOpen, setIsCourseDetailModalOpen] = useState(false);
   const [generatingPlan, setGeneratingPlan] = useState({});
+  const [activeJob, setActiveJob] = useState(null); // { jobId, courseId }
+  const pollingRef = useRef(null);
 
   const loadSubjectData = useCallback(async () => {
     if (!user?._id) return;
@@ -414,6 +416,48 @@ const SubjectDetail = () => {
       loadSubjectData();
     }
   }, [user, subjectId, loadSubjectData]);
+
+  // PLAN-09: Poll job status while activeJob is set
+  useEffect(() => {
+    if (!activeJob) return;
+    const { jobId, courseId } = activeJob;
+
+    const poll = async () => {
+      try {
+        const resp = await aiAPI.getJobStatus(jobId);
+        const { status, result, error: jobError } = resp.data;
+
+        if (status === "COMPLETED") {
+          // Finalise the plan (persist StudyPlan + Tasks)
+          try {
+            await studyPlanAPI.finalize(resp.data.correlationId || jobId);
+            alert("Study plan created successfully!");
+            navigate("/planner");
+          } catch (finErr) {
+            console.error("Finalise failed:", finErr);
+            alert("Plan generated but saving failed. Please try again.");
+          } finally {
+            setActiveJob(null);
+            setGeneratingPlan((prev) => ({ ...prev, [courseId]: false }));
+          }
+        } else if (status === "FAILED") {
+          alert(`Plan generation failed: ${jobError || "Unknown error"}`);
+          setActiveJob(null);
+          setGeneratingPlan((prev) => ({ ...prev, [courseId]: false }));
+        }
+        // else: still PROCESSING/RETRYING — poll again
+      } catch (err) {
+        console.error("Poll error:", err);
+        // Don't stop polling on transient network errors
+      }
+    };
+
+    poll();
+    pollingRef.current = setInterval(poll, 2000);
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [activeJob, navigate]);
 
   const handleBack = () => {
     navigate("/subjects");
@@ -472,22 +516,20 @@ const SubjectDetail = () => {
         startDate: new Date().toISOString(),
       });
 
-      const message = response.data.plan.warning
-        ? `Study plan created successfully with ${response.data.plan.tasksCount} tasks!\n\nNote: ${response.data.plan.warning}`
-        : `Study plan created successfully with ${response.data.plan.tasksCount} tasks!`;
+      const { jobId } = response.data;
+      if (!jobId) {
+        throw new Error("No jobId returned from plan creation");
+      }
 
-      alert(message);
-      navigate("/planner");
+      // Enter polling state — the useEffect above handles completion
+      setActiveJob({ jobId, courseId: course.id });
     } catch (error) {
       console.error("Failed to generate plan:", error);
-      const errorMessage =
+      alert(
         error.response?.data?.error ||
-        "Failed to generate study plan. Please try again.";
-      const errorDetails = error.response?.data?.details
-        ? `\n\nDetails: ${error.response.data.details}`
-        : "";
-      alert(errorMessage + errorDetails);
-    } finally {
+          error.response?.data?.details ||
+          "Failed to generate study plan. Please try again.",
+      );
       setGeneratingPlan((prev) => ({ ...prev, [course.id]: false }));
     }
   };

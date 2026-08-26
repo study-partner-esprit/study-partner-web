@@ -209,6 +209,9 @@ export const courseAPI = {
 
 // AI Services API (all routed through API Gateway → ai-orchestrator → Python AI)
 export const aiAPI = {
+  // Job polling (PLAN-09)
+  getJobStatus: (jobId) => api.get(`/api/v1/ai/jobs/${jobId}`),
+
   // Study Planning
   createStudyPlan: (data) => api.post("/api/v1/ai/plan/create", data),
   getUserPlans: () => api.get("/api/v1/ai/plan/list"),
@@ -301,6 +304,8 @@ export const tasksAPI = {
 // Study Plans API (replaces old task generation)
 export const studyPlanAPI = {
   create: (data) => api.post("/api/v1/study/plans/create", data),
+  finalize: (correlationId) =>
+    api.post("/api/v1/study/plans/create-status", { correlationId }),
   getAll: (params) => api.get("/api/v1/study/plans", { params }),
   getById: (planId) => api.get(`/api/v1/study/plans/${planId}`),
   schedule: (planId, contextData) =>
