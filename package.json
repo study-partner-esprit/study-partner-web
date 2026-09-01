@@ -79,7 +79,18 @@
       "it": "readonly",
       "test": "readonly",
       "expect": "readonly"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "e2e/**/*.js",
+          "e2e/**/*.spec.js"
+        ],
+        "rules": {
+          "testing-library/prefer-screen-queries": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [

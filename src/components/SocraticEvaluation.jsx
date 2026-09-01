@@ -34,6 +34,7 @@ export default function SocraticEvaluation({
   const [masteryScore, setMasteryScore] = useState(0);
   const [questionsAsked, setQuestionsAsked] = useState(0);
   const [error, setError] = useState(null);
+  const [answerError, setAnswerError] = useState(null);
 
   const reset = useCallback(() => {
     aliveRef.current = false;
@@ -46,6 +47,7 @@ export default function SocraticEvaluation({
     setFeedback(null);
     setUserAnswer("");
     setError(null);
+    setAnswerError(null);
     setQuestion(taskTitle || taskDescription || "Explain your understanding of this task.");
     setState("answering");
   }, [taskTitle, taskDescription]);
@@ -61,6 +63,7 @@ export default function SocraticEvaluation({
   }, [taskTitle, taskDescription]);
 
   useEffect(() => {
+    aliveRef.current = true;
     return () => {
       aliveRef.current = false;
       clearTimeout(pollRef.current);
@@ -127,7 +130,12 @@ export default function SocraticEvaluation({
 
   const submitAnswer = useCallback(async () => {
     const answer = userAnswer.trim();
-    if (!answer || !aliveRef.current) return;
+    if (!aliveRef.current) return;
+    if (!answer) {
+      setAnswerError("Please enter your answer before submitting.");
+      return;
+    }
+    setAnswerError(null);
     setState("submitting");
     setError(null);
     try {
@@ -283,7 +291,10 @@ export default function SocraticEvaluation({
 
       <textarea
         value={userAnswer}
-        onChange={(e) => setUserAnswer(e.target.value)}
+        onChange={(e) => {
+          setUserAnswer(e.target.value);
+          if (answerError) setAnswerError(null);
+        }}
         placeholder="Type your answer..."
         rows={3}
         className="w-full bg-[#0f1923] border border-[#ffffff10] rounded-lg p-3 text-sm text-white placeholder-gray-500 resize-none focus:outline-none focus:border-[var(--accent-color-dynamic)] transition-colors mb-3"
@@ -297,11 +308,14 @@ export default function SocraticEvaluation({
 
       <button
         onClick={submitAnswer}
-        disabled={!userAnswer.trim()}
-        className="w-full px-4 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full px-4 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
       >
         <Send size={14} /> Submit Answer
       </button>
+
+      {answerError && (
+        <p className="text-xs text-red-400 mt-2">{answerError}</p>
+      )}
 
       {feedback && (
         <p className="text-xs text-gray-400 mt-2">{feedback}</p>

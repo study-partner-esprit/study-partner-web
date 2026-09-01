@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-import React from "react";
+import React, { StrictMode } from "react";
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import SocraticEvaluation from "../SocraticEvaluation";
 
@@ -149,5 +149,54 @@ describe("SocraticEvaluation (async job API — EVAL-09)", () => {
     });
 
     expect(screen.getByText("LLM unavailable after retries")).toBeInTheDocument();
+  });
+
+  test("empty answer shows validation feedback and never creates a job", () => {
+    renderEval();
+    fireEvent.click(screen.getByRole("button", { name: /submit answer/i }));
+
+    expect(screen.getByText("Please enter your answer before submitting.")).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+    expect(mockGet).not.toHaveBeenCalled();
+  });
+
+  test("validation feedback clears once the user types", () => {
+    renderEval();
+    fireEvent.click(screen.getByRole("button", { name: /submit answer/i }));
+    expect(screen.getByText("Please enter your answer before submitting.")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText("Type your answer..."), {
+      target: { value: "Base case stops it" },
+    });
+    expect(screen.queryByText("Please enter your answer before submitting.")).not.toBeInTheDocument();
+  });
+
+  test("is still functional under StrictMode double-mount (ref not left dead)", async () => {
+    mockSubmit.mockResolvedValue({
+      data: { jobId: "job-4", status: "PENDING", sessionId: "sess-1", step: 1 },
+    });
+    mockGet.mockResolvedValue({ data: completedResult() });
+    vi.useFakeTimers();
+
+    render(
+      <StrictMode>
+        <SocraticEvaluation
+          taskTitle="Explain recursion"
+          taskDescription="Describe base and recursive cases"
+          onComplete={() => {}}
+        />
+      </StrictMode>,
+    );
+
+    await act(async () => {
+      submitAnswer("The base case returns without recursing");
+      await Promise.resolve();
+    });
+
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      vi.advanceTimersByTime(1500);
+    });
+    expect(screen.getByText("When does recursion stop?")).toBeInTheDocument();
   });
 });
