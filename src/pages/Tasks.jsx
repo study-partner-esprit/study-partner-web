@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tasksAPI } from "../services/api";
 import { useAuthStore } from "../store/authStore";
+import PlanTaskBadge from "../components/CompetencyMap/PlanTaskBadge";
 
 const Tasks = () => {
   const { user } = useAuthStore();
@@ -384,6 +385,16 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
             <span className="px-2 py-1 bg-[var(--accent-color-dynamic)]/20 text-[var(--accent-color-dynamic)] text-xs font-bold">
               FROM STUDY PLAN
             </span>
+          </div>
+        )}
+
+        {/* BLOOM-11: target Bloom level badge from planner output */}
+        {(task.targetBloomLevel || task.objectiveId) && (
+          <div className="mb-3">
+            <PlanTaskBadge
+              level={task.targetBloomLevel}
+              objectiveId={task.objectiveId}
+            />
           </div>
         )}
 

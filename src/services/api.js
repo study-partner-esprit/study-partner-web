@@ -453,6 +453,14 @@ export const analyticsAPI = {
     api.get("/api/v1/analytics/daily-activity", { params }),
 };
 
+// Competency API (F14 BLOOM-09/BLOOM-11) — study service.
+export const competencyAPI = {
+  getCompetencyMap: (params) =>
+    api.get("/api/v1/competencies", { params }).then((res) => res.data),
+  getTopicDetail: (topicId) =>
+    api.get(`/api/v1/competencies/topics/${topicId}`).then((res) => res.data),
+};
+
 // Review / Spaced Repetition API - Goes through AI Orchestrator
 export const reviewAPI = {
   scheduleReview: (data) =>

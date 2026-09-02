@@ -16,6 +16,7 @@ import {
   Ticket,
   CreditCard,
   LayoutDashboard,
+  Radar,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -51,6 +52,7 @@ const Sidebar = ({ topOffset = 80 }) => {
         { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
         { path: "/characters", label: "Characters", icon: Swords },
         { path: "/friends", label: "Friends", icon: Users },
+        { path: "/competency", label: "Competency", icon: Radar },
       ],
     },
   ];
