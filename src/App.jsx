@@ -40,6 +40,7 @@ const ReviewCenter = React.lazy(() => import("./pages/ReviewCenter"));
 const AISearch = React.lazy(() => import("./pages/AISearch"));
 const Friends = React.lazy(() => import("./pages/Friends"));
 const Analytics = React.lazy(() => import("./pages/Analytics"));
+const CompetencyMap = React.lazy(() => import("./pages/CompetencyMap"));
 const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
 const AdminCoupons = React.lazy(() => import("./pages/AdminCoupons"));
 const AdminUsers = React.lazy(() => import("./pages/AdminUsers"));
@@ -426,6 +427,14 @@ function App() {
             element={
               <PrivateRoute requireStudent>
                 <StudyPlanner />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/competency"
+            element={
+              <PrivateRoute requireStudent>
+                <CompetencyMap />
               </PrivateRoute>
             }
           />
