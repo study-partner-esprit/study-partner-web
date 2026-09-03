@@ -260,24 +260,20 @@ export const aiAPI = {
   socraticAnswer: (data) =>
     api.post("/api/v1/ai/evaluator/socratic/answer", data),
 
-  // AI Search
+  // AI Search (F05 / SEARCH-07): async job creation + polling
   search: (data = {}) => {
-    const normalizedPayload = {
-      question: data.question ?? data.query ?? "",
+    const payload = {
+      query: data.query ?? data.question ?? "",
     };
-
-    const resolvedUserId = data.user_id ?? data.userId;
-    if (resolvedUserId != null && resolvedUserId !== "") {
-      normalizedPayload.user_id = resolvedUserId;
+    if (data.maxResults != null) payload.maxResults = data.maxResults;
+    if (data.voiceMode != null) payload.voiceMode = data.voiceMode;
+    if (data.sessionId || data.session_id) {
+      payload.sessionId = data.sessionId ?? data.session_id;
     }
-
-    const resolvedSessionId = data.session_id ?? data.sessionId;
-    if (resolvedSessionId != null && resolvedSessionId !== "") {
-      normalizedPayload.session_id = resolvedSessionId;
-    }
-
-    return api.post("/api/v1/ai/search/ask", normalizedPayload);
+    // userId comes from the authenticated context server-side — never in the body.
+    return api.post("/api/v1/search/query", payload);
   },
+  searchJob: (jobId) => api.get(`/api/v1/search/jobs/${jobId}`),
   searchHistory: (userId, limit = 20) =>
     api.get(`/api/v1/ai/search/history/${userId}`, { params: { limit } }),
 

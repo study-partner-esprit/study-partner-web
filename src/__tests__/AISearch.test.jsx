@@ -7,6 +7,7 @@ import { MemoryRouter } from "react-router-dom";
 vi.mock("../services/api", () => ({
   aiAPI: {
     search: vi.fn(),
+    searchJob: vi.fn(),
     searchHistory: vi.fn(),
   },
 }));
@@ -82,8 +83,13 @@ describe("AISearch Page", () => {
     vi.clearAllMocks();
     aiAPI.searchHistory.mockResolvedValue({ data: { history: [] } });
     aiAPI.search.mockResolvedValue({
+      data: { jobId: "job-search-1", status: "PENDING" },
+    });
+    aiAPI.searchJob.mockResolvedValue({
       data: {
-        results: [{ _id: "r1", content: "The answer is 42", score: 0.9 }],
+        jobId: "job-search-1",
+        status: "COMPLETED",
+        result: { answer: "The answer is 42.", sources: [] },
       },
     });
   });
@@ -110,6 +116,27 @@ describe("AISearch Page", () => {
     await userEvent.click(submitBtn);
     await waitFor(() => {
       expect(aiAPI.search).toHaveBeenCalled();
+    });
+  });
+
+  it("shows validation error for empty query", async () => {
+    renderSearch();
+    const submitBtn = screen.getByRole("button", { type: "submit" });
+    await userEvent.click(submitBtn);
+    await waitFor(() => {
+      expect(screen.getByText("Please enter a search query.")).toBeInTheDocument();
+    });
+    expect(aiAPI.search).not.toHaveBeenCalled();
+  });
+
+  it("displays the answer after the job completes", async () => {
+    renderSearch();
+    const input = screen.getByPlaceholderText(/search|ask|query/i);
+    await userEvent.type(input, "What is recursion?");
+    const submitBtn = screen.getByRole("button", { type: "submit" });
+    await userEvent.click(submitBtn);
+    await waitFor(() => {
+      expect(screen.getByText("The answer is 42.")).toBeInTheDocument();
     });
   });
 

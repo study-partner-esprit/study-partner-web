@@ -19,9 +19,11 @@ const AISearch = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState(null);
   const [searching, setSearching] = useState(false);
+  const [error, setError] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const inputRef = useRef(null);
+  const pollingRef = useRef(null);
 
   useEffect(() => {
     if (user?._id) {
@@ -35,24 +37,57 @@ const AISearch = () => {
     }
   }, [user?._id]);
 
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, []);
+
+  // F05 / SEARCH-07: create a search job (202), then poll for the completed
+  // answer + sources instead of a single slow synchronous request.
   const handleSearch = async (e) => {
     e?.preventDefault();
-    if (!query.trim() || searching) return;
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setError("Please enter a search query.");
+      return;
+    }
+    if (searching) return;
 
     setSearching(true);
     setResults(null);
+    setError(null);
     setShowHistory(false);
 
     try {
-      const res = await aiAPI.search({
-        query: query.trim(),
-        userId: user._id,
-      });
-      setResults(res.data);
+      const res = await aiAPI.search({ query: trimmed });
+      const { jobId } = res.data;
+      if (!jobId) throw new Error("No jobId returned for search");
+
+      const poll = async () => {
+        try {
+          const statusRes = await aiAPI.searchJob(jobId);
+          const { status, result, error: jobError } = statusRes.data;
+          if (status === "COMPLETED") {
+            if (pollingRef.current) clearInterval(pollingRef.current);
+            setResults(result);
+            setSearching(false);
+          } else if (status === "FAILED") {
+            if (pollingRef.current) clearInterval(pollingRef.current);
+            setError(jobError || "Search failed. Please try again.");
+            setSearching(false);
+          }
+          // else still PROCESSING/RETRYING → poll again
+        } catch (err) {
+          console.error("Search poll error:", err);
+        }
+      };
+
+      await poll();
+      pollingRef.current = setInterval(poll, 2000);
     } catch (err) {
       console.error("Search failed:", err);
-      setResults({ error: "Search failed. Please try again." });
-    } finally {
+      setError("Search failed. Please try again.");
       setSearching(false);
     }
   };
@@ -101,7 +136,7 @@ const AISearch = () => {
           />
           <motion.button
             type="submit"
-            disabled={!query.trim() || searching}
+            disabled={searching}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="absolute right-3 p-2 rounded-xl bg-primary text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed"
@@ -163,6 +198,17 @@ const AISearch = () => {
         </motion.div>
       )}
 
+      {/* Error State */}
+      {error && !searching && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-6 rounded-2xl border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/5 text-center mb-6"
+        >
+          <p className="text-[var(--accent-color-dynamic)]">{error}</p>
+        </motion.div>
+      )}
+
       {/* Results */}
       {results && !searching && (
         <motion.div
@@ -170,26 +216,24 @@ const AISearch = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          {results.error ? (
-            <div className="p-6 rounded-2xl border border-[var(--accent-color-dynamic)]/30 bg-[var(--accent-color-dynamic)]/5 text-center">
-              <p className="text-[var(--accent-color-dynamic)]">
-                {results.error}
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* AI Answer */}
-              {results.answer && (
-                <div className="p-6 rounded-2xl border border-primary/30 bg-primary/5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                    <h3 className="font-semibold text-foreground">AI Answer</h3>
-                  </div>
-                  <div className="text-foreground whitespace-pre-wrap leading-relaxed">
-                    {results.answer}
-                  </div>
+          <>
+            {/* AI Answer */}
+            {results.answer && (
+              <div className="p-6 rounded-2xl border border-primary/30 bg-primary/5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-foreground">AI Answer</h3>
                 </div>
-              )}
+                <div className="text-foreground whitespace-pre-wrap leading-relaxed">
+                  {results.answer}
+                </div>
+                {results.degraded && (
+                  <p className="text-xs text-muted-foreground mt-3">
+                    This answer is degraded — please try again for fuller results.
+                  </p>
+                )}
+              </div>
+            )}
 
               {/* Sources */}
               {results.sources && results.sources.length > 0 && (
@@ -255,11 +299,10 @@ const AISearch = () => {
                 </div>
               )}
             </>
-          )}
-        </motion.div>
-      )}
+          </motion.div>
+        )}
 
-      {/* Empty State */}
+        {/* Empty State */}
       {!results && !searching && (
         <motion.div
           initial={{ opacity: 0 }}
