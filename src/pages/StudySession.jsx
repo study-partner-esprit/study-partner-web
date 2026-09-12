@@ -1255,10 +1255,6 @@ const StudySession = () => {
                       taskDescription={socraticTask.description}
                       taskDetails={socraticTask.details}
                       maxAttempts={3}
-                      onComplete={() => {
-                        setShowSocratic(false);
-                        setSocraticTask(null);
-                      }}
                       onClose={() => {
                         setShowSocratic(false);
                         setSocraticTask(null);
