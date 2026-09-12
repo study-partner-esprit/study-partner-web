@@ -3,6 +3,16 @@ import { motion } from "framer-motion";
 import { Loader2, Send, CheckCircle2, XCircle, Brain, RefreshCw } from "lucide-react";
 import { aiAPI } from "../services/api";
 
+const POLL_INTERVAL_MS = 1500;
+const POLL_TIMEOUT_MS = 90000;
+
+function createSessionId() {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `sess-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export default function SocraticEvaluation({
   taskTitle,
   taskDescription,
@@ -12,7 +22,11 @@ export default function SocraticEvaluation({
   onClose,
 }) {
   const containerRef = useRef(null);
-  const [sessionId, setSessionId] = useState(null);
+  const sessionIdRef = useRef(createSessionId());
+  const stepRef = useRef(1);
+  const pollRef = useRef(null);
+  const aliveRef = useRef(true);
+
   const [question, setQuestion] = useState("");
   const [userAnswer, setUserAnswer] = useState("");
   const [feedback, setFeedback] = useState(null);
@@ -21,68 +35,120 @@ export default function SocraticEvaluation({
   const [questionsAsked, setQuestionsAsked] = useState(0);
   const [error, setError] = useState(null);
 
+  const reset = useCallback(() => {
+    aliveRef.current = false;
+    clearTimeout(pollRef.current);
+    sessionIdRef.current = createSessionId();
+    stepRef.current = 1;
+    aliveRef.current = true;
+    setMasteryScore(0);
+    setQuestionsAsked(0);
+    setFeedback(null);
+    setUserAnswer("");
+    setError(null);
+    setQuestion(taskTitle || taskDescription || "Explain your understanding of this task.");
+    setState("answering");
+  }, [taskTitle, taskDescription]);
+
   useEffect(() => {
     containerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, []);
 
   useEffect(() => {
-    if (state === "idle") {
-      startEvaluation();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const prompt = taskTitle || taskDescription || "Explain your understanding of this task.";
+    setQuestion(prompt);
+    setState("answering");
+  }, [taskTitle, taskDescription]);
+
+  useEffect(() => {
+    return () => {
+      aliveRef.current = false;
+      clearTimeout(pollRef.current);
+    };
   }, []);
 
-  const startEvaluation = useCallback(async () => {
-    setState("loading");
-    setError(null);
-    try {
-      const res = await aiAPI.socraticStart({
-        task_title: taskTitle,
-        task_description: taskDescription,
-        task_details: taskDetails,
-        max_attempts: maxAttempts,
-      });
-      setSessionId(res.data.session_id);
-      setQuestion(res.data.question);
-      setState("answering");
-    } catch (err) {
-      setError(err.response?.data?.error || err.message || "Failed to start evaluation");
-      setState("error");
-    }
-  }, [taskTitle, taskDescription, taskDetails, maxAttempts]);
+  const pollEvalJob = useCallback((jobId) => {
+    return new Promise((resolve, reject) => {
+      const startedAt = Date.now();
+      const tick = async () => {
+        if (!aliveRef.current) return reject(new Error("cancelled"));
+        if (Date.now() - startedAt > POLL_TIMEOUT_MS) {
+          return reject(new Error("Evaluation timed out"));
+        }
+        try {
+          const res = await aiAPI.getEvalJob(jobId);
+          const job = res.data;
+          if (job.status === "COMPLETED") return resolve(job.result);
+          if (job.status === "FAILED") {
+            return reject(new Error(job.error || "Evaluation failed"));
+          }
+          pollRef.current = setTimeout(tick, POLL_INTERVAL_MS);
+        } catch (err) {
+          if (!aliveRef.current) return reject(new Error("cancelled"));
+          if (Date.now() - startedAt > POLL_TIMEOUT_MS) {
+            return reject(new Error("Evaluation timed out"));
+          }
+          pollRef.current = setTimeout(tick, POLL_INTERVAL_MS);
+        }
+      };
+      pollRef.current = setTimeout(tick, POLL_INTERVAL_MS);
+    });
+  }, []);
 
-  const submitAnswer = useCallback(async () => {
-    if (!userAnswer.trim()) return;
-    setState("loading");
-    setError(null);
-    try {
-      const res = await aiAPI.socraticAnswer({
-        session_id: sessionId,
-        user_answer: userAnswer,
-      });
-      const { state: newState, mastery_score, feedback: fb, next_question } = res.data;
+  const applyResult = useCallback(
+    (result) => {
+      const newState = result?.state ?? result?.evaluation_state;
+      const score = result?.mastery_score ?? 0;
+      const fb = result?.feedback ?? "";
+      const nextQ = result?.next_question ?? "";
+      const questions = questionsAsked + 1;
+
       setFeedback(fb);
-      setMasteryScore(mastery_score);
-      setQuestionsAsked((prev) => prev + 1);
+      setMasteryScore(score);
+      setQuestionsAsked(questions);
 
       if (newState === "mastery_confirmed" || newState === "failed") {
         setState("complete");
         onComplete?.({
           state: newState,
-          mastery_score,
-          questions_asked: questionsAsked + 1,
+          mastery_score: score,
+          questions_asked: questions,
           feedback: fb,
         });
       } else {
-        setQuestion(next_question || "Explain your understanding further.");
+        stepRef.current += 1;
+        setQuestion(nextQ || "Explain your understanding further.");
         setUserAnswer("");
         setState("answering");
       }
+    },
+    [questionsAsked, onComplete],
+  );
+
+  const submitAnswer = useCallback(async () => {
+    const answer = userAnswer.trim();
+    if (!answer || !aliveRef.current) return;
+    setState("submitting");
+    setError(null);
+    try {
+      const res = await aiAPI.submitEvalStep({
+        sessionId: sessionIdRef.current,
+        step: stepRef.current,
+        contextId: taskTitle || taskDescription || "socratic-eval",
+        studentAnswer: answer,
+        maxAttempts,
+        taskDescription: taskDescription || undefined,
+        taskDetails: taskDetails || undefined,
+      });
+      setState("polling");
+      const result = await pollEvalJob(res.data.jobId);
+      if (aliveRef.current) applyResult(result);
     } catch (err) {
+      if (!aliveRef.current) return;
       setError(err.response?.data?.error || err.message || "Failed to submit answer");
       setState("error");
     }
-  }, [sessionId, userAnswer, questionsAsked, onComplete]);
+  }, [userAnswer, taskTitle, taskDescription, taskDetails, maxAttempts, pollEvalJob, applyResult]);
 
   if (state === "idle") {
     return (
@@ -104,12 +170,14 @@ export default function SocraticEvaluation({
     );
   }
 
-  if (state === "loading") {
+  if (state === "submitting" || state === "polling") {
     return (
       <div className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4">
         <div className="flex items-center justify-center gap-2 py-6">
           <Loader2 size={20} className="animate-spin text-[var(--accent-color-dynamic)]" />
-          <span className="text-sm text-gray-400">Processing...</span>
+          <span className="text-sm text-gray-400">
+            {state === "submitting" ? "Submitting answer..." : "Analyzing your answer..."}
+          </span>
         </div>
       </div>
     );
@@ -123,7 +191,7 @@ export default function SocraticEvaluation({
           <span className="text-sm text-red-400">{error}</span>
         </div>
         <button
-          onClick={() => setState("idle")}
+          onClick={reset}
           className="flex items-center gap-1 text-xs text-[var(--accent-color-dynamic)] hover:underline"
         >
           <RefreshCw size={12} /> Try Again
@@ -172,13 +240,7 @@ export default function SocraticEvaluation({
         </p>
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              setState("idle");
-              setSessionId(null);
-              setMasteryScore(0);
-              setQuestionsAsked(0);
-              setFeedback(null);
-            }}
+            onClick={reset}
             className="flex-1 px-3 py-2 bg-[var(--accent-color-dynamic)] text-white text-xs font-bold tracking-wider uppercase rounded-lg hover:opacity-90 transition-all"
           >
             Retry
@@ -198,6 +260,7 @@ export default function SocraticEvaluation({
 
   return (
     <motion.div
+      ref={containerRef}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-[#1a2633] border border-[#ffffff10] rounded-xl p-4"

@@ -254,7 +254,11 @@ export const aiAPI = {
   resetFatigue: (userId) =>
     api.post("/api/v1/ai/signals/fatigue/reset", { user_id: userId }),
 
-  // Socratic Evaluation
+  // Socratic Evaluation (async job API — EVAL-09)
+  submitEvalStep: (payload) => api.post("/api/v1/eval/step", payload),
+  getEvalJob: (jobId) => api.get(`/api/v1/eval/jobs/${jobId}`),
+
+  // Socratic Evaluation (legacy sync endpoints)
   socraticStart: (data) =>
     api.post("/api/v1/ai/evaluator/socratic/start", data),
   socraticAnswer: (data) =>
