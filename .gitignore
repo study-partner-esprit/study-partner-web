@@ -31,3 +31,5 @@ yarn-error.log*
 .DS_Store
 .vercel
 .env*.local
+
+dist/assets/*
