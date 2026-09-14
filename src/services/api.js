@@ -30,13 +30,9 @@ const isPublicAuthRequest = (url = "") =>
 let _pendingRefresh = null;
 
 async function _doRefresh() {
-  const { useAuthStore } = await import("../store/authStore");
-  const { refreshToken, isRefreshing } = useAuthStore.getState();
-
-  if (!refreshToken) throw new Error("No refresh token");
-
-  // POST /auth/refresh reads refreshToken from cookie (httpOnly) or body
-  const res = await api.post("/api/v1/auth/refresh", { refreshToken });
+  // SEC-03/SEC-04: the refresh token lives ONLY in the httpOnly cookie;
+  // it is never read from JS state, so no token is sent in the body.
+  const res = await api.post("/api/v1/auth/refresh");
   return res.data;
 }
 
